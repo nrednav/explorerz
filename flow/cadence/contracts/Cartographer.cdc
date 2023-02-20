@@ -1,5 +1,3 @@
-
-
 // A simple cartographer contract 
 pub contract Cartographer {
     // declaration of a public variable
@@ -22,7 +20,3 @@ pub contract Cartographer {
         return self.map
     }
 }
-
-
- 
- 
