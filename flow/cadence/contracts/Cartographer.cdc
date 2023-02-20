@@ -19,5 +19,9 @@ pub contract Cartographer {
     pub fun getMap(): [[UInt64?]] {
         return self.map
     }
+
+    pub fun getNumberOfTilesPlaced(): Int {
+        return self.numberOfTilesPlaced
+    }
 }
  
