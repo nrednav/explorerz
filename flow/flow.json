@@ -1,5 +1,6 @@
 {
 	"contracts": {
+		"Cartographer": "cadence/contracts/Cartographer.cdc",
 		"Person": "cadence/contracts/Person.cdc"
 	},
 	"networks": {
@@ -9,21 +10,18 @@
 	},
 	"accounts": {
 		"default": {
-			"address": "f3fcd2c1a78f5eee",
-			"key": "9cfba789ec02b09be7a11068bfb75bb552cb868c14d039f8d673887ef5f06b9a"
+			"address": "f669cb8d41ce0c74",
+			"key": "c5e2d8f323dc8bb3d38e8031f17c7c51a02a4b8c37037ce4ab0a531921d6d10f"
 		},
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
 			"key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
-		},
-		"testnet": {
-			"fromFile": "testnet.private.json"
 		}
 	},
 	"deployments": {
 		"emulator": {
 			"default": [
-				"Person"
+				"Cartographer"
 			]
 		}
 	}
