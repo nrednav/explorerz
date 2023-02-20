@@ -25,9 +25,9 @@
 		"emulator": {
 			"default": [
 				"Cartographer",
-				"NonFungibleToken",
+				"FungibleToken",
 				"MetadataViews",
-				"FungibleToken"
+				"NonFungibleToken"
 			]
 		}
 	}
