@@ -1,6 +1,9 @@
 {
 	"contracts": {
 		"Cartographer": "cadence/contracts/Cartographer.cdc",
+		"FungibleToken": "cadence/contracts/FungibleToken.cdc",
+		"MetadataViews": "cadence/contracts/MetadataViews.cdc",
+		"NonFungibleToken": "cadence/contracts/NonFungibleToken.cdc",
 		"Person": "cadence/contracts/Person.cdc"
 	},
 	"networks": {
@@ -21,7 +24,10 @@
 	"deployments": {
 		"emulator": {
 			"default": [
-				"Cartographer"
+				"Cartographer",
+				"FungibleToken",
+				"MetadataViews",
+				"NonFungibleToken"
 			]
 		}
 	}
