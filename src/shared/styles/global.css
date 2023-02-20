@@ -1,0 +1,58 @@
+/** ---- [Tailwind] ---- **/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* A series of classes to help with designing & debugging layouts */
+  .debug-r {
+    @apply outline outline-1 outline-red-400;
+  }
+
+  .debug-g {
+    @apply outline outline-1 outline-green-400;
+  }
+
+  .debug-b {
+    @apply outline outline-1 outline-blue-400;
+  }
+
+  .debug-y {
+    @apply outline outline-1 outline-yellow-400;
+  }
+
+  .debug-w {
+    @apply outline outline-1 outline-white;
+  }
+}
+
+/** ---- [Vanilla] ---- **/
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

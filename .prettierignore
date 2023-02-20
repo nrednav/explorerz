@@ -1,0 +1,11 @@
+node_modules
+**/.next/**
+**/_next/**
+**/dist/**
+.vercel
+
+*.d.ts
+
+# Ignore artifacts
+build
+coverage
