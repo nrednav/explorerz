@@ -4,7 +4,8 @@ pub contract Cartographer {
     pub var map: [[UInt64?]]
     pub var numberOfTilesPlaced: Int
 
-
+    // declaration of a public event
+    pub event MapInitialized()
     // initialization method for our contracts, this gets run on deployment
     init() {
         self.map = [[], [], [], [], [], [], [], [], [], [], [], []]
@@ -14,6 +15,7 @@ pub contract Cartographer {
             i = i + 1
         }
         self.numberOfTilesPlaced = 0
+        emit MapInitialized()
     }
 
     pub fun getMap(): [[UInt64?]] {
