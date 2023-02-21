@@ -1,6 +1,6 @@
 import { FC, Fragment } from "react";
 import { Disclosure } from "@headlessui/react";
-import { MenuIcon, XIcon } from "@heroicons/react/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const navigation = {
   main: [{ name: "About", href: "/about" }],
@@ -18,7 +18,7 @@ export const NavBar: FC = () => {
                   href="/"
                   className="text-primary inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm uppercase hover:opacity-100"
                 >
-                  Explorers
+                  Explorerz
                 </a>
                 <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                   {navigation.main.map((item) => (
@@ -37,12 +37,12 @@ export const NavBar: FC = () => {
                 <Disclosure.Button className="text-primary focus:ring-minimal-black inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <XIcon
+                    <XMarkIcon
                       className="text-primary block h-6 w-6"
                       aria-hidden="true"
                     />
                   ) : (
-                    <MenuIcon
+                    <Bars3Icon
                       className="text-primary block h-6 w-6"
                       aria-hidden="true"
                     />
