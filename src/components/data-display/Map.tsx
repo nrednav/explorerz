@@ -1,22 +1,24 @@
 import React, { FC } from "react";
-import { Tile } from "./Tile";
+import type { TileGrid } from "@/shared/types";
+import Tile, { EmptyTile } from "./Tile";
 
 type MapProps = {
-  tiles: (Tile | null)[][];
+  tiles: TileGrid;
 };
 
 export const Map: FC<MapProps> = ({ tiles }) => {
   return (
     <div className="grid cursor-pointer grid-cols-12 grid-rows-12 gap-0">
-      {tiles.map((row, rowIndex) => {
-        return row.map((tile, colIndex) =>
-          tile ? (
-            <Tile key={`${rowIndex}-${colIndex}`} tile={tile} />
-          ) : (
-            <Tile key={`${rowIndex}-${colIndex}`} className="bg-slate-400" />
-          )
-        );
-      })}
+      {renderGridOfTiles(tiles)}
     </div>
   );
+};
+
+const renderGridOfTiles = (tiles: TileGrid) => {
+  return tiles.map((row, rowIndex) => {
+    return row.map((tile, colIndex) => {
+      const key = `${rowIndex}-${colIndex}`;
+      return tile ? <Tile key={key} tile={tile} /> : <EmptyTile key={key} />;
+    });
+  });
 };

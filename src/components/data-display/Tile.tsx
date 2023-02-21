@@ -1,22 +1,14 @@
 import React, { FC } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-
-export type Tile = {
-  id: number;
-  kind: "grass" | "water" | "sand" | "stone";
-  image: {
-    src: string;
-    alt: string;
-  };
-};
+import type {Tile} from "@/shared/types";
 
 type TileProps = {
   className?: string;
   tile?: Tile;
 };
 
-export const Tile: FC<TileProps> = ({ className, tile }) => {
+const Tile: FC<TileProps> = ({ className, tile }) => {
   return (
     <div
       className={clsx(
@@ -25,7 +17,11 @@ export const Tile: FC<TileProps> = ({ className, tile }) => {
         className
       )}
     >
-      {tile && <Image src={tile.image.src} fill={true} alt={tile.image.alt} />}
+      {tile && <Image src={tile.image.src} alt={tile.image.alt} fill={true} />}
     </div>
   );
 };
+
+export const EmptyTile = () => <Tile className="bg-slate-400" />
+
+export default Tile;
