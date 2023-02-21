@@ -1,16 +1,12 @@
 import type { AppProps } from "next/app";
 import "@/shared/styles/global.css";
-import localFont from "@next/font/local";
+import { Press_Start_2P } from "@next/font/google";
 
-// Font files can be colocated inside of `pages`
-const myFont = localFont({
-  src: "../../public/fonts/Eight-Bit Madness.ttf",
-  variable: "--font-8bit",
-});
+const font = Press_Start_2P({ subsets: ["latin"], weight: "400" });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={myFont.className}>
+    <main className={font.className}>
       <Component {...pageProps} />
     </main>
   );
