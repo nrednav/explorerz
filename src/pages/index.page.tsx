@@ -1,6 +1,24 @@
 import Head from "next/head";
 import { Map } from "@/components/data-display/Map";
+import { ComponentLayout } from "@/components/layout/ComponentLayout";
 import { Page } from "@/components/layout/Page";
+
+const row = [
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+  null,
+];
+
+const tiles = [row, row, row, row, row, row, row, row, row, row, row, row];
 
 export const Home = () => {
   return (
@@ -11,7 +29,9 @@ export const Home = () => {
       </Head>
       <main>
         <Page>
-          <Map />
+          <ComponentLayout>
+            <Map tiles={tiles} />
+          </ComponentLayout>
         </Page>
       </main>
     </>

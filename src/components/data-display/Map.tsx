@@ -1,12 +1,22 @@
 import React, { FC } from "react";
-import { ComponentLayout } from "../layout/ComponentLayout";
+import { Tile } from "./Tile";
 
-export const Map: FC = () => {
+type MapProps = {
+  tiles: (Tile | null)[][];
+};
+
+export const Map: FC<MapProps> = ({ tiles }) => {
   return (
-    <ComponentLayout>
-      <div className="flex justify-center">
-        <h1 className="text-7xl">Map</h1>
-      </div>
-    </ComponentLayout>
+    <div className="grid grid-cols-12 grid-rows-12 gap-0">
+      {tiles.map((row, index) =>
+        row.map((tile) =>
+          tile ? (
+            <Tile key={tile.id} />
+          ) : (
+            <Tile key={index} className="bg-slate-400" />
+          )
+        )
+      )}
+    </div>
   );
 };
