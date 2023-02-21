@@ -32,6 +32,7 @@ pub contract Cartographer {
         emit MapInitialized()
     }
 
+    // Functions
     view pub fun getMap(): [[UInt64?]] {
         return self.map
     }
@@ -40,4 +41,4 @@ pub contract Cartographer {
         return self.numberOfTilesPlaced
     }
 }
- 
+
