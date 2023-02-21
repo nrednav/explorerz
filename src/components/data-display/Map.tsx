@@ -8,7 +8,7 @@ type MapProps = {
 
 export const Map: FC<MapProps> = ({ tiles }) => {
   return (
-    <div className="grid cursor-pointer grid-cols-12 grid-rows-12 gap-0">
+    <div className="mx-auto grid max-w-[1024px] cursor-pointer grid-cols-16 grid-rows-16 gap-0">
       {renderGridOfTiles(tiles)}
     </div>
   );
