@@ -1,14 +1,26 @@
+import { useState } from "react";
 import type { AppProps } from "next/app";
 import "@/shared/styles/global.css";
+import Page from "@/components/layout/Page";
 import "@/flow/config";
-import { Press_Start_2P } from "@next/font/google";
-
-const font = Press_Start_2P({ subsets: ["latin"], weight: "400" });
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
-    <main className={font.className}>
-      <Component {...pageProps} />
-    </main>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate>
+        <Page>
+          <Component {...pageProps} />
+        </Page>
+      </Hydrate>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   );
 }

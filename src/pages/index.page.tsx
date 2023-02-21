@@ -1,11 +1,14 @@
 import Head from "next/head";
+import Error from "@/components/data-display/Error";
+import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
-import { ComponentLayout } from "@/components/layout/ComponentLayout";
-import { Page } from "@/components/layout/Page";
 import useMap from "@/hooks/useMap";
 
 export const Home = () => {
-  const { tiles } = useMap();
+  const { data: tiles, isLoading, isError } = useMap();
+
+  if (isError) return <Error message="Could not load map..." />;
+  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -13,13 +16,7 @@ export const Home = () => {
         <title>Explorerz</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <Page>
-          <ComponentLayout>
-            {tiles ? <Map tiles={tiles} /> : <h1>Map loading...</h1>}
-          </ComponentLayout>
-        </Page>
-      </main>
+      {tiles ? <Map tiles={tiles} /> : <Loading />}
     </>
   );
 };
