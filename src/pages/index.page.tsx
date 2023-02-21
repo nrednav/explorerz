@@ -9,6 +9,7 @@ export const Home = () => {
 
   if (isError) return <Error message="Could not load map..." />;
   if (isLoading) return <Loading />;
+  if (!tiles) return <Error message="Could not load map..." />;
 
   return (
     <>
@@ -16,7 +17,7 @@ export const Home = () => {
         <title>Explorerz</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {tiles ? <Map tiles={tiles} /> : <Loading />}
+      <Map tiles={tiles} />
     </>
   );
 };

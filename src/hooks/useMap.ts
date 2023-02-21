@@ -8,6 +8,7 @@ const useMap = () => {
     queryKey: ["map"],
     queryFn: getMap,
     refetchInterval: MAP_REFRESH_INTERVAL * 1000,
+    refetchOnWindowFocus: false,
   });
 };
 

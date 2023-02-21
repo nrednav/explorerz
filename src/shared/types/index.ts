@@ -1,11 +1,14 @@
-// A 2D grid (rows & columns) of tiles
-export type TileGrid = (Tile | null)[][];
+import { z } from "zod";
 
-export type Tile = {
-  id: number;
-  kind: "grass" | "water" | "sand" | "stone";
-  image: {
-    src: string;
-    alt: string;
-  };
-};
+const TileSchema = z.object({
+  id: z.number(),
+  kind: z.enum(["grass", "water", "sand", "stone"]),
+  image: z.object({
+    src: z.string(),
+    alt: z.string(),
+  }),
+});
+export type Tile = z.infer<typeof TileSchema>;
+
+export const MapSchema = TileSchema.nullable().array().array();
+export type TileGrid = z.infer<typeof MapSchema>;
