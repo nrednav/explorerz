@@ -15,7 +15,9 @@ export const Home = () => {
       </Head>
       <main>
         <Page>
-          <ComponentLayout>{tiles && <Map tiles={tiles} />}</ComponentLayout>
+          <ComponentLayout>
+            {tiles ? <Map tiles={tiles} /> : <h1>Map loading...</h1>}
+          </ComponentLayout>
         </Page>
       </main>
     </>
