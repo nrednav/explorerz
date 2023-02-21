@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { Map } from "@/components/data-display/Map";
 import { Page } from "@/components/layout/Page";
 
 export const Home = () => {
@@ -10,7 +11,7 @@ export const Home = () => {
       </Head>
       <main>
         <Page>
-          <h1>Welcome</h1>
+          <Map />
         </Page>
       </main>
     </>
