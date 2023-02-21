@@ -17,7 +17,6 @@ type TileProps = {
 };
 
 export const Tile: FC<TileProps> = ({ className, tile }) => {
-  console.log(tile);
   return (
     <div
       className={clsx(
