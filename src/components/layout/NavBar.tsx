@@ -1,4 +1,5 @@
 import { FC, Fragment } from "react";
+import LoginButton from "../input-and-actions/LoginButton";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -13,23 +14,28 @@ export const NavBar: FC = () => {
         <Fragment>
           <div className="font-crimson mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
-              <div className="flex items-center">
-                <a
-                  href="/"
-                  className="text-primary inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm uppercase hover:opacity-100"
-                >
-                  Explorerz
-                </a>
-                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                  {navigation.main.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className="text-primary inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm uppercase hover:opacity-100"
-                    >
-                      {item.name}
-                    </a>
-                  ))}
+              <div className="flex w-full items-center justify-between">
+                <div className="flex w-full items-center">
+                  <a
+                    href="/"
+                    className="text-primary inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm uppercase hover:opacity-100"
+                  >
+                    Explorerz
+                  </a>
+                  <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    {navigation.main.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className="text-primary inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm uppercase hover:opacity-100"
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+                <div className="hidden sm:block">
+                  <LoginButton />
                 </div>
               </div>
               <div className="-mr-2 flex items-center sm:hidden">
@@ -64,6 +70,9 @@ export const NavBar: FC = () => {
                   {item.name}
                 </Disclosure.Button>
               ))}
+            </div>
+            <div className="flex w-full justify-center py-4">
+              <LoginButton />
             </div>
           </Disclosure.Panel>
         </Fragment>
