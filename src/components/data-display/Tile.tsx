@@ -1,11 +1,12 @@
 import React, { FC } from "react";
 import Image from "next/image";
+import type { TileSchema } from "@/shared/types";
 import clsx from "clsx";
-import type {Tile} from "@/shared/types";
+import { z } from "zod";
 
 type TileProps = {
   className?: string;
-  tile?: Tile;
+  tile?: z.infer<typeof TileSchema>;
 };
 
 const Tile: FC<TileProps> = ({ className, tile }) => {
@@ -13,7 +14,6 @@ const Tile: FC<TileProps> = ({ className, tile }) => {
     <div
       className={clsx(
         "relative flex aspect-square w-full items-center justify-center hover:brightness-90",
-        tile ? "border-none" : "border border-black",
         className
       )}
     >
@@ -22,6 +22,8 @@ const Tile: FC<TileProps> = ({ className, tile }) => {
   );
 };
 
-export const EmptyTile = () => <Tile className="bg-slate-400" />
+export const EmptyTile = () => (
+  <Tile className="border border-black bg-slate-400" />
+);
 
 export default Tile;
