@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import Image from "next/image";
-import type { TileSchema } from "@/shared/types";
+import { TileSchema } from "@/shared/types";
 import clsx from "clsx";
 import { z } from "zod";
 
