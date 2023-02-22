@@ -5,6 +5,7 @@ pub contract TileMinter: NonFungibleToken {
     // Data
     pub var totalSupply: UInt64
     pub let tileRegistry: { String: { String: String } }
+    // pub let cooldownQueue: { String : Timestamp }
 
     pub let CollectionStoragePath: StoragePath
     pub let CollectionPublicPath: PublicPath
@@ -93,12 +94,12 @@ pub contract TileMinter: NonFungibleToken {
         let image = self.tileRegistry[chosenKind]![chosenVariant]
 
         // Determine the quantity to mint
-        let rngQuanity = Int(unsafeRandom()) % 4
-        let quantity = rngQuantiy > 0 ? rngQuantity : 1
+        let rngQuantity = Int(unsafeRandom()) % 4
+        let quantityToMint = rngQuantity > 0 ? rngQuantity : 1
 
         // Batch mint the NFT's
         var i = 0
-        while i < quantity {
+        while i < quantityToMint {
             var tile <- create TileMinter.NFT(
                 kind: chosenKind,
                 variant: chosenVariant,
