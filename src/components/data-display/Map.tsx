@@ -1,12 +1,24 @@
 import React, { FC } from "react";
-import { ComponentLayout } from "../layout/ComponentLayout";
+import type { TileGrid } from "@/shared/types";
+import Tile, { EmptyTile } from "./Tile";
 
-export const Map: FC = () => {
+type MapProps = {
+  tiles: TileGrid;
+};
+
+export const Map: FC<MapProps> = ({ tiles }) => {
   return (
-    <ComponentLayout>
-      <div className="flex justify-center">
-        <h1 className="text-7xl">Map</h1>
-      </div>
-    </ComponentLayout>
+    <div className="mx-auto grid max-w-[1024px] cursor-pointer grid-cols-16 grid-rows-16 gap-0">
+      {renderGridOfTiles(tiles)}
+    </div>
   );
+};
+
+const renderGridOfTiles = (tiles: TileGrid) => {
+  return tiles.map((row, rowIndex) => {
+    return row.map((tile, colIndex) => {
+      const key = `${rowIndex}-${colIndex}`;
+      return tile ? <Tile key={key} tile={tile} /> : <EmptyTile key={key} />;
+    });
+  });
 };
