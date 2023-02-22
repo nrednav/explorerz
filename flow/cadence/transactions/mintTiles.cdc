@@ -3,11 +3,7 @@ import "TileMinter"
 import "MetadataViews"
 import "FungibleToken"
 
-transaction(
-    kind: String,
-    image: String,
-    variant: String
-) {
+transaction {
     let tileCollectionRef: &{NonFungibleToken.CollectionPublic}
 
     let totalSupplyBefore: UInt64
@@ -15,8 +11,8 @@ transaction(
     prepare(signer: AuthAccount) {
         self.totalSupplyBefore = TileMinter.totalSupply
 
-        let tileCollectionCap = signer.getCapability<&{NonFungibleToken.CollectionPublic}>(TileMinter.CollectionPublicPath)
-        if !tileCollectionCap.check() {
+        let tileCollectionCapability = signer.getCapability<&{NonFungibleToken.CollectionPublic}>(TileMinter.CollectionPublicPath)
+        if !tileCollectionCapability.check() {
             signer.save(<- TileMinter.createEmptyCollection(), to: TileMinter.CollectionStoragePath)
             signer.link<&TileMinter.Collection{NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, TileMinter.TileCollectionPublic, MetadataViews.ResolverCollection}>(
                 TileMinter.CollectionPublicPath,
@@ -30,13 +26,11 @@ transaction(
             ?? panic("Could not get receiver reference to the Tile NFT Collection")
     }
 
-    pre {}
-
     execute {
         TileMinter.mint(recipient: self.tileCollectionRef)
     }
 
     post {
-        [1,2,3,4].contains(Int(TileMinter.totalSupply - self.totalSupplyBefore)): "The total supply should have increased by 1 to 4"
+        [1,2,3,4].contains(Int(TileMinter.totalSupply - self.totalSupplyBefore)): "The total supply should have increased by a count between 1 and 4"
     }
 }
