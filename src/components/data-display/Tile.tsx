@@ -17,7 +17,13 @@ const Tile: FC<TileProps> = ({ className, tile }) => {
         className
       )}
     >
-      {tile && <Image src={tile.image.src} alt={tile.image.alt} fill={true} />}
+      {tile && (
+        <Image
+          src={tile.image}
+          alt={`Image of ${tile.kind}-${tile.variant} tile`}
+          fill={true}
+        />
+      )}
     </div>
   );
 };

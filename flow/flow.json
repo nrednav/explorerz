@@ -3,7 +3,8 @@
 		"Cartographer": "cadence/contracts/Cartographer.cdc",
 		"FungibleToken": "cadence/contracts/FungibleToken.cdc",
 		"MetadataViews": "cadence/contracts/MetadataViews.cdc",
-		"NonFungibleToken": "cadence/contracts/NonFungibleToken.cdc"
+		"NonFungibleToken": "cadence/contracts/NonFungibleToken.cdc",
+		"TileMinter": "cadence/contracts/TileMinter.cdc"
 	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
@@ -13,7 +14,7 @@
 	"accounts": {
 		"default": {
 			"address": "f3fcd2c1a78f5eee",
-			"key": "42000b20909ceaaf34c72d22e066a12783036aacd5f5f9117b9642b13ed77acf"
+			"key": "99f2b33b651c04a00f309b8c33b872ae0df8c475e1d97db77a8cbd658e9c19ed"
 		},
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
@@ -26,7 +27,8 @@
 				"Cartographer",
 				"FungibleToken",
 				"MetadataViews",
-				"NonFungibleToken"
+				"NonFungibleToken",
+				"TileMinter"
 			]
 		}
 	}
