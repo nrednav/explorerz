@@ -1,4 +1,4 @@
-import { MapSchema, TileGrid } from "@/shared/types";
+import { TileGrid, TileGridSchema } from "@/shared/types";
 import * as fcl from "@onflow/fcl";
 
 const code = `
@@ -15,9 +15,9 @@ export const getMap = async (): Promise<TileGrid | null> => {
       cadence: code,
     };
 
-    const map = await fcl.query(queryOptions);
+    const tiles = await fcl.query(queryOptions);
 
-    return MapSchema.parse(map);
+    return TileGridSchema.parse(tiles);
   } catch (error) {
     console.error(error);
     return null;

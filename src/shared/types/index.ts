@@ -10,5 +10,5 @@ const TileSchema = z.object({
 });
 export type Tile = z.infer<typeof TileSchema>;
 
-export const MapSchema = TileSchema.nullable().array().array();
-export type TileGrid = z.infer<typeof MapSchema>;
+export const TileGridSchema = TileSchema.nullable().array().array();
+export type TileGrid = z.infer<typeof TileGridSchema>;
