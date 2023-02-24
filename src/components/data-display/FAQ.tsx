@@ -1,4 +1,5 @@
 import { FC, Fragment } from "react";
+import Button from "../input-and-actions/Button";
 import { Dialog, Transition } from "@headlessui/react";
 
 type FAQProps = {
@@ -120,13 +121,10 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                   </div>
                 </div>
                 <div className="mt-5 flex w-full justify-center sm:mt-6">
-                  <button
-                    type="button"
-                    className="notched-module inline-flex w-32 items-center justify-center border border-transparent bg-slate-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
+                  <Button
                     onClick={() => setOpen(false)}
-                  >
-                    Back to map
-                  </button>
+                    ctaText="Back to map"
+                  />
                 </div>
               </Dialog.Panel>
             </Transition.Child>

@@ -1,19 +1,21 @@
-import React from "react";
+import React, { FC } from "react";
 import useUser from "@/hooks/useUser";
-import * as fcl from "@onflow/fcl";
 
-const LoginButton = () => {
-  const { user } = useUser();
+type ButtonProps = {
+  onClick: () => void;
+  ctaText: string;
+};
 
+const Button: FC<ButtonProps> = ({ onClick, ctaText }) => {
   return (
     <button
       type="button"
       className="notched-module inline-flex w-32 items-center justify-center border border-transparent bg-slate-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
-      onClick={user.loggedIn ? fcl.unauthenticate : fcl.authenticate}
+      onClick={onClick}
     >
-      {user.loggedIn ? "LogOut" : "LogIn"}
+      {ctaText}
     </button>
   );
 };
 
-export default LoginButton;
+export default Button;
