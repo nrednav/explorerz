@@ -32,16 +32,20 @@ pub contract TileMinter: NonFungibleToken {
         self.totalSupply = 0
         self.tileRegistry = {
             "grass": {
-                "standard": "https://explorerz.vercel.app/images/grass.png"
+                "standard": "https://explorerz.vercel.app/images/grass-standard.png"
+                "variant": "https://explorerz.vercel.app/images/grass-variant.png"
             },
             "water": {
-                "standard": "https://explorerz.vercel.app/images/water.png"
+                "standard": "https://explorerz.vercel.app/images/water-standard.png"
+                "variant": "https://explorerz.vercel.app/images/water-variant.png"
             },
             "sand": {
-                "standard": "https://explorerz.vercel.app/images/sand.jpg"
+                "standard": "https://explorerz.vercel.app/images/sand-standard.png"
+                "variant": "https://explorerz.vercel.app/images/sand-variant.png"
             },
             "stone": {
-                "standard": "https://explorerz.vercel.app/images/stone.png"
+                "standard": "https://explorerz.vercel.app/images/stone-standard.png"
+                "variant": "https://explorerz.vercel.app/images/stone-variant.png"
             } 
         }
         self.phase = Phase()
