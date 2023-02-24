@@ -16,7 +16,7 @@ pub struct Tile {
     }
 }
 
-pub fun main(address: Address): [Tile] {
+pub fun main(address: Address): { String: [Tile] } {
     let account = getAccount(address)
 
     let tileCollectionRef = account
@@ -26,11 +26,16 @@ pub fun main(address: Address): [Tile] {
 
     let tileIds = tileCollectionRef.getIDs()
 
-    let tileCollection: [Tile] = []
+    let tileCollection: { String: [Tile] } = {}
+
+    for kind in TileMinter.tileRegistry.keys {
+        tileCollection[kind] = []
+    }
 
     for tileId in tileIds {
         if let tile = getTileById(address: address, id: tileId) {
-            tileCollection.append(tile)
+            // If the kind is not registered, we wont display it in the inventory
+            tileCollection[tile.kind]?.append(tile)
         }
     }
 
