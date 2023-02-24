@@ -2,7 +2,6 @@ import NonFungibleToken from "NonFungibleToken"
 import MetadataViews from "MetadataViews"
 
 pub contract TileMinter: NonFungibleToken {
-
     // Data
     pub var totalSupply: UInt64
     pub let tileRegistry: { String: { String: String } }
@@ -15,22 +14,6 @@ pub contract TileMinter: NonFungibleToken {
     pub let AdminStoragePath: StoragePath
     pub let StoragePath: StoragePath
 
-    // Structs
-    pub struct Phase {
-        pub var current: UInt64
-        pub var lastUpdatedAt: UInt64
-
-        init(blockHeight: UInt64) {
-            self.current = 0
-            self.lastUpdatedAt = blockHeight
-        }
-
-        pub fun transition() {
-            self.current = (self.current + 1) % 4
-            self.lastUpdatedAt = getCurrentBlock().height
-        }
-    }
-
     // Events
     pub event ContractInitialized()
     pub event Withdraw(id: UInt64, from: Address?)
@@ -40,6 +23,9 @@ pub contract TileMinter: NonFungibleToken {
     pub event TileVariantErased(kind: String, variant: String)
     pub event MintingPeriodOpened(block: String, timestamp: String)
     pub event MintingPeriodClosed(block: String, timestamp: String)
+    pub event PhaseInitialized(lastUpdatedAt: UInt64)
+    pub event PhaseTransitioned(phase: UInt64, lastUpdatedAt: UInt64)
+    pub event PhaseReset(lastUpdatedAt: UInt64)
 
     // Initialization
     init() {
@@ -58,8 +44,8 @@ pub contract TileMinter: NonFungibleToken {
                 "standard": "https://explorerz.vercel.app/images/stone.png"
             } 
         }
-        self.phase = Phase(blockHeight: getCurrentBlock().height)
-        self.isMintingPeriodOpen = false
+        self.phase = Phase()
+        self.isMintingPeriodOpen = true 
 
         self.CollectionStoragePath = /storage/TileCollection
         self.CollectionPublicPath = /public/TileCollection
@@ -82,6 +68,33 @@ pub contract TileMinter: NonFungibleToken {
         ) ?? panic("Could not retrieve a capability for the Admin resource")
 
         emit ContractInitialized()
+    }
+
+    // Structs
+    pub struct Phase {
+        pub var current: UInt64
+        pub var lastUpdatedAt: UInt64
+        pub let duration: UInt64 // time expressed in block height, 1 block = 2 seconds
+
+        init() {
+            // TODO: Change back to 120 for testnet
+            self.duration = 10 // 120 blocks ~= 240 seconds = 4 minutes
+            self.current = 0
+            self.lastUpdatedAt = getCurrentBlock().height
+            emit PhaseInitialized(lastUpdatedAt: self.lastUpdatedAt)
+        }
+
+        pub fun transition() {
+            self.current = (self.current + 1) % 4
+            self.lastUpdatedAt = getCurrentBlock().height
+            emit PhaseTransitioned(phase: self.current, lastUpdatedAt: self.lastUpdatedAt)
+        }
+
+        pub fun reset() {
+            self.current = 0
+            self.lastUpdatedAt = getCurrentBlock().height
+            emit PhaseReset(lastUpdatedAt: self.lastUpdatedAt)
+        }
     }
 
     // Functions
@@ -109,7 +122,7 @@ pub contract TileMinter: NonFungibleToken {
 
         // If the current phase has lasted longer than 4 minutes, transition to the next phase
         // 4 minutes ~= 120 blocks
-        if currentBlock.height >= self.phase.lastUpdatedAt + UInt64(120) {
+        if currentBlock.height >= self.phase.lastUpdatedAt + self.phase.duration {
             self.phase.transition()
         }
 
@@ -120,18 +133,20 @@ pub contract TileMinter: NonFungibleToken {
         metadata["minter"] = recipient.owner!.address.toString()
         metadata["phase"] = currentPhase.toString()
 
-        // Determine kind & variant of tiles to mint, via RNG
-        let kinds = self.tileRegistry.keys
-        let chosenKind = kinds[Int(unsafeRandom()) % kinds.length]
-        
-        let variants = self.tileRegistry[chosenKind]!.keys
-        let chosenVariant = variants[Int(unsafeRandom()) % variants.length]
-
-        let image = self.tileRegistry[chosenKind]![chosenVariant]
 
         // Batch mint the tiles, where quantity minted = current phase
         var i = 0
         while i < currentPhase {
+            // Determine kind & variant of tiles to mint, via RNG
+            let kinds = self.tileRegistry.keys
+            let chosenKind = kinds[Int(unsafeRandom()) % kinds.length]
+            
+            let variants = self.tileRegistry[chosenKind]!.keys
+            let chosenVariant = variants[Int(unsafeRandom()) % variants.length]
+
+            let image = self.tileRegistry[chosenKind]![chosenVariant]
+        
+            // Mint the tile
             var tile <- create TileMinter.NFT(
                 kind: chosenKind,
                 variant: chosenVariant,
@@ -148,6 +163,8 @@ pub contract TileMinter: NonFungibleToken {
 
             i = i + 1
         }
+
+        self.phase.reset()
     }
 
 
@@ -303,6 +320,10 @@ pub contract TileMinter: NonFungibleToken {
 
             let currentBlock = getCurrentBlock()
             emit MintingPeriodClosed(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
+        }
+
+        pub fun transitionPhase() {
+            TileMinter.phase.transition()
         }
     }
 }

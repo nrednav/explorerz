@@ -1,23 +1,22 @@
 import "TileMinter"
 
-// TODO: remove this, this is for emulator only
+// TODO: Remove this, this is for emulator only
 transaction {
     let admin: &TileMinter.Admin
+    let previousPhase: UInt64
 
     prepare(signer: AuthAccount) {
         self.admin = signer.borrow<&TileMinter.Admin>(from: TileMinter.AdminStoragePath)
             ?? panic("Could not borrow reference to the Admin resource")
-    }
 
-    pre {
-        TileMinter.isMintingPeriodOpen == false: "The tile minting period is already open"
+        self.previousPhase = TileMinter.phase.current
     }
 
     execute {
-        self.admin.openMintingPeriod()
+        self.admin.transitionPhase()
     }
 
     post {
-        TileMinter.isMintingPeriodOpen == true: "The tile minting period could not be opened"
+        TileMinter.phase.current == (self.previousPhase + UInt64(1)) % 4: "Could not transition phase"
     }
 }

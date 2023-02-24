@@ -13,8 +13,8 @@
 	},
 	"accounts": {
 		"default": {
-			"address": "f4a3472b32eac8d8",
-			"key": "6e97284ca35b79f65a28bff8c86eb67e35ee40e817e295311843239086fc2a52"
+			"address": "f3fcd2c1a78f5eee",
+			"key": "16398bf5802c087a9fea6050b905bd797aea14665cc17f37601d3b332997b393"
 		},
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",

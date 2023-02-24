@@ -1,5 +1,6 @@
 import "TileMinter"
 
+// TODO: remove this, this is for emulator only
 transaction {
     let admin: &TileMinter.Admin
 
