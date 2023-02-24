@@ -184,8 +184,8 @@ pub contract TileMinter: NonFungibleToken {
     pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
         pub let kind: String
-        pub let image: String
         pub let variant: String
+        pub let image: String
 
         pub fun name(): String {
             return "Tile"
