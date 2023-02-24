@@ -5,6 +5,7 @@ import InventoryPanel from "@/components/data-display/InventoryPanel";
 import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
 import Button from "@/components/input-and-actions/Button";
+import { mintTiles } from "@/flow/cadence/transactions/mintTiles";
 import useMap from "@/hooks/useMap";
 
 export const Home = () => {
@@ -25,7 +26,7 @@ export const Home = () => {
       </Head>
       <Map tiles={tiles} />
       <div>
-        <Button onClick={() => alert("Mint!")} ctaText="Build" />
+        <Button onClick={mintTiles} ctaText="Mint" />
         <Button onClick={InventoryPanelOnClick} ctaText="Inventory" />
       </div>
       <InventoryPanel onClick={InventoryPanelOnClick} open={openInventory} />
