@@ -24,7 +24,10 @@ export const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Map tiles={tiles} />
-      <Button onClick={InventoryPanelOnClick} ctaText="Inventory" />
+      <div>
+        <Button onClick={() => alert("Mint!")} ctaText="Build" />
+        <Button onClick={InventoryPanelOnClick} ctaText="Inventory" />
+      </div>
       <InventoryPanel onClick={InventoryPanelOnClick} open={openInventory} />
     </>
   );
