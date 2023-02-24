@@ -4,10 +4,10 @@ export const TileKindSchema = z.enum(["grass", "water", "sand", "stone"]);
 export type TileKind = z.infer<typeof TileKindSchema>;
 
 export const TileSchema = z.object({
-  id: z.number(),
+  id: z.coerce.number(),
   kind: z.enum(["grass", "water", "sand", "stone"]),
+  variant: z.coerce.number(),
   image: z.string(),
-  variant: z.string(),
 });
 export type Tile = z.infer<typeof TileSchema>;
 
@@ -20,5 +20,4 @@ export const TileCollectionSchema = z.object({
   sand: TileSchema.array(),
   stone: TileSchema.array(),
 });
-
 export type TileCollection = z.infer<typeof TileCollectionSchema>;

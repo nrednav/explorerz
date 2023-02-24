@@ -205,11 +205,7 @@ pub contract TileMinter: NonFungibleToken {
             return MetadataViews.HTTPFile(url: self.image)
         }
 
-        init(
-            kind: String,
-            variant: UInt64,
-            image: String,
-        ) {
+        init(kind: String, variant: UInt64, image: String) {
             self.id = self.uuid
             self.kind = kind
             self.variant = variant

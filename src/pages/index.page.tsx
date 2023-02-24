@@ -7,12 +7,11 @@ import { Map } from "@/components/data-display/Map";
 import Button from "@/components/input-and-actions/Button";
 import { mintTiles } from "@/flow/cadence/transactions/mintTiles";
 import useMap from "@/hooks/useMap";
+import useModal from "@/hooks/useModal";
 
 export const Home = () => {
   const { data: tiles, isLoading, isError } = useMap();
-  const [openInventory, setOpenInventory] = useState(false);
-
-  const InventoryPanelOnClick = () => setOpenInventory(!openInventory);
+  const inventoryPanel = useModal();
 
   if (isError) return <Error message="Could not load map..." />;
   if (isLoading) return <Loading />;
@@ -33,7 +32,7 @@ export const Home = () => {
           Mint
         </Button>
         <Button
-          onClick={InventoryPanelOnClick}
+          onClick={inventoryPanel.open}
           className="bg-indigo-400 text-white after:text-indigo-600 hover:text-white"
         >
           Inventory
@@ -45,7 +44,12 @@ export const Home = () => {
           Play
         </Button>
       </div>
-      <InventoryPanel onClick={InventoryPanelOnClick} open={openInventory} />
+      {inventoryPanel.isOpen && (
+        <InventoryPanel
+          isOpen={inventoryPanel.isOpen}
+          onClose={inventoryPanel.close}
+        />
+      )}
     </>
   );
 };

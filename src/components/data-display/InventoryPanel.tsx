@@ -1,16 +1,29 @@
 import { FC, Fragment } from "react";
+import Error from "./Error";
+import Loading from "./Loading";
+import useTileCollection from "@/hooks/useTileCollection";
+import useUser from "@/hooks/useUser";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 type InventoryPanelProps = {
-  open: boolean;
-  onClick: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 };
 
-const InventoryPanel: FC<InventoryPanelProps> = ({ open, onClick }) => {
+const InventoryPanel: FC<InventoryPanelProps> = ({ isOpen, onClose }) => {
+  const { user } = useUser();
+  const {
+    data: tileCollection,
+    isLoading,
+    isError,
+  } = useTileCollection({
+    address: user.addr ?? "",
+  });
+
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={onClick}>
+    <Transition.Root show={isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={onClose}>
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -46,7 +59,7 @@ const InventoryPanel: FC<InventoryPanelProps> = ({ open, onClick }) => {
                           <button
                             type="button"
                             className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            onClick={onClick}
+                            onClick={onClose}
                           >
                             <span className="sr-only">Close panel</span>
                             <XMarkIcon className="h-6 w-6" aria-hidden="true" />
