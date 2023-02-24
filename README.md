@@ -31,3 +31,8 @@ Start development server:
 ```bash
 npm run dev
 ```
+
+## Credits
+
+- Game Texture Assets
+  - [Jestan](https://ko-fi.com/jestan)
