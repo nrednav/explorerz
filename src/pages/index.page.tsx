@@ -9,7 +9,7 @@ import useMap from "@/hooks/useMap";
 
 export const Home = () => {
   const { data: tiles, isLoading, isError } = useMap();
-  const [openInventory, setOpenInventory] = useState(true);
+  const [openInventory, setOpenInventory] = useState(false);
 
   const InventoryPanelOnClick = () => setOpenInventory(!openInventory);
 

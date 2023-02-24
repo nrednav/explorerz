@@ -2,13 +2,9 @@ import { FC, ReactNode } from "react";
 import type { NextPage } from "next";
 import { Footer } from "./Footer";
 import { NavBar } from "./NavBar";
-import { Press_Start_2P } from "@next/font/google";
-import clsx from "clsx";
-
-const font = Press_Start_2P({ subsets: ["latin"], weight: "400" });
 
 const Body: FC<{ children: ReactNode }> = ({ children }) => {
-  return <div className={clsx("min-h-screen", font.className)}>{children}</div>;
+  return <div className="min-h-screen">{children}</div>;
 };
 
 const Container: FC<{ children: ReactNode }> = ({ children }) => {

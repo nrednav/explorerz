@@ -9,6 +9,9 @@ module.exports = {
       gridTemplateColumns: {
         16: "repeat(16, minmax(0, 1fr))",
       },
+      fontFamily: {
+        p2p: ["Press Start 2P"],
+      },
     },
   },
   plugins: [],
