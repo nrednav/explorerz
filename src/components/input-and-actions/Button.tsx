@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import useUser from "@/hooks/useUser";
 
 type ButtonProps = {
   onClick: () => void;
