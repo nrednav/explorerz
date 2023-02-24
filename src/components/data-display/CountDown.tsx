@@ -27,12 +27,12 @@ export const CountDown: FC<CountDownProps> = ({ subTitle }) => {
   const displaySeconds = secondsLeft < 10 ? `0${secondsLeft}` : secondsLeft;
 
   return (
-    <div className="p-6 text-center">
-      <div className="text-4xl">
+    <div className="pb-6 text-center sm:p-6">
+      <div className="text-xl sm:text-4xl">
         {displayMinutes}:{displaySeconds}
       </div>
       <div className="pt-2">
-        <h3 className="text-xs">{subTitle}</h3>
+        <h3 className="text-[8px] sm:text-xs">{subTitle}</h3>
       </div>
     </div>
   );
