@@ -42,25 +42,27 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                     >
                       LORE
                     </Dialog.Title>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500">
+                    <div className="mt-2 flex flex-col space-y-4 text-sm text-gray-500">
+                      <p>
                         Are you ready to embark on a thrilling journey into the
-                        unknown? Let me introduce you to the Explorerz, a
-                        mysterious and enigmatic secret society. These daring
-                        adventurers have dedicated their lives to exploring new
-                        lands beyond the boundaries of the known world. Their
-                        origins are shrouded in mystery, stretching back through
-                        endless generations. Some whisper that their ancient
-                        lineage is steeped in mysticism and magic, giving them
-                        the power to uncover hidden secrets and unlock ancient
-                        mysteries. But the most intriguing rumor of all is that
-                        an enormous event will occur once the Explorerz have
-                        discovered all the lands. What could it be? No one knows
-                        for sure, but one thing is certain: the Explorerz are
-                        determined to find out. Join us on this exciting journey
-                        as we delve deep into the unknown and unlock the secrets
-                        of the Explorerz. Who knows what we will uncover? The
-                        adventure awaits!
+                        unknown? Join the Explorerz, a mysterious and enigmatic
+                        secret society.
+                      </p>
+                      <p>
+                        These daring adventurers have dedicated their lives to
+                        exploring new lands beyond the boundaries of the known
+                        world. Their origins are shrouded in mystery, stretching
+                        back through endless generations. Some whisper that
+                        their ancient lineage is steeped in mysticism and magic,
+                        giving them the power to uncover hidden secrets and
+                        unlock ancient mysteries.
+                      </p>
+                      <p>
+                        But the most intriguing rumor of all is that an enormous
+                        event will occur once the Explorerz have discovered all
+                        the lands. What could it be? No one knows for sure, but
+                        one thing is certain: the Explorerz are determined to
+                        find out.
                       </p>
                     </div>
                   </div>
@@ -71,12 +73,11 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                     >
                       FAQ
                     </Dialog.Title>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        How does this work? <br />
-                        What will my NFT look like? <br />
-                        How much does it cost?
-                      </p>
+                    <div className="mt-2 flex flex-col space-y-4 text-sm text-gray-500">
+                      <p>How does this work?</p>
+                      <p>What will my NFT look like?</p>
+                      <p>How much does it cost?</p>
+                      <p>Who created this?</p>
                     </div>
                   </div>
                 </div>
