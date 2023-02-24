@@ -324,6 +324,7 @@ pub contract TileMinter: NonFungibleToken {
             emit MintingPeriodClosed(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
         }
 
+        // TODO: Remove once we move to testnet
         pub fun transitionPhase() {
             TileMinter.phase.transition()
         }
