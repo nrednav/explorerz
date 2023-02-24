@@ -300,6 +300,7 @@ pub contract TileMinter: NonFungibleToken {
             emit TileVariantErased(kind: kind, variant: variant)
         }
 
+        // TODO: Remove once we move to testnet
         pub fun openMintingPeriod() {
             pre {
                 TileMinter.isMintingPeriodOpen == false: "The tile minting period is already open"
@@ -311,6 +312,7 @@ pub contract TileMinter: NonFungibleToken {
             emit MintingPeriodOpened(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
         }
 
+        // TODO: Remove once we move to testnet
         pub fun closeMintingPeriod() {
             pre {
                 TileMinter.isMintingPeriodOpen == true: "The tile minting period is already closed"
