@@ -80,11 +80,11 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                         Explorerz, an enigmatic on-chain experiment with no
                         roadmap and no discord. The lower the timer, the higher
                         the minting expedition phase and the greater the reward,
-                        as explorers get to claim more land and place it on the
+                        as Explorerz get to claim more land and place it on the
                         map. The countdown resets to the lowest phase each time
                         an explorer claims new land. The first part of the
                         journey ends when the map has been explored. New
-                        explorers can only claim land every 5 minutes.
+                        Explorerz can only claim land every 5 minutes.
                       </p>
                       <h4 className="font-semibold">
                         What will my NFT look like?
