@@ -35,4 +35,5 @@ npm run dev
 ## Credits
 
 - Game Texture Assets
-  - [Jestan](https://ko-fi.com/jestan)
+  - Artist: [Jestan](https://ko-fi.com/jestan)
+  - [Texture Pack](https://opengameart.org/content/pixel-texture-pack)
