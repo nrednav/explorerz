@@ -1,7 +1,6 @@
-import "NonFungibleToken"
 import "TileMinter"
+import "NonFungibleToken"
 import "MetadataViews"
-import "FungibleToken"
 
 transaction {
     let tileCollectionRef: &{NonFungibleToken.CollectionPublic}

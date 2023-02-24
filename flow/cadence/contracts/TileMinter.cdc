@@ -2,23 +2,32 @@ import NonFungibleToken from "NonFungibleToken"
 import MetadataViews from "MetadataViews"
 
 pub contract TileMinter: NonFungibleToken {
+
     // Data
     pub var totalSupply: UInt64
     pub let tileRegistry: { String: { String: String } }
-    // pub let cooldownQueue: { String : Timestamp }
+    pub let phase: Phase
+    pub var isMintingPeriodOpen: Bool
 
     pub let CollectionStoragePath: StoragePath
     pub let CollectionPublicPath: PublicPath
-    pub let TileMinterStoragePath: StoragePath
+    pub let AdminPrivatePath: PrivatePath
+    pub let AdminStoragePath: StoragePath
+    pub let StoragePath: StoragePath
 
     // Structs
-    pub struct TileVariant {
-        pub let name: String;
-        pub let image: String;
+    pub struct Phase {
+        pub var current: UInt64
+        pub var lastUpdatedAt: UInt64
 
-        init(name: String, image: String) {
-            self.name = name;
-            self.image = image;
+        init(blockHeight: UInt64) {
+            self.current = 0
+            self.lastUpdatedAt = blockHeight
+        }
+
+        pub fun transition() {
+            self.current = (self.current + 1) % 4
+            self.lastUpdatedAt = getCurrentBlock().height
         }
     }
 
@@ -29,6 +38,8 @@ pub contract TileMinter: NonFungibleToken {
     pub event TileMinted(tileId: UInt64, kind: String, variant: String, image: String, metadata: { String : String })
     pub event TileVariantRegistered(kind: String, variant: String)
     pub event TileVariantErased(kind: String, variant: String)
+    pub event MintingPeriodOpened(block: String, timestamp: String)
+    pub event MintingPeriodClosed(block: String, timestamp: String)
 
     // Initialization
     init() {
@@ -47,20 +58,28 @@ pub contract TileMinter: NonFungibleToken {
                 "standard": "https://explorerz.vercel.app/images/stone.png"
             } 
         }
+        self.phase = Phase(blockHeight: getCurrentBlock().height)
+        self.isMintingPeriodOpen = false
 
         self.CollectionStoragePath = /storage/TileCollection
         self.CollectionPublicPath = /public/TileCollection
-        self.TileMinterStoragePath = /storage/TileMinter
+        self.AdminPrivatePath = /private/Admin
+        self.AdminStoragePath = /storage/Admin
+        self.StoragePath = /storage/TileMinter
 
-        // Create a TileCollection resource and save it to storage
-        let tileCollection <- create Collection()
-        self.account.save(<-tileCollection, to: self.CollectionStoragePath)
-
-        // Create a public capability for the TileCollection
+        // Create a Tile collection resource and save it to storage
+        self.account.save(<- create Collection(), to: self.CollectionStoragePath)
         self.account.link<&TileMinter.Collection{NonFungibleToken.CollectionPublic, TileMinter.TileCollectionPublic, MetadataViews.ResolverCollection}>(
             self.CollectionPublicPath,
             target: self.CollectionStoragePath
         )
+
+        // Create an Admin resource and save it to storage
+        self.account.save(<- create Admin(), to: self.AdminStoragePath)
+        self.account.link<&TileMinter.Admin>(
+            self.AdminPrivatePath,
+            target: self.AdminStoragePath
+        ) ?? panic("Could not retrieve a capability for the Admin resource")
 
         emit ContractInitialized()
     }
@@ -82,9 +101,26 @@ pub contract TileMinter: NonFungibleToken {
     pub fun mint(recipient: &{NonFungibleToken.CollectionPublic}) {
         pre {
             self.tileRegistry.keys.length > 0: "There are no tiles registered"
+            self.isMintingPeriodOpen == true: "The tile minting period is currently closed"
         }
 
-        // Determine kind & variant of tile to mint, via RNG
+        let currentBlock = getCurrentBlock()
+        let currentPhase = Int(self.phase.current + 1)
+
+        // If the current phase has lasted longer than 4 minutes, transition to the next phase
+        // 4 minutes ~= 120 blocks
+        if currentBlock.height >= self.phase.lastUpdatedAt + UInt64(120) {
+            self.phase.transition()
+        }
+
+        // Record additional data for TileMinted event
+        let metadata: { String : String } = {}
+        metadata["blockHeight"] = currentBlock.height.toString()
+        metadata["timestamp"] = currentBlock.timestamp.toString()
+        metadata["minter"] = recipient.owner!.address.toString()
+        metadata["phase"] = currentPhase.toString()
+
+        // Determine kind & variant of tiles to mint, via RNG
         let kinds = self.tileRegistry.keys
         let chosenKind = kinds[Int(unsafeRandom()) % kinds.length]
         
@@ -93,26 +129,18 @@ pub contract TileMinter: NonFungibleToken {
 
         let image = self.tileRegistry[chosenKind]![chosenVariant]
 
-        // Determine the quantity to mint
-        let rngQuantity = Int(unsafeRandom()) % 4
-        let quantityToMint = rngQuantity > 0 ? rngQuantity : 1
-
-        // Batch mint the NFT's
+        // Batch mint the tiles, where quantity minted = current phase
         var i = 0
-        while i < quantityToMint {
+        while i < currentPhase {
             var tile <- create TileMinter.NFT(
                 kind: chosenKind,
                 variant: chosenVariant,
                 image: image!
             )
-            let tileId = tile.id
-            recipient.deposit(token: <- tile)
 
-            let metadata: { String : String } = {}
-            let currentBlock = getCurrentBlock()
-            metadata["mintedBlock"] = currentBlock.height.toString()
-            metadata["mintedTime"] = currentBlock.timestamp.toString()
-            metadata["minter"] = recipient.owner!.address.toString()
+            let tileId = tile.id
+
+            recipient.deposit(token: <- tile)
 
             emit TileMinted(tileId: tileId, kind: chosenKind, variant: chosenVariant, image: image!, metadata: metadata)
 
@@ -122,15 +150,6 @@ pub contract TileMinter: NonFungibleToken {
         }
     }
 
-    access(account) fun registerTileVariant(kind: String, name: String, image: String) {
-        self.tileRegistry[kind]?.insert(key: name, image)
-        emit TileVariantRegistered(kind: kind, variant: name)
-    }
-
-    access(account) fun eraseTileVariant(kind: String, name: String) {
-        self.tileRegistry[kind]?.remove(key: name)
-        emit TileVariantErased(kind: kind, variant: name)
-    }
 
     // Interfaces
     pub resource interface TileCollectionPublic {
@@ -147,8 +166,8 @@ pub contract TileMinter: NonFungibleToken {
     // Resources
     pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
-        pub let kind: String // Grass, Sand etc
-        pub let image: String // Image Url
+        pub let kind: String
+        pub let image: String
         pub let variant: String
 
         pub fun name(): String {
@@ -241,6 +260,49 @@ pub contract TileMinter: NonFungibleToken {
 
         destroy() {
             destroy self.ownedNFTs
+        }
+    }
+
+    pub resource Admin {
+       pub fun registerTileVariant(kind: String, variant: String, image: String) {
+            pre {
+                TileMinter.tileRegistry[kind] != nil: "Tile with kind = ".concat(kind).concat(", does not exist")
+            }
+
+            TileMinter.tileRegistry[kind]?.insert(key: variant, image)
+            emit TileVariantRegistered(kind: kind, variant: variant)
+        }
+
+        pub fun eraseTileVariant(kind: String, variant: String) {
+            pre {
+                TileMinter.tileRegistry[kind] != nil: "Tile with kind = ".concat(kind).concat(", does not exist")
+                TileMinter.tileRegistry[kind]![variant] != nil: "Tile variant = ".concat(variant).concat(", does not exist for kind = ").concat(kind)
+            }
+
+            TileMinter.tileRegistry[kind]?.remove(key: variant)
+            emit TileVariantErased(kind: kind, variant: variant)
+        }
+
+        pub fun openMintingPeriod() {
+            pre {
+                TileMinter.isMintingPeriodOpen == false: "The tile minting period is already open"
+            }
+
+            TileMinter.isMintingPeriodOpen = true 
+
+            let currentBlock = getCurrentBlock()
+            emit MintingPeriodOpened(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
+        }
+
+        pub fun closeMintingPeriod() {
+            pre {
+                TileMinter.isMintingPeriodOpen == true: "The tile minting period is already closed"
+            }
+
+            TileMinter.isMintingPeriodOpen = false
+
+            let currentBlock = getCurrentBlock()
+            emit MintingPeriodClosed(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
         }
     }
 }
