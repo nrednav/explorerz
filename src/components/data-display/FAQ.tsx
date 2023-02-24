@@ -121,7 +121,12 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                   </div>
                 </div>
                 <div className="mt-5 flex w-full justify-center sm:mt-6">
-                  <Button onClick={() => setOpen(false)}>Back</Button>
+                  <Button
+                    onClick={() => setOpen(false)}
+                    className="bg-slate-400 text-white after:text-slate-600 hover:text-white"
+                  >
+                    Back
+                  </Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

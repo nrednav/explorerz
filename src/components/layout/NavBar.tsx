@@ -1,6 +1,7 @@
 import { FC, Fragment, useState } from "react";
 import { FAQ } from "../data-display/FAQ";
 import Button from "../input-and-actions/Button";
+import LoginButton from "../input-and-actions/LoginButton";
 import useUser from "@/hooks/useUser";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -39,10 +40,8 @@ export const NavBar: FC = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="debug-r hidden sm:block">
-                    <Button onClick={loginOnClick} className="sm:px-4 sm:py-2">
-                      {loginCtaText}
-                    </Button>
+                  <div className="hidden sm:block">
+                    <LoginButton />
                   </div>
                 </div>
                 <div className="-mr-2 flex items-center sm:hidden">
@@ -76,8 +75,8 @@ export const NavBar: FC = () => {
                   About
                 </Disclosure.Button>
               </div>
-              <div className="flex w-full justify-center py-4">
-                <Button onClick={loginOnClick}>{loginCtaText}</Button>
+              <div className="flex w-full flex-col items-stretch justify-center p-4">
+                <LoginButton />
               </div>
             </Disclosure.Panel>
           </Fragment>

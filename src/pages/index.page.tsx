@@ -25,9 +25,25 @@ export const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Map tiles={tiles} />
-      <div className="flex w-full items-center justify-center gap-x-4 py-4">
-        <Button onClick={mintTiles}>Mint</Button>
-        <Button onClick={InventoryPanelOnClick}>Inventory</Button>
+      <div className="flex w-full flex-col items-stretch justify-center gap-4 py-8 sm:flex-row">
+        <Button
+          onClick={mintTiles}
+          className="bg-blue-400 text-white after:text-blue-600 hover:text-white"
+        >
+          Mint
+        </Button>
+        <Button
+          onClick={InventoryPanelOnClick}
+          className="bg-indigo-400 text-white after:text-indigo-600 hover:text-white"
+        >
+          Inventory
+        </Button>
+        <Button
+          onClick={() => null}
+          className="bg-red-400 text-white after:text-red-600 hover:text-white"
+        >
+          Play
+        </Button>
       </div>
       <InventoryPanel onClick={InventoryPanelOnClick} open={openInventory} />
     </>

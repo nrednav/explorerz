@@ -13,7 +13,7 @@ const Tile: FC<TileProps> = ({ className, tile }) => {
   return (
     <div
       className={clsx(
-        "relative flex aspect-square w-full items-center justify-center hover:brightness-90",
+        "pixelated relative flex aspect-square w-full items-center justify-center hover:brightness-90",
         className
       )}
     >
@@ -29,7 +29,7 @@ const Tile: FC<TileProps> = ({ className, tile }) => {
 };
 
 export const EmptyTile = () => (
-  <Tile className="border border-black bg-slate-400" />
+  <Tile className="border border-black bg-slate-500" />
 );
 
 export default Tile;
