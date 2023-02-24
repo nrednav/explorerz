@@ -1,7 +1,5 @@
-import { useState } from "react";
 import Head from "next/head";
 import Error from "@/components/data-display/Error";
-import { FAQ } from "@/components/data-display/FAQ";
 import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
 import useMap from "@/hooks/useMap";
