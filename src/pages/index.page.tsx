@@ -25,9 +25,9 @@ export const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Map tiles={tiles} />
-      <div>
-        <Button onClick={mintTiles} ctaText="Mint" />
-        <Button onClick={InventoryPanelOnClick} ctaText="Inventory" />
+      <div className="flex w-full items-center justify-center gap-x-4 py-4">
+        <Button onClick={mintTiles}>Mint</Button>
+        <Button onClick={InventoryPanelOnClick}>Inventory</Button>
       </div>
       <InventoryPanel onClick={InventoryPanelOnClick} open={openInventory} />
     </>

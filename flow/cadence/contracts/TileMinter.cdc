@@ -4,7 +4,7 @@ import MetadataViews from "MetadataViews"
 pub contract TileMinter: NonFungibleToken {
     // Data
     pub var totalSupply: UInt64
-    pub let tileRegistry: { String: { String: String } }
+    pub let tileRegistry: {String: {UInt64: String}}
     pub let phase: Phase
     pub var isMintingPeriodOpen: Bool
 
@@ -18,9 +18,9 @@ pub contract TileMinter: NonFungibleToken {
     pub event ContractInitialized()
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
-    pub event TileMinted(tileId: UInt64, kind: String, variant: String, image: String, metadata: { String : String })
-    pub event TileVariantRegistered(kind: String, variant: String)
-    pub event TileVariantErased(kind: String, variant: String)
+    pub event TileMinted(tileId: UInt64, kind: String, variant: UInt64, image: String, metadata: {String: String})
+    pub event TileVariantRegistered(kind: String, variant: UInt64)
+    pub event TileVariantErased(kind: String, variant: UInt64)
     pub event MintingPeriodOpened(block: String, timestamp: String)
     pub event MintingPeriodClosed(block: String, timestamp: String)
     pub event PhaseInitialized(lastUpdatedAt: UInt64)
@@ -32,20 +32,20 @@ pub contract TileMinter: NonFungibleToken {
         self.totalSupply = 0
         self.tileRegistry = {
             "grass": {
-                "standard": "https://explorerz.vercel.app/images/grass-standard.png"
-                "variant": "https://explorerz.vercel.app/images/grass-variant.png"
+                0: "https://explorerz.vercel.app/images/grass-0.png",
+                1: "https://explorerz.vercel.app/images/grass-1.png"
             },
             "water": {
-                "standard": "https://explorerz.vercel.app/images/water-standard.png"
-                "variant": "https://explorerz.vercel.app/images/water-variant.png"
+                0: "https://explorerz.vercel.app/images/water-0.png",
+                1: "https://explorerz.vercel.app/images/water-1.png"
             },
             "sand": {
-                "standard": "https://explorerz.vercel.app/images/sand-standard.png"
-                "variant": "https://explorerz.vercel.app/images/sand-variant.png"
+                0: "https://explorerz.vercel.app/images/sand-0.png",
+                1: "https://explorerz.vercel.app/images/sand-1.png"
             },
             "stone": {
-                "standard": "https://explorerz.vercel.app/images/stone-standard.png"
-                "variant": "https://explorerz.vercel.app/images/stone-variant.png"
+                0: "https://explorerz.vercel.app/images/stone-0.png",
+                1: "https://explorerz.vercel.app/images/stone-1.png"
             } 
         }
         self.phase = Phase()
@@ -131,7 +131,7 @@ pub contract TileMinter: NonFungibleToken {
         }
 
         // Record additional data for TileMinted event
-        let metadata: { String : String } = {}
+        let metadata: {String: String} = {}
         metadata["blockHeight"] = currentBlock.height.toString()
         metadata["timestamp"] = currentBlock.timestamp.toString()
         metadata["minter"] = recipient.owner!.address.toString()
@@ -188,7 +188,7 @@ pub contract TileMinter: NonFungibleToken {
     pub resource NFT: NonFungibleToken.INFT, MetadataViews.Resolver {
         pub let id: UInt64
         pub let kind: String
-        pub let variant: String
+        pub let variant: UInt64 
         pub let image: String
 
         pub fun name(): String {
@@ -198,7 +198,7 @@ pub contract TileMinter: NonFungibleToken {
         }
         
         pub fun description(): String {
-            return self.kind.concat("-").concat(self.variant).concat(" Tile")
+            return self.kind.concat("-").concat(self.variant.toString()).concat(" Tile")
         }
 
         pub fun thumbnail(): MetadataViews.HTTPFile {
@@ -207,7 +207,7 @@ pub contract TileMinter: NonFungibleToken {
 
         init(
             kind: String,
-            variant: String,
+            variant: UInt64,
             image: String,
         ) {
             self.id = self.uuid
@@ -285,7 +285,7 @@ pub contract TileMinter: NonFungibleToken {
     }
 
     pub resource Admin {
-       pub fun registerTileVariant(kind: String, variant: String, image: String) {
+       pub fun registerTileVariant(kind: String, variant: UInt64, image: String) {
             pre {
                 TileMinter.tileRegistry[kind] != nil: "Tile with kind = ".concat(kind).concat(", does not exist")
             }
@@ -294,10 +294,10 @@ pub contract TileMinter: NonFungibleToken {
             emit TileVariantRegistered(kind: kind, variant: variant)
         }
 
-        pub fun eraseTileVariant(kind: String, variant: String) {
+        pub fun eraseTileVariant(kind: String, variant: UInt64) {
             pre {
                 TileMinter.tileRegistry[kind] != nil: "Tile with kind = ".concat(kind).concat(", does not exist")
-                TileMinter.tileRegistry[kind]![variant] != nil: "Tile variant = ".concat(variant).concat(", does not exist for kind = ").concat(kind)
+                TileMinter.tileRegistry[kind]![variant] != nil: "Tile variant = ".concat(variant.toString()).concat(", does not exist for kind = ").concat(kind)
             }
 
             TileMinter.tileRegistry[kind]?.remove(key: variant)

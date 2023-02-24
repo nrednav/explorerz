@@ -121,10 +121,7 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                   </div>
                 </div>
                 <div className="mt-5 flex w-full justify-center sm:mt-6">
-                  <Button
-                    onClick={() => setOpen(false)}
-                    ctaText="Back to map"
-                  />
+                  <Button onClick={() => setOpen(false)}>Back</Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

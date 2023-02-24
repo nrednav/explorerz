@@ -10,7 +10,7 @@ export const NavBar: FC = () => {
   const [openFAQ, setOpenFAQ] = useState(false);
 
   const { user } = useUser();
-  const loginCtaText = user.loggedIn ? "LogOut" : "LogIn";
+  const loginCtaText = user.loggedIn ? "Logout" : "Login";
   const loginOnClick = user.loggedIn ? fcl.unauthenticate : fcl.authenticate;
 
   return (
@@ -39,8 +39,10 @@ export const NavBar: FC = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="hidden sm:block">
-                    <Button onClick={loginOnClick} ctaText={loginCtaText} />
+                  <div className="debug-r hidden sm:block">
+                    <Button onClick={loginOnClick} className="sm:px-4 sm:py-2">
+                      {loginCtaText}
+                    </Button>
                   </div>
                 </div>
                 <div className="-mr-2 flex items-center sm:hidden">
@@ -75,7 +77,7 @@ export const NavBar: FC = () => {
                 </Disclosure.Button>
               </div>
               <div className="flex w-full justify-center py-4">
-                <Button onClick={loginOnClick} ctaText={loginCtaText} />
+                <Button onClick={loginOnClick}>{loginCtaText}</Button>
               </div>
             </Disclosure.Panel>
           </Fragment>

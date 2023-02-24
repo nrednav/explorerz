@@ -11,12 +11,7 @@ pub fun main(): [[UInt64?]] {
 
 export const getMap = async (): Promise<TileGrid | null> => {
   try {
-    const queryOptions = {
-      cadence: code,
-    };
-
-    const tiles = await fcl.query(queryOptions);
-
+    const tiles = await fcl.query({ cadence: code });
     return TileGridSchema.parse(tiles);
   } catch (error) {
     console.error(error);

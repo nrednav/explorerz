@@ -5,10 +5,10 @@ import "NonFungibleToken"
 pub struct Tile {
     pub let id: UInt64
     pub let kind: String
-    pub let variant: String
+    pub let variant: UInt64 
     pub let image: String
 
-    init(id: UInt64, kind: String, variant: String, image: String) {
+    init(id: UInt64, kind: String, variant: UInt64, image: String) {
         self.id = id
         self.kind = kind
         self.variant = variant
@@ -16,7 +16,7 @@ pub struct Tile {
     }
 }
 
-pub fun main(address: Address): { String: [Tile] } {
+pub fun main(address: Address): {String: [Tile]} {
     let account = getAccount(address)
 
     let tileCollectionRef = account
@@ -26,7 +26,7 @@ pub fun main(address: Address): { String: [Tile] } {
 
     let tileIds = tileCollectionRef.getIDs()
 
-    let tileCollection: { String: [Tile] } = {}
+    let tileCollection: {String: [Tile]} = {}
 
     for kind in TileMinter.tileRegistry.keys {
         tileCollection[kind] = []

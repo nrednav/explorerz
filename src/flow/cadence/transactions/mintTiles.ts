@@ -41,9 +41,7 @@ transaction {
 
 export const mintTiles = async () => {
   try {
-    return await fcl.mutate({
-      cadence: code,
-    });
+    return await fcl.mutate({ cadence: code });
   } catch (error) {
     console.error(error);
   }

@@ -1,18 +1,23 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
+import clsx from "clsx";
 
 type ButtonProps = {
   onClick: () => void;
-  ctaText: string;
+  children?: ReactNode;
+  className?: string;
 };
 
-const Button: FC<ButtonProps> = ({ onClick, ctaText }) => {
+const Button: FC<ButtonProps> = ({ onClick, children, className }) => {
   return (
     <button
       type="button"
-      className="notched-module inline-flex w-32 items-center justify-center border border-transparent bg-slate-700 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2"
+      className={clsx(
+        "notched-module inline-flex items-center justify-center border border-transparent bg-slate-700 p-2 text-xs font-medium text-white shadow-sm hover:bg-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-600 focus:ring-offset-2 sm:p-4 sm:text-sm",
+        className
+      )}
       onClick={onClick}
     >
-      {ctaText}
+      {children}
     </button>
   );
 };

@@ -1,6 +1,6 @@
 import "TileMinter"
 
-transaction(kind: String, variant: String, image: String) {
+transaction(kind: String, variant: UInt64, image: String) {
     let admin: &TileMinter.Admin
 
     prepare(signer: AuthAccount) {
@@ -13,6 +13,6 @@ transaction(kind: String, variant: String, image: String) {
     }
 
     post {
-        TileMinter.tileRegistry[kind] == variant: "Could not register tile: ".concat(kind).concat("-").concat(variant).
+        TileMinter.tileRegistry[kind] == variant: "Could not register tile: ".concat(kind).concat("-").concat(variant.toString()).
     }
 }
