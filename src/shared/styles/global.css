@@ -24,6 +24,31 @@
   .debug-w {
     @apply outline outline-1 outline-white;
   }
+  .notched-module {
+    --notchSize: 5px;
+  
+    clip-path: polygon(
+      /* Top left */
+      0% var(--notchSize), 
+      var(--notchSize) var(--notchSize), 
+      var(--notchSize) 0%, 
+      
+      /* Top right */
+      calc(100% - var(--notchSize)) 0%, 
+      calc(100% - var(--notchSize)) var(--notchSize), 
+      100% var(--notchSize), 
+      
+      /* Bottom right */
+      100% calc(100% - var(--notchSize)), 
+      calc(100% - var(--notchSize)) calc(100% - var(--notchSize)), 
+      calc(100% - var(--notchSize)) 100%, 
+      
+      /* Bottom left */
+      var(--notchSize) 100%, 
+      var(--notchSize) calc(100% - var(--notchSize)), 
+      0% calc(100% - var(--notchSize))
+    );
+  }
 }
 
 /** ---- [Vanilla] ---- **/
