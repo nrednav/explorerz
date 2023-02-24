@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { CountDown } from "@/components/data-display/CountDown";
 import Error from "@/components/data-display/Error";
 import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
@@ -17,6 +18,7 @@ export const Home = () => {
         <title>Explorerz</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <CountDown subTitle="The lower the timer, the more land you receive. When the map is full, the game ends." />
       <Map tiles={tiles} />
     </>
   );
