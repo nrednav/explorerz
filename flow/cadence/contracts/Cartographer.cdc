@@ -148,7 +148,7 @@ pub contract Cartographer {
     }
 
     // Functions
-    pub fun placeMapTile(tile: MapTile, source: &TileMinter.Collection) {
+    pub fun placeTile(tile: MapTile, source: &TileMinter.Collection) {
         // Withdraw
         let tileNft <- source.withdraw(withdrawID: tile.id)
         let tileNftId = tileNft.id

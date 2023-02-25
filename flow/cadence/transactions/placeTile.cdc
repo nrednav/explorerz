@@ -20,6 +20,6 @@ transaction(tileId: UInt64, coordinate: [Int64; 2]) {
             coordinate: Cartographer.MapCoordinate(x: coordinate[0], y: coordinate[1])
         )
 
-        Cartographer.placeMapTile(tile: tile, source: self.tileCollection)
+        Cartographer.placeTile(tile: tile, source: self.tileCollection)
     }
 }
