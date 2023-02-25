@@ -171,6 +171,17 @@ pub contract TileMinter: NonFungibleToken {
         self.phase.reset()
     }
 
+    access(account) fun closeMintingPeriod() {
+        pre {
+            TileMinter.isMintingPeriodOpen == true: "The tile minting period is already closed"
+        }
+
+        TileMinter.isMintingPeriodOpen = false
+
+        let currentBlock = getCurrentBlock()
+        emit MintingPeriodClosed(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
+    }
+
 
     // Interfaces
     pub resource interface TileCollectionPublic {
@@ -192,9 +203,7 @@ pub contract TileMinter: NonFungibleToken {
         pub let image: String
 
         pub fun name(): String {
-            return "Tile"
-                .concat(" #")
-                .concat(self.id.toString())
+            return "Tile".concat(" #").concat(self.id.toString())
         }
         
         pub fun description(): String {
@@ -313,20 +322,9 @@ pub contract TileMinter: NonFungibleToken {
         }
 
         // TODO: Remove once we move to testnet
-        pub fun closeMintingPeriod() {
-            pre {
-                TileMinter.isMintingPeriodOpen == true: "The tile minting period is already closed"
-            }
-
-            TileMinter.isMintingPeriodOpen = false
-
-            let currentBlock = getCurrentBlock()
-            emit MintingPeriodClosed(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
-        }
-
-        // TODO: Remove once we move to testnet
         pub fun transitionPhase() {
             TileMinter.phase.transition()
         }
     }
 }
+ 

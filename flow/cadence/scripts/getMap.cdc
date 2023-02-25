@@ -1,6 +1,6 @@
 import "Cartographer"
 
-pub fun main(): [[UInt64?]] {
-    return Cartographer.getMap()
+pub fun main(): Cartographer.Map {
+    return Cartographer.map
 }
  
