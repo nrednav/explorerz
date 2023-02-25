@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Head from "next/head";
 import Error from "@/components/data-display/Error";
 import InventoryPanel from "@/components/data-display/InventoryPanel";
@@ -44,12 +43,10 @@ export const Home = () => {
           Play
         </Button>
       </div>
-      {inventoryPanel.isOpen && (
-        <InventoryPanel
-          isOpen={inventoryPanel.isOpen}
-          onClose={inventoryPanel.close}
-        />
-      )}
+      <InventoryPanel
+        isOpen={inventoryPanel.isOpen}
+        onClose={inventoryPanel.close}
+      />
     </>
   );
 };

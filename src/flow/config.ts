@@ -6,6 +6,7 @@ const getConfig = (network: Network) => {
   switch (network) {
     case "emulator":
       return {
+        "app.detail.title": "Explorerz",
         "accessNode.api": "http://localhost:8888",
         "flow.network": "emulator",
         "discovery.wallet": "http://localhost:8701/fcl/authn", // Point FCL at dev-wallet (default port)

@@ -8,7 +8,7 @@ type MapProps = {
 
 export const Map: FC<MapProps> = ({ tiles }) => {
   return (
-    <div className="mx-auto grid max-w-[1024px] cursor-pointer grid-cols-16 grid-rows-16 gap-0">
+    <div className="notched-module mx-auto grid max-w-[1024px] cursor-pointer grid-cols-16 grid-rows-16 gap-0 border-4 border-black">
       {renderGridOfTiles(tiles)}
     </div>
   );
