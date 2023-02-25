@@ -45,7 +45,7 @@ const TileCollection = () => {
       {tileKinds.map((tileKind) => {
         return (
           <DrawerSection title={tileKind} key={tileKind}>
-            <TileCarousel tiles={tileCollection[tileKind]} />
+            <TileList tiles={tileCollection[tileKind]} />
           </DrawerSection>
         );
       })}
@@ -53,14 +53,14 @@ const TileCollection = () => {
   );
 };
 
-const TileCarousel = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
+const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
   return (
     <div className="flex flex-nowrap overflow-x-scroll space-x-6 snap-x snap-mandatory">
       {tiles.length > 0
         ? tiles.map((tile) => (
           <div className="flex flex-col items-stretch justify-center">
-            <Tile key={`${tile.id}-${tile.variant}`} tile={{...tile, image: `/images/${tile.image.split("/")[4]}`}} className="notched-module border-2 cursor-pointer border-black my-2 h-16 w-16 snap-start" />
-            <p className="text-sm sm:text-lg text-center py-2">#{tile.id}</p>
+            <Tile key={`${tile.id}-${tile.variant}`} tile={tile} className="notched-module border-2 cursor-pointer border-black my-2 h-16 w-16 snap-start" />
+            <p className="text-sm sm:text-base text-center py-2">#{tile.id}</p>
           </div>
         ))
         : <p className="text-xs text-slate-600 py-4">Not owned yet</p>
