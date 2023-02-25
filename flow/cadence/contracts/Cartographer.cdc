@@ -70,9 +70,9 @@ pub contract Cartographer {
         }
         
         // If no tiles have been placed, then the user can place a tile anywhere
-        // if self.numberOfTilesPlaced == 0 {
-        //     return true
-        // }
+        if self.numberOfTilesPlaced == 0 {
+            return true
+        }
 
         let adjacentTiles = [[x-1, y], [x, y-1], [x+1, y], [x, y+1]]
 
