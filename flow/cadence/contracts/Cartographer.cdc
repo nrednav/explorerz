@@ -5,7 +5,7 @@ import "MetadataViews"
 // A simple cartographer contract 
 pub contract Cartographer {
     // Data
-    pub var map: Map
+    pub let map: Map
 
     pub let CollectionStoragePath: StoragePath
     pub let CollectionPublicPath: PublicPath
