@@ -123,8 +123,10 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                 <div className="mt-5 flex w-full justify-center sm:mt-6">
                   <Button
                     onClick={() => setOpen(false)}
-                    ctaText="Back to map"
-                  />
+                    className="bg-slate-400 text-white after:text-slate-600 hover:text-white"
+                  >
+                    Back
+                  </Button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

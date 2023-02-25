@@ -1,6 +1,10 @@
-import "TileMinter"
-import "MetadataViews"
-import "NonFungibleToken"
+import { TileCollection, TileCollectionSchema } from "@/shared/types";
+import * as fcl from "@onflow/fcl";
+
+const code = `
+import TileMinter from 0xTileMinter
+import MetadataViews from 0xMetadataViews
+import NonFungibleToken from 0xNonFungibleToken
 
 pub struct Tile {
     pub let id: UInt64
@@ -58,4 +62,25 @@ pub fun getTileById(address: Address, id: UInt64): Tile? {
 
     return nil
 }
- 
+`;
+
+type ScriptArgs = {
+  address: string;
+};
+
+export const getTileCollection = async ({
+  address,
+}: ScriptArgs): Promise<TileCollection | null> => {
+  if (!address) return null;
+
+  try {
+    const tileCollection = await fcl.query({
+      cadence: code,
+      args: (arg: any, t: any) => [arg(address, t.Address)],
+    });
+    return TileCollectionSchema.parse(tileCollection);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

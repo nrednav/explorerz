@@ -1,6 +1,6 @@
 import "TileMinter"
 
-transaction(kind: String, variant: String) {
+transaction(kind: String, variant: UInt64) {
     let admin: &TileMinter.Admin
 
     prepare(signer: AuthAccount) {
@@ -13,6 +13,6 @@ transaction(kind: String, variant: String) {
     }
 
     post {
-        TileMinter.tileRegistry[kind]![variant] == nil: "Could not erase tile: ".concat(kind).concat("-").concat(variant).
+        TileMinter.tileRegistry[kind]![variant] == nil: "Could not erase tile: ".concat(kind).concat("-").concat(variant.toString())
     }
 }

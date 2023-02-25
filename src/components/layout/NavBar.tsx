@@ -1,17 +1,11 @@
 import { FC, Fragment, useState } from "react";
 import { FAQ } from "../data-display/FAQ";
-import Button from "../input-and-actions/Button";
-import useUser from "@/hooks/useUser";
+import LoginButton from "../input-and-actions/LoginButton";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import * as fcl from "@onflow/fcl";
 
 export const NavBar: FC = () => {
   const [openFAQ, setOpenFAQ] = useState(false);
-
-  const { user } = useUser();
-  const loginCtaText = user.loggedIn ? "LogOut" : "LogIn";
-  const loginOnClick = user.loggedIn ? fcl.unauthenticate : fcl.authenticate;
 
   return (
     <>
@@ -40,7 +34,7 @@ export const NavBar: FC = () => {
                     </div>
                   </div>
                   <div className="hidden sm:block">
-                    <Button onClick={loginOnClick} ctaText={loginCtaText} />
+                    <LoginButton />
                   </div>
                 </div>
                 <div className="-mr-2 flex items-center sm:hidden">
@@ -74,8 +68,8 @@ export const NavBar: FC = () => {
                   About
                 </Disclosure.Button>
               </div>
-              <div className="flex w-full justify-center py-4">
-                <Button onClick={loginOnClick} ctaText={loginCtaText} />
+              <div className="flex w-full flex-col items-stretch justify-center p-4">
+                <LoginButton />
               </div>
             </Disclosure.Panel>
           </Fragment>

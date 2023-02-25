@@ -28,8 +28,8 @@ const Tile: FC<TileProps> = ({ className, tile }) => {
   );
 };
 
-export const EmptyTile = () => (
-  <Tile className="border border-black bg-slate-400" />
+export const EmptyTile: FC<TileProps> = () => (
+  <Tile className="border border-black bg-slate-500" />
 );
 
 export default Tile;
