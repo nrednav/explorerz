@@ -1,14 +1,14 @@
 import { FC } from "react";
+import { TileKind, TileKindSchema, TileSchema } from "@/shared/types";
 import Drawer from "../containers/Drawer/Drawer";
 import DrawerSection from "../containers/Drawer/DrawerSection";
+import LoginButton from "../input-and-actions/LoginButton";
 import Error from "./Error";
 import Loading from "./Loading";
+import Tile from "./Tile";
 import useTileCollection from "@/hooks/useTileCollection";
 import useUser from "@/hooks/useUser";
-import {TileCollection, TileSchema} from "@/shared/types";
-import {z} from "zod";
-import Tile from "./Tile";
-import LoginButton from "../input-and-actions/LoginButton";
+import { z } from "zod";
 
 type InventoryPanelProps = {
   isOpen: boolean;
@@ -38,11 +38,9 @@ const TileCollection = () => {
   if (isLoading) return <Loading />;
   if (!tileCollection) return <Error message="Could not load inventory..." />;
 
-  const tileKinds = Object.keys(tileCollection) as Array<keyof TileCollection>;
-
   return (
     <div className="flex flex-col space-y-8">
-      {tileKinds.map((tileKind) => {
+      {TileKindSchema.options.map((tileKind) => {
         return (
           <DrawerSection title={tileKind} key={tileKind}>
             <TileList tiles={tileCollection[tileKind]} />
@@ -55,16 +53,23 @@ const TileCollection = () => {
 
 const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
   return (
-    <div className="flex flex-nowrap overflow-x-scroll space-x-6 snap-x snap-mandatory">
-      {tiles.length > 0
-        ? tiles.map((tile) => (
-          <div className="flex flex-col items-stretch justify-center">
-            <Tile key={`${tile.id}-${tile.variant}`} tile={tile} className="notched-module border-2 cursor-pointer border-black my-2 h-16 w-16 snap-start" />
-            <p className="text-sm sm:text-base text-center py-2">#{tile.id}</p>
+    <div className="flex snap-x snap-mandatory flex-nowrap space-x-6 overflow-x-scroll">
+      {tiles.length > 0 ? (
+        tiles.map((tile) => (
+          <div
+            key={`${tile.id}-${tile.variant}`}
+            className="flex flex-col items-stretch justify-center"
+          >
+            <Tile
+              tile={tile}
+              className="notched-module my-2 h-16 w-16 cursor-pointer snap-start border-2 border-black"
+            />
+            <p className="py-2 text-center text-sm sm:text-base">#{tile.id}</p>
           </div>
         ))
-        : <p className="text-xs text-slate-600 py-4">Not owned yet</p>
-      }
+      ) : (
+        <p className="py-4 text-xs text-slate-600">Not owned yet</p>
+      )}
     </div>
   );
 };

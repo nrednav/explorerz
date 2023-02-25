@@ -1,18 +1,11 @@
 import { FC, Fragment, useState } from "react";
 import { FAQ } from "../data-display/FAQ";
-import Button from "../input-and-actions/Button";
 import LoginButton from "../input-and-actions/LoginButton";
-import useUser from "@/hooks/useUser";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import * as fcl from "@onflow/fcl";
 
 export const NavBar: FC = () => {
   const [openFAQ, setOpenFAQ] = useState(false);
-
-  const { user } = useUser();
-  const loginCtaText = user.loggedIn ? "Logout" : "Login";
-  const loginOnClick = user.loggedIn ? fcl.unauthenticate : fcl.authenticate;
 
   return (
     <>
