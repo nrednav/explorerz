@@ -5,8 +5,7 @@ import "MetadataViews"
 // A simple cartographer contract 
 pub contract Cartographer {
     // Data
-    pub var map: [[UInt64?]]
-    pub var numberOfTilesPlaced: UInt64
+    pub var map: Map
 
     pub let CollectionStoragePath: StoragePath
     pub let CollectionPublicPath: PublicPath
@@ -14,31 +13,14 @@ pub contract Cartographer {
 
     // Events
     pub event ContractInitialized()
-    pub event Withdraw(id: UInt64, from: Address?)
-    pub event Deposit(id: UInt64, to: Address?)
-    pub event TilePlaced(id: UInt64, coordinates: [Int64; 2])
+    pub event TileWithdrawn(id: UInt64, from: Address?)
+    pub event TileDeposited(id: UInt64, to: Address?)
+    pub event TilePlaced(id: UInt64, coordinate: String)
+    pub event MapCompleted()
 
     // Initialization, runs on deployment
     init() {
-
-        // Create empty map
-        let map: [[UInt64?]] = []
-        let rowOfEmptyTiles: [UInt64?] = []
-
-        var col = 0
-        while col < 16 {
-            rowOfEmptyTiles.append(nil)
-            col = col + 1
-        }
-
-        var row = 0 
-        while row < 16 {
-            map.append(rowOfEmptyTiles)
-            row = row + 1
-        }
-
-        self.map = map
-        self.numberOfTilesPlaced = 0
+        self.map = Map()
 
         self.CollectionStoragePath = /storage/Collection
         self.CollectionPublicPath = /public/Collection
@@ -52,69 +34,135 @@ pub contract Cartographer {
         )
 
         emit ContractInitialized()
+    }
 
+    // Structs
+    pub struct Map {
+        pub let tiles: [[UInt64?]]
+        pub let size: UInt64
+        pub var completed: Bool
+        pub var tilesOccupied: UInt64
+
+        init() {
+            let tiles: [[UInt64?]] = []
+            let rowOfEmptyTiles: [UInt64?] = []
+
+            var col = 0
+            while col < 16 {
+                rowOfEmptyTiles.append(nil)
+                col = col + 1
+            }
+
+            var row = 0 
+            while row < 16 {
+                tiles.append(rowOfEmptyTiles)
+                row = row + 1
+            }
+
+            self.tiles = tiles
+            self.size = UInt64(16 * 16)
+            self.tilesOccupied = 0
+            self.completed = false
+        }
+
+        pub fun placeTile(tile: MapTile) {
+            pre {
+                self.tiles[tile.coordinate.y][tile.coordinate.x] == nil: "Tile is already occupied"
+                self.hasAdjacentTile(coordinate: tile.coordinate) == true: "Tile is not adjacent to any other occupied tile"
+            }
+
+            // TODO: Store tile instead of tile id
+            self.tiles[tile.coordinate.y][tile.coordinate.x] = tile.id
+            self.tilesOccupied = self.tilesOccupied + 1
+            emit TilePlaced(id: tile.id, coordinate: tile.coordinate.toString())
+        }
+
+        pub fun complete() {
+            self.completed = true
+
+            // TODO: Implement reward minting + distribution
+
+            emit MapCompleted()
+        }
+
+        priv fun hasAdjacentTile(coordinate: MapCoordinate): Bool {
+            // Check if the tile coordinate is out of bounds
+            if coordinate.x < 0 || coordinate.x > 15 || coordinate.y < 0 || coordinate.y > 15 {
+                return false
+            }
+            
+            // If no tiles have been placed, then the user can place a tile anywhere
+            if self.tilesOccupied == 0 {
+                return true
+            }
+
+            let adjacentTiles: [MapCoordinate] = [
+                MapCoordinate(x: coordinate.x - 1, y: coordinate.y), // Left
+                MapCoordinate(x: coordinate.x, y: coordinate.y - 1), // Top
+                MapCoordinate(x: coordinate.x + 1, y: coordinate.y), // Right
+                MapCoordinate(x: coordinate.x, y: coordinate.y + 1) // Bottom
+            ]
+
+            for adjacentTile in adjacentTiles {
+                // Check if the adjacent tile is out of bounds
+                if adjacentTile.x < 0 || adjacentTile.x > 15 || adjacentTile.y < 0 || adjacentTile.y > 15 {
+                    continue
+                }
+
+                // Check if the adjacent tile is already occupied
+                if self.tiles[adjacentTile.y][adjacentTile.x] != nil {
+                    return true
+                }   
+            }
+
+            return false
+        }
+    }
+
+    pub struct MapCoordinate {
+        pub let x: Int64
+        pub let y: Int64
+
+        init(x: Int64, y: Int64) {
+            self.x = x
+            self.y = y
+        }
+
+        pub fun toString(): String {
+            return self.x.toString().concat(", ").concat(self.y.toString())
+        }
+    }
+
+    pub struct MapTile {
+        pub let owner: Address 
+        pub let id: UInt64
+        pub let coordinate: MapCoordinate
+
+        init(owner: Address, id: UInt64, coordinate: MapCoordinate) {
+            self.owner = owner
+            self.id = id
+            self.coordinate = coordinate
+        }
     }
 
     // Functions
-    view pub fun getMap(): [[UInt64?]] {
-        return self.map
-    }
+    pub fun placeMapTile(tile: MapTile, source: &TileMinter.Collection) {
+        // Withdraw
+        let tileNft <- source.withdraw(withdrawID: tile.id)
+        let tileNftId = tileNft.id
 
-    view pub fun getNumberOfTilesPlaced(): UInt64 {
-        return self.numberOfTilesPlaced
-    }
-
-    view pub fun hasAdjacentTile (coordinates: [Int64; 2]): Bool {
-        let x = coordinates[0] 
-        let y = coordinates[1]
-
-        // Check if the tile is out of bounds
-        if x < 0 || x > 15 || y < 0 || y > 15 {
-            return false
-        }
+        // Place
+        self.map.placeTile(tile: tile)
         
-        // If no tiles have been placed, then the user can place a tile anywhere
-        if self.numberOfTilesPlaced == 0 {
-            return true
-        }
-
-        let adjacentTiles = [[x-1, y], [x, y-1], [x+1, y], [x, y+1]]
-
-        for adjacentTile in adjacentTiles {
-            let x = adjacentTile[0]
-            let y = adjacentTile[1]
-
-            // Check if the tile is out of bounds
-            if x < 0 || x > 15 || y < 0 || y > 15 {
-                continue
-            }
-
-            // Check if the adjacent tile is already placed
-            if self.map[adjacentTile[0]][adjacentTile[1]] != nil {
-                return true
-            }   
-        }
-        return false
-    }
-
-    pub fun placeTile(tileCollection: &TileMinter.Collection, id: UInt64, coordinates: [Int64; 2]) {
-        pre {
-            self.map[coordinates[0]][coordinates[1]] == nil: "Tile already placed at these coordinates"
-            self.hasAdjacentTile(coordinates: coordinates) == true: "Tile not adjacent to another tile"
-        }
-        
-        let tile <- tileCollection.withdraw(withdrawID: id)
-
-        let tileId = tile.id
-        
+        // Deposit
         let cartographerTileCollection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.CollectionStoragePath)
-                    ?? panic("Could not borrow a reference to the receiver")
+                    ?? panic("Could not borrow a reference to the cartographer's tile collection")
 
-        cartographerTileCollection.deposit(token: <- tile)
+        cartographerTileCollection.deposit(token: <- tileNft)
 
-        self.map[coordinates[0]][coordinates[1]] = tileId
-        self.numberOfTilesPlaced = self.numberOfTilesPlaced + 1
-        emit TilePlaced(id: tileId, coordinates: coordinates)
+        if self.map.tilesOccupied == self.map.size {
+            self.map.complete()
+        }
     }
 
     // Resource
@@ -126,18 +174,18 @@ pub contract Cartographer {
         }
 
         pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
-            let tile <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing Tile NFT")
-            emit Withdraw(id: tile.id, from: self.owner?.address)
-            return <-tile
+            let nft <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing Tile NFT")
+            emit TileWithdrawn(id: nft.id, from: self.owner?.address)
+            return <-nft
         }
 
         pub fun deposit(token: @NonFungibleToken.NFT) {
-            let tile <- token as! @NonFungibleToken.NFT
-            let tileId: UInt64 = tile.id
-            let oldTile <- self.ownedNFTs[tileId] <- tile
+            let nft <- token as! @NonFungibleToken.NFT
+            let nftId: UInt64 = nft.id
+            let oldNft <- self.ownedNFTs[nftId] <- nft 
 
-            emit Deposit(id: tileId, to: self.owner?.address)
-            destroy oldTile 
+            emit TileDeposited(id: nftId, to: self.owner?.address)
+            destroy oldNft 
         }
 
         pub fun getIDs(): [UInt64] {
@@ -157,6 +205,7 @@ pub contract Cartographer {
             }    
         }
 
+        // TODO: Make this generic for any nft?
         pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
             let authorizedTileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
             let Tile = authorizedTileRef as! &TileMinter.NFT

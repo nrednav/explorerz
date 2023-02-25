@@ -192,9 +192,7 @@ pub contract TileMinter: NonFungibleToken {
         pub let image: String
 
         pub fun name(): String {
-            return "Tile"
-                .concat(" #")
-                .concat(self.id.toString())
+            return "Tile".concat(" #").concat(self.id.toString())
         }
         
         pub fun description(): String {
