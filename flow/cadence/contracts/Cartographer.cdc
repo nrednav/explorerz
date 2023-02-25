@@ -80,6 +80,8 @@ pub contract Cartographer {
         pub fun complete() {
             self.completed = true
 
+            TileMinter.closeMintingPeriod()
+
             // TODO: Implement reward minting + distribution
 
             emit MapCompleted()
