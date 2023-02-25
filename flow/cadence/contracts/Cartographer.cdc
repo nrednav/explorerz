@@ -6,7 +6,7 @@ import "MetadataViews"
 pub contract Cartographer {
     // Data
     pub var map: [[UInt64?]]
-    pub var numberOfTilesPlaced: Int
+    pub var numberOfTilesPlaced: UInt64
 
     pub let CollectionStoragePath: StoragePath
     pub let CollectionPublicPath: PublicPath
@@ -14,7 +14,6 @@ pub contract Cartographer {
 
     // Events
     pub event ContractInitialized()
-    pub event CoolEvent()
     pub event Withdraw(id: UInt64, from: Address?)
     pub event Deposit(id: UInt64, to: Address?)
     pub event TilePlaced(id: UInt64, coordinates: [Int64; 2])
@@ -61,13 +60,14 @@ pub contract Cartographer {
         return self.map
     }
 
-    view pub fun getNumberOfTilesPlaced(): Int {
+    view pub fun getNumberOfTilesPlaced(): UInt64 {
         return self.numberOfTilesPlaced
     }
 
     view pub fun hasAdjacentTile (coordinates: [Int64; 2]): Bool {
         let x = coordinates[0] 
         let y = coordinates[1]
+
         // Check if the tile is out of bounds
         if x < 0 || x > 15 || y < 0 || y > 15 {
             return false
@@ -107,16 +107,14 @@ pub contract Cartographer {
 
         let tileId = tile.id
         
-        let receiverRef = self.account.borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.CollectionStoragePath)
+        let cartographerTileCollection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.CollectionStoragePath)
                     ?? panic("Could not borrow a reference to the receiver")
 
-        // deposit your tile to Cartographer.Collection
-        receiverRef.deposit(token: <- tile)
+        cartographerTileCollection.deposit(token: <- tile)
 
         self.map[coordinates[0]][coordinates[1]] = tileId
         self.numberOfTilesPlaced = self.numberOfTilesPlaced + 1
         emit TilePlaced(id: tileId, coordinates: coordinates)
-        emit CoolEvent()
     }
 
     // Resource
