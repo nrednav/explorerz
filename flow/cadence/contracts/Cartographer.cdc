@@ -1,3 +1,4 @@
+import "TileMinter"
 import "NonFungibleToken"
 import "MetadataViews"
 
@@ -7,13 +8,16 @@ pub contract Cartographer {
     pub var map: [[UInt64?]]
     pub var numberOfTilesPlaced: Int
 
-    pub let TileCollectionStoragePath: StoragePath
-    pub let TileCollectionPublicPath: PublicPath
+    pub let CollectionStoragePath: StoragePath
+    pub let CollectionPublicPath: PublicPath
     pub let StoragePath: StoragePath
 
     // Events
     pub event ContractInitialized()
     pub event CoolEvent()
+    pub event Withdraw(id: UInt64, from: Address?)
+    pub event Deposit(id: UInt64, to: Address?)
+    pub event TilePlaced(id: UInt64, coordinates: [Int64; 2])
 
     // Initialization, runs on deployment
     init() {
@@ -37,16 +41,16 @@ pub contract Cartographer {
         self.map = map
         self.numberOfTilesPlaced = 0
 
-        self.TileCollectionStoragePath = /storage/TileCollection
-        self.TileCollectionPublicPath = /public/TileCollection
+        self.CollectionStoragePath = /storage/Collection
+        self.CollectionPublicPath = /public/Collection
         self.StoragePath = /storage/Cartographer
 
         // Create a Tile collection resource and save it to storage
-        // self.account.save(<- create Collection(), to: self.TileCollectionStoragePath)
-        // self.account.link<&TileMinter.Collection{NonFungibleToken.CollectionPublic, TileMinter.TileCollectionPublic, MetadataViews.ResolverCollection}>(
-        //     self.TileCollectionPublicPath,
-        //     target: self.TileCollectionStoragePath
-        // )
+        self.account.save(<- create Collection(), to: self.CollectionStoragePath)
+        self.account.link<&Collection{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>(
+            self.CollectionPublicPath,
+            target: self.CollectionStoragePath
+        )
 
         emit ContractInitialized()
 
@@ -93,12 +97,77 @@ pub contract Cartographer {
         return false
     }
 
-    pub fun placeTile(id: UInt64, coordinates: [Int64; 2]) {
+    pub fun placeTile(tileCollection: &TileMinter.Collection, id: UInt64, coordinates: [Int64; 2]) {
         pre {
             self.map[coordinates[0]][coordinates[1]] == nil: "Tile already placed at these coordinates"
             self.hasAdjacentTile(coordinates: coordinates) == true: "Tile not adjacent to another tile"
         }
+        
+        let tile <- tileCollection.withdraw(withdrawID: id)
+
+        let tileId = tile.id
+        
+        let receiverRef = self.account.borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.CollectionStoragePath)
+                    ?? panic("Could not borrow a reference to the receiver")
+
+        // deposit your tile to Cartographer.Collection
+        receiverRef.deposit(token: <- tile)
+
+        self.map[coordinates[0]][coordinates[1]] = tileId
+        self.numberOfTilesPlaced = self.numberOfTilesPlaced + 1
+        emit TilePlaced(id: tileId, coordinates: coordinates)
         emit CoolEvent()
+    }
+
+    // Resource
+    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
+        pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
+
+        init () {
+            self.ownedNFTs <- {}
+        }
+
+        pub fun withdraw(withdrawID: UInt64): @NonFungibleToken.NFT {
+            let tile <- self.ownedNFTs.remove(key: withdrawID) ?? panic("missing Tile NFT")
+            emit Withdraw(id: tile.id, from: self.owner?.address)
+            return <-tile
+        }
+
+        pub fun deposit(token: @NonFungibleToken.NFT) {
+            let tile <- token as! @NonFungibleToken.NFT
+            let tileId: UInt64 = tile.id
+            let oldTile <- self.ownedNFTs[tileId] <- tile
+
+            emit Deposit(id: tileId, to: self.owner?.address)
+            destroy oldTile 
+        }
+
+        pub fun getIDs(): [UInt64] {
+            return self.ownedNFTs.keys
+        }
+
+        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT {
+            return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
+        }
+
+        pub fun borrowTile(id: UInt64): &NonFungibleToken.NFT? {
+            if self.ownedNFTs[id] != nil {
+                let authorizedTileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+                return authorizedTileRef as! &NonFungibleToken.NFT
+            } else {
+                return nil
+            }    
+        }
+
+        pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
+            let authorizedTileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+            let Tile = authorizedTileRef as! &TileMinter.NFT
+            return Tile as &AnyResource{MetadataViews.Resolver}
+        }
+
+        destroy() {
+            destroy self.ownedNFTs
+        }
     }
 }
 
@@ -142,9 +211,9 @@ pub contract Cartographer {
 // - public function in Cartographer  X
 // - input is the id of the NFT and the coordinates X
 // - (pre) validation/ conditions
-//     - if number of tiled placed is equal to 0, then we do not do adjacent check
-//     - if the coordinate free, no other tile place there
-//     - if it adjacent to an existing tile (below y-1, top y+1, right x+1, left x-1) / loop
+//     - if number of tiled placed is equal to 0, then we do not do adjacent check X
+//     - if the coordinate free, no other tile place there X
+//     - if it adjacent to an existing tile (below y-1, top y+1, right x+1, left x-1) / loop X
 // - place tile (contract level) / commands
 //     - withdraw the tile NFT, using the id from the user Tile collection 
 //     - deposit the tile NFT in the Cartographer Tile's collection using the coordinates
