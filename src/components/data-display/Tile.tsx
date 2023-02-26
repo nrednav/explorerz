@@ -15,7 +15,7 @@ const Tile: FC<TileProps> = ({ className, tile, onClick }) => {
     <div
       onClick={onClick}
       className={clsx(
-        "relative flex aspect-square w-full items-center justify-center border border-black hover:brightness-90",
+        "group relative flex aspect-square w-full items-center justify-center border border-black",
         className
       )}
     >
@@ -24,6 +24,7 @@ const Tile: FC<TileProps> = ({ className, tile, onClick }) => {
           src={tile.image}
           alt={`Image of ${tile.kind}-${tile.variant} tile`}
           fill={true}
+          className="group-hover:brightness-75"
         />
       )}
     </div>
@@ -31,7 +32,10 @@ const Tile: FC<TileProps> = ({ className, tile, onClick }) => {
 };
 
 export const EmptyTile: FC<TileProps> = ({ className, ...props }) => (
-  <Tile className={clsx("bg-slate-500", className)} {...props} />
+  <Tile
+    className={clsx("bg-slate-500 hover:brightness-90", className)}
+    {...props}
+  />
 );
 
 export default Tile;

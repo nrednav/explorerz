@@ -4,16 +4,17 @@ import InventoryPanel from "@/components/data-display/InventoryPanel";
 import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
 import Button from "@/components/input-and-actions/Button";
+import DPad from "@/components/input-and-actions/DPad";
 import { mintTiles } from "@/flow/cadence/transactions/mintTiles";
 import { placeTile } from "@/flow/cadence/transactions/placeTile";
 import useMap from "@/hooks/useMap";
 import useModal from "@/hooks/useModal";
 import { selectedCoordinateAtom, selectedTileAtom } from "@/store";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 
 export const Home = () => {
-  const [selectedTile] = useAtom(selectedTileAtom);
-  const [selectedCoordinate] = useAtom(selectedCoordinateAtom);
+  const selectedTile = useAtomValue(selectedTileAtom);
+  const selectedCoordinate = useAtomValue(selectedCoordinateAtom);
 
   const { data: mapDetails, isLoading, isError } = useMap();
   const inventoryPanel = useModal();
@@ -39,7 +40,8 @@ export const Home = () => {
           : "None"}
       </p>
       <Map tiles={tiles} />
-      <div className="flex w-full flex-col items-stretch justify-center gap-4 py-8 sm:flex-row">
+      <DPad />
+      <div className="my-4 flex w-full flex-col items-stretch justify-center gap-4 sm:flex-row">
         <Button
           onClick={mintTiles}
           className="bg-blue-400 text-white after:text-blue-600 hover:text-white"
@@ -53,6 +55,11 @@ export const Home = () => {
           Inventory
         </Button>
         <Button
+          isDisabled={
+            !selectedCoordinate ||
+            !selectedTile ||
+            tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
+          }
           onClick={() =>
             selectedTile && selectedCoordinate
               ? placeTile({
