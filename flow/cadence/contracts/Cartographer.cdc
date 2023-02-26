@@ -146,6 +146,20 @@ pub contract Cartographer {
         }
     }
 
+    pub struct TileDetails {
+        pub let id: UInt64
+        pub let kind: String
+        pub let variant: UInt64 
+        pub let image: String
+
+        init(id: UInt64, kind: String, variant: UInt64, image: String) {
+            self.id = id
+            self.kind = kind
+            self.variant = variant
+            self.image = image
+        }
+    }
+
     // Functions
     pub fun placeTile(tile: MapTile, source: &TileMinter.Collection) {
         // Withdraw
@@ -156,26 +170,29 @@ pub contract Cartographer {
         self.map.placeTile(tile: tile)
         
         // Deposit
-        let cartographerTileCollection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.CollectionStoragePath)
-                    ?? panic("Could not borrow a reference to the cartographer's tile collection")
+        let tileCollection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.CollectionStoragePath) 
+            ?? panic("Could not borrow a reference to the cartographer's tile collection")
 
-        cartographerTileCollection.deposit(token: <- tileNft)
+        tileCollection.deposit(token: <- tileNft)
 
         if self.map.tilesOccupied == self.map.size {
             self.map.complete()
         }
     }
 
-    pub fun getTile(id: UInt64): &TileMinter.NFT? {
-        let collection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.CollectionPublic, CollectionPublic}>(from: Cartographer.CollectionStoragePath)
-                ?? panic("Could not borrow a reference to the cartographer's tile collection")
-        return collection.borrowTile(id: id)
-        }
+    pub fun getTileDetails(id: UInt64): TileDetails? {
+        let tileCollection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.CollectionPublic, TileCollectionPublic}>(from: Cartographer.CollectionStoragePath) 
+            ?? panic("Could not borrow a reference to the cartographer's tile collection")
+
+        if let tile = tileCollection.borrowTile(id: id) {
+            return TileDetails(id: tile.id, kind: tile.kind, variant: tile.variant, image: tile.image)
+        } 
+
+        return nil
+    }
+
    // Interfaces
-    pub resource interface CollectionPublic {
-        pub fun deposit(token: @NonFungibleToken.NFT)
-        pub fun getIDs(): [UInt64]
-        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
+    pub resource interface TileCollectionPublic {
         pub fun borrowTile(id: UInt64): &TileMinter.NFT? {
             post {
                 (result == nil) || (result?.id == id): "Cannot borrow Tile NFT reference: The ID of the returned Tile NFT is incorrect"
@@ -184,7 +201,7 @@ pub contract Cartographer {
     }
 
     // Resource
-    pub resource Collection: CollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
+    pub resource Collection: TileCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         init () {
@@ -224,7 +241,6 @@ pub contract Cartographer {
             }    
         }
 
-        // TODO: Make this generic for any nft?
         pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
             let authorizedTileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
             let Tile = authorizedTileRef as! &TileMinter.NFT

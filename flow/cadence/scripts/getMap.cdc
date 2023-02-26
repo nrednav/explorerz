@@ -1,48 +1,25 @@
 import "Cartographer"
 import "NonFungibleToken"
 
-pub struct Tile {
-    pub let id: UInt64
-    pub let kind: String
-    pub let variant: UInt64 
-    pub let image: String
+pub fun main(): [[Cartographer.TileDetails?]]{
 
-    init(id: UInt64, kind: String, variant: UInt64, image: String) {
-        self.id = id
-        self.kind = kind
-        self.variant = variant
-        self.image = image
-    }
-}
-
-pub fun main(): [[Tile?]]{
-
-    let tiles: [[Tile?]] = []
+    let map: [[Cartographer.TileDetails?]] = []
 
     for row in Cartographer.map.tiles {
-        let tileRow: [Tile?] = []
+        let rowOfTileDetails: [Cartographer.TileDetails?] = []
+
         for tile in row {
-          let nft = tile != nil ? getTileById(id: tile!.id) : nil
-          tileRow.append(nft)
+            if tile == nil {
+                rowOfTileDetails.append(nil)
+                continue
+            }
+
+            let tileDetails = Cartographer.getTileDetails(id: tile!.id)
+            rowOfTileDetails.append(tileDetails)
         }
-        tiles.append(tileRow)
+
+        map.append(rowOfTileDetails)
     }
 
-    return tiles
+    return map 
 }
- 
-pub fun getTileById(id: UInt64): Tile? {
-
-        let tile = Cartographer.getTile(id: id) 
-        if tile != nil {
-            return Tile(
-                id: id,
-                kind: tile!.kind,
-                variant: tile!.variant,
-                image: tile!.image
-            )
-        }
-
-    return nil
-}
- 
