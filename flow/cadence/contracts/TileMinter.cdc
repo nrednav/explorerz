@@ -51,8 +51,8 @@ pub contract TileMinter: NonFungibleToken {
         self.phase = Phase()
         self.isMintingPeriodOpen = true 
 
-        self.CollectionStoragePath = /storage/TileCollection
-        self.CollectionPublicPath = /public/TileCollection
+        self.CollectionStoragePath = /storage/TileMinterTileCollection
+        self.CollectionPublicPath = /public/TileMinterTileCollection
         self.AdminPrivatePath = /private/Admin
         self.AdminStoragePath = /storage/Admin
         self.StoragePath = /storage/TileMinter

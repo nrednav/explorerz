@@ -7,8 +7,8 @@ pub contract Cartographer {
     // Data
     pub let map: Map
 
-    pub let CollectionStoragePath: StoragePath
-    pub let CollectionPublicPath: PublicPath
+    pub let TileCollectionStoragePath: StoragePath
+    pub let TileCollectionPublicPath: PublicPath
     pub let StoragePath: StoragePath
 
     // Events
@@ -22,15 +22,15 @@ pub contract Cartographer {
     init() {
         self.map = Map()
 
-        self.CollectionStoragePath = /storage/Collection
-        self.CollectionPublicPath = /public/Collection
+        self.TileCollectionStoragePath = /storage/CartographerTileCollection
+        self.TileCollectionPublicPath = /public/CartographerTileCollection
         self.StoragePath = /storage/Cartographer
 
         // Create a Tile collection resource and save it to storage
-        self.account.save(<- create Collection(), to: self.CollectionStoragePath)
+        self.account.save(<- create Collection(), to: self.TileCollectionStoragePath)
         self.account.link<&Collection{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>(
-            self.CollectionPublicPath,
-            target: self.CollectionStoragePath
+            self.TileCollectionPublicPath,
+            target: self.TileCollectionStoragePath
         )
 
         emit ContractInitialized()
@@ -170,7 +170,8 @@ pub contract Cartographer {
         self.map.placeTile(tile: tile)
         
         // Deposit
-        let tileCollection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.CollectionStoragePath) 
+        let tileCollection = self.account
+            .borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.TileCollectionStoragePath) 
             ?? panic("Could not borrow a reference to the cartographer's tile collection")
 
         tileCollection.deposit(token: <- tileNft)
@@ -181,7 +182,8 @@ pub contract Cartographer {
     }
 
     pub fun getTileDetails(id: UInt64): TileDetails? {
-        let tileCollection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.CollectionPublic, TileCollectionPublic}>(from: Cartographer.CollectionStoragePath) 
+        let tileCollection = self.account
+            .borrow<&Cartographer.Collection{NonFungibleToken.CollectionPublic, TileCollectionPublic}>(from: Cartographer.TileCollectionStoragePath) 
             ?? panic("Could not borrow a reference to the cartographer's tile collection")
 
         if let tile = tileCollection.borrowTile(id: id) {
