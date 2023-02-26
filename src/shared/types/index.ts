@@ -21,3 +21,11 @@ export const TileCollectionSchema = z.object({
   stone: TileSchema.array(),
 });
 export type TileCollection = z.infer<typeof TileCollectionSchema>;
+
+export const MapSchema = z.object({
+  tiles: TileGridSchema,
+  size: z.coerce.number(),
+  tilesOccupied: z.coerce.number(),
+  completed: z.boolean(),
+});
+export type Map = z.infer<typeof MapSchema>;

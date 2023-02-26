@@ -9,12 +9,14 @@ import useMap from "@/hooks/useMap";
 import useModal from "@/hooks/useModal";
 
 export const Home = () => {
-  const { data: tiles, isLoading, isError } = useMap();
+  const { data: mapDetails, isLoading, isError } = useMap();
   const inventoryPanel = useModal();
 
   if (isError) return <Error message="Could not load map..." />;
   if (isLoading) return <Loading />;
-  if (!tiles) return <Error message="Could not load map..." />;
+  if (!mapDetails) return <Error message="Could not load map..." />;
+
+  const { tiles, tilesOccupied } = mapDetails;
 
   return (
     <>
@@ -22,6 +24,7 @@ export const Home = () => {
         <title>Explorerz</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      {tilesOccupied}
       <Map tiles={tiles} />
       <div className="flex w-full flex-col items-stretch justify-center gap-4 py-8 sm:flex-row">
         <Button

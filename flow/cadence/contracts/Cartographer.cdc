@@ -7,8 +7,8 @@ pub contract Cartographer {
     // Data
     pub let map: Map
 
-    pub let CollectionStoragePath: StoragePath
-    pub let CollectionPublicPath: PublicPath
+    pub let TileCollectionStoragePath: StoragePath
+    pub let TileCollectionPublicPath: PublicPath
     pub let StoragePath: StoragePath
 
     // Events
@@ -22,15 +22,15 @@ pub contract Cartographer {
     init() {
         self.map = Map()
 
-        self.CollectionStoragePath = /storage/Collection
-        self.CollectionPublicPath = /public/Collection
+        self.TileCollectionStoragePath = /storage/CartographerTileCollection
+        self.TileCollectionPublicPath = /public/CartographerTileCollection
         self.StoragePath = /storage/Cartographer
 
         // Create a Tile collection resource and save it to storage
-        self.account.save(<- create Collection(), to: self.CollectionStoragePath)
+        self.account.save(<- create Collection(), to: self.TileCollectionStoragePath)
         self.account.link<&Collection{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>(
-            self.CollectionPublicPath,
-            target: self.CollectionStoragePath
+            self.TileCollectionPublicPath,
+            target: self.TileCollectionStoragePath
         )
 
         emit ContractInitialized()
@@ -38,14 +38,14 @@ pub contract Cartographer {
 
     // Structs
     pub struct Map {
-        pub let tiles: [[UInt64?]]
+        pub let tiles: [[MapTile?]]
         pub let size: UInt64
         pub var completed: Bool
         pub var tilesOccupied: UInt64
 
         init() {
-            let tiles: [[UInt64?]] = []
-            let rowOfEmptyTiles: [UInt64?] = []
+            let tiles: [[MapTile?]] = []
+            let rowOfEmptyTiles: [MapTile?] = []
 
             var col = 0
             while col < 16 {
@@ -71,8 +71,7 @@ pub contract Cartographer {
                 self.hasAdjacentTile(coordinate: tile.coordinate) == true: "Tile is not adjacent to any other occupied tile"
             }
 
-            // TODO: Store tile instead of tile id
-            self.tiles[tile.coordinate.y][tile.coordinate.x] = tile.id
+            self.tiles[tile.coordinate.y][tile.coordinate.x] = tile
             self.tilesOccupied = self.tilesOccupied + 1
             emit TilePlaced(id: tile.id, coordinate: tile.coordinate.toString())
         }
@@ -147,6 +146,20 @@ pub contract Cartographer {
         }
     }
 
+    pub struct TileDetails {
+        pub let id: UInt64
+        pub let kind: String
+        pub let variant: UInt64 
+        pub let image: String
+
+        init(id: UInt64, kind: String, variant: UInt64, image: String) {
+            self.id = id
+            self.kind = kind
+            self.variant = variant
+            self.image = image
+        }
+    }
+
     // Functions
     pub fun placeTile(tile: MapTile, source: &TileMinter.Collection) {
         // Withdraw
@@ -157,18 +170,40 @@ pub contract Cartographer {
         self.map.placeTile(tile: tile)
         
         // Deposit
-        let cartographerTileCollection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.CollectionStoragePath)
-                    ?? panic("Could not borrow a reference to the cartographer's tile collection")
+        let tileCollection = self.account
+            .borrow<&Cartographer.Collection{NonFungibleToken.Receiver}>(from: Cartographer.TileCollectionStoragePath) 
+            ?? panic("Could not borrow a reference to the cartographer's tile collection")
 
-        cartographerTileCollection.deposit(token: <- tileNft)
+        tileCollection.deposit(token: <- tileNft)
 
         if self.map.tilesOccupied == self.map.size {
             self.map.complete()
         }
     }
 
+    pub fun getTileDetails(id: UInt64): TileDetails? {
+        let tileCollection = self.account
+            .borrow<&Cartographer.Collection{NonFungibleToken.CollectionPublic, TileCollectionPublic}>(from: Cartographer.TileCollectionStoragePath) 
+            ?? panic("Could not borrow a reference to the cartographer's tile collection")
+
+        if let tile = tileCollection.borrowTile(id: id) {
+            return TileDetails(id: tile.id, kind: tile.kind, variant: tile.variant, image: tile.image)
+        } 
+
+        return nil
+    }
+
+   // Interfaces
+    pub resource interface TileCollectionPublic {
+        pub fun borrowTile(id: UInt64): &TileMinter.NFT? {
+            post {
+                (result == nil) || (result?.id == id): "Cannot borrow Tile NFT reference: The ID of the returned Tile NFT is incorrect"
+            }
+        }
+    }
+
     // Resource
-    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
+    pub resource Collection: TileCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         init () {
@@ -198,16 +233,16 @@ pub contract Cartographer {
             return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
         }
 
-        pub fun borrowTile(id: UInt64): &NonFungibleToken.NFT? {
+        pub fun borrowTile(id: UInt64): &TileMinter.NFT? {
             if self.ownedNFTs[id] != nil {
-                let authorizedTileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-                return authorizedTileRef as! &NonFungibleToken.NFT
+                // Create an authorized reference to allow downcasting
+                let tileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+                return tileRef as! &TileMinter.NFT
             } else {
                 return nil
             }    
         }
 
-        // TODO: Make this generic for any nft?
         pub fun borrowViewResolver(id: UInt64): &AnyResource{MetadataViews.Resolver} {
             let authorizedTileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
             let Tile = authorizedTileRef as! &TileMinter.NFT
