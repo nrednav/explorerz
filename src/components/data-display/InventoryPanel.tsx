@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { TileKind, TileKindSchema, TileSchema } from "@/shared/types";
+import { FC, useCallback } from "react";
+import { TileKindSchema, TileSchema } from "@/shared/types";
 import Drawer from "../containers/Drawer/Drawer";
 import DrawerSection from "../containers/Drawer/DrawerSection";
 import LoginButton from "../input-and-actions/LoginButton";
@@ -10,7 +10,7 @@ import useModal from "@/hooks/useModal";
 import useTileCollection from "@/hooks/useTileCollection";
 import useUser from "@/hooks/useUser";
 import { selectedTileAtom } from "@/store";
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { z } from "zod";
 
 type InventoryPanelProps = {
@@ -55,8 +55,17 @@ const TileCollection = () => {
 };
 
 const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
-  const [, setSelectedTile] = useAtom(selectedTileAtom);
+  const setSelectedTile = useSetAtom(selectedTileAtom);
   const inventoryPanel = useModal();
+
+  const selectTile = useCallback(
+    (tile: z.infer<typeof TileSchema>) => () => {
+      setSelectedTile(tile);
+      inventoryPanel.close();
+    },
+    []
+  );
+
   return (
     <div className="flex snap-x snap-mandatory flex-nowrap space-x-6 overflow-x-scroll">
       {tiles.length > 0 ? (
@@ -68,16 +77,13 @@ const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
             <Tile
               tile={tile}
               className="notched-module my-2 h-16 w-16 cursor-pointer snap-start border-2 border-black"
-              onClick={() => {
-                setSelectedTile(tile);
-                inventoryPanel.close();
-              }}
+              onClick={selectTile(tile)}
             />
             <p className="py-2 text-center text-sm sm:text-base">#{tile.id}</p>
           </div>
         ))
       ) : (
-        <p className="py-4 text-xs text-slate-600">Not owned yet</p>
+        <p className="py-4 text-xs text-slate-600">None owned yet</p>
       )}
     </div>
   );
