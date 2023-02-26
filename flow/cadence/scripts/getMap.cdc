@@ -1,7 +1,7 @@
 import "Cartographer"
 import "NonFungibleToken"
 
-pub fun main(): [[Cartographer.TileDetails?]]{
+pub fun main(): [[Cartographer.TileDetails?]] {
 
     let map: [[Cartographer.TileDetails?]] = []
 
