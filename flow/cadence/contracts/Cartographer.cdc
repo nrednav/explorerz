@@ -38,14 +38,14 @@ pub contract Cartographer {
 
     // Structs
     pub struct Map {
-        pub let tiles: [[UInt64?]]
+        pub let tiles: [[MapTile?]]
         pub let size: UInt64
         pub var completed: Bool
         pub var tilesOccupied: UInt64
 
         init() {
-            let tiles: [[UInt64?]] = []
-            let rowOfEmptyTiles: [UInt64?] = []
+            let tiles: [[MapTile?]] = []
+            let rowOfEmptyTiles: [MapTile?] = []
 
             var col = 0
             while col < 16 {
@@ -71,8 +71,7 @@ pub contract Cartographer {
                 self.hasAdjacentTile(coordinate: tile.coordinate) == true: "Tile is not adjacent to any other occupied tile"
             }
 
-            // TODO: Store tile instead of tile id
-            self.tiles[tile.coordinate.y][tile.coordinate.x] = tile.id
+            self.tiles[tile.coordinate.y][tile.coordinate.x] = tile
             self.tilesOccupied = self.tilesOccupied + 1
             emit TilePlaced(id: tile.id, coordinate: tile.coordinate.toString())
         }
@@ -167,8 +166,25 @@ pub contract Cartographer {
         }
     }
 
+    pub fun getTile(id: UInt64): &TileMinter.NFT? {
+        let collection = self.account.borrow<&Cartographer.Collection{NonFungibleToken.CollectionPublic, CollectionPublic}>(from: Cartographer.CollectionStoragePath)
+                ?? panic("Could not borrow a reference to the cartographer's tile collection")
+        return collection.borrowTile(id: id)
+        }
+   // Interfaces
+    pub resource interface CollectionPublic {
+        pub fun deposit(token: @NonFungibleToken.NFT)
+        pub fun getIDs(): [UInt64]
+        pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
+        pub fun borrowTile(id: UInt64): &TileMinter.NFT? {
+            post {
+                (result == nil) || (result?.id == id): "Cannot borrow Tile NFT reference: The ID of the returned Tile NFT is incorrect"
+            }
+        }
+    }
+
     // Resource
-    pub resource Collection: NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
+    pub resource Collection: CollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
         init () {
@@ -198,10 +214,11 @@ pub contract Cartographer {
             return (&self.ownedNFTs[id] as &NonFungibleToken.NFT?)!
         }
 
-        pub fun borrowTile(id: UInt64): &NonFungibleToken.NFT? {
+        pub fun borrowTile(id: UInt64): &TileMinter.NFT? {
             if self.ownedNFTs[id] != nil {
-                let authorizedTileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
-                return authorizedTileRef as! &NonFungibleToken.NFT
+                // Create an authorized reference to allow downcasting
+                let tileRef = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
+                return tileRef as! &TileMinter.NFT
             } else {
                 return nil
             }    
