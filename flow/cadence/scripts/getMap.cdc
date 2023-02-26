@@ -1,9 +1,22 @@
 import "Cartographer"
 import "NonFungibleToken"
 
-pub fun main(): [[Cartographer.TileDetails?]] {
+pub struct Map {
+    pub let tiles: [[Cartographer.TileDetails?]]
+    pub let size: UInt64
+    pub var tilesOccupied: UInt64
+    pub var completed: Bool
 
-    let map: [[Cartographer.TileDetails?]] = []
+    init(tiles: [[Cartographer.TileDetails?]], size: UInt64, tilesOccupied: UInt64, completed: Bool) {
+        self.tiles = tiles
+        self.size = size
+        self.tilesOccupied = tilesOccupied
+        self.completed = completed
+    }
+}
+
+pub fun main(): Map {
+    let transformed: [[Cartographer.TileDetails?]] = []
 
     for row in Cartographer.map.tiles {
         let rowOfTileDetails: [Cartographer.TileDetails?] = []
@@ -18,8 +31,13 @@ pub fun main(): [[Cartographer.TileDetails?]] {
             rowOfTileDetails.append(tileDetails)
         }
 
-        map.append(rowOfTileDetails)
+        transformed.append(rowOfTileDetails)
     }
 
-    return map 
+    return Map(
+        tiles: transformed,
+        size: Cartographer.map.size,
+        tilesOccupied: Cartographer.map.tilesOccupied,
+        completed: Cartographer.map.completed,
+    )
 }

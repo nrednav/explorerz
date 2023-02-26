@@ -1,13 +1,26 @@
-import { TileGrid, TileGridSchema } from "@/shared/types";
+import { Map, MapSchema } from "@/shared/types";
 import * as fcl from "@onflow/fcl";
 
 const code = `
 import Cartographer from 0xCartographer
 import NonFungibleToken from 0xNonFungibleToken
 
-pub fun main(): [[Cartographer.TileDetails?]] {
+pub struct Map {
+    pub let tiles: [[Cartographer.TileDetails?]]
+    pub let size: UInt64
+    pub var tilesOccupied: UInt64
+    pub var completed: Bool
 
-    let map: [[Cartographer.TileDetails?]] = []
+    init(tiles: [[Cartographer.TileDetails?]], size: UInt64, tilesOccupied: UInt64, completed: Bool) {
+        self.tiles = tiles
+        self.size = size
+        self.tilesOccupied = tilesOccupied
+        self.completed = completed
+    }
+}
+
+pub fun main(): Map {
+    let transformed: [[Cartographer.TileDetails?]] = []
 
     for row in Cartographer.map.tiles {
         let rowOfTileDetails: [Cartographer.TileDetails?] = []
@@ -22,17 +35,22 @@ pub fun main(): [[Cartographer.TileDetails?]] {
             rowOfTileDetails.append(tileDetails)
         }
 
-        map.append(rowOfTileDetails)
+        transformed.append(rowOfTileDetails)
     }
 
-    return map
+    return Map(
+        tiles: transformed,
+        size: Cartographer.map.size,
+        tilesOccupied: Cartographer.map.tilesOccupied,
+        completed: Cartographer.map.completed,
+    )
 }
 `;
 
-export const getMap = async (): Promise<TileGrid | null> => {
+export const getMap = async (): Promise<Map | null> => {
   try {
     const map = await fcl.query({ cadence: code });
-    return TileGridSchema.parse(map.tiles);
+    return MapSchema.parse(map);
   } catch (error) {
     console.error(error);
     return null;
