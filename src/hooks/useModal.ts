@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { modalAtom } from "@/store";
+import { useAtom } from "jotai";
 
 const useModal = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useAtom(modalAtom);
   return {
     isOpen: isOpen,
     open: () => setIsOpen(true),

@@ -5,10 +5,16 @@ import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
 import Button from "@/components/input-and-actions/Button";
 import { mintTiles } from "@/flow/cadence/transactions/mintTiles";
+import { placeTile } from "@/flow/cadence/transactions/placeTile";
 import useMap from "@/hooks/useMap";
 import useModal from "@/hooks/useModal";
+import { selectedCoordinateAtom, selectedTileAtom } from "@/store";
+import { useAtom } from "jotai";
 
 export const Home = () => {
+  const [selectedTile] = useAtom(selectedTileAtom);
+  const [selectedCoordinate] = useAtom(selectedCoordinateAtom);
+
   const { data: mapDetails, isLoading, isError } = useMap();
   const inventoryPanel = useModal();
 
@@ -24,7 +30,14 @@ export const Home = () => {
         <title>Explorerz</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {tilesOccupied}
+      <p>Tiles Occupied: {tilesOccupied}</p>
+      <p>Selected Tile: {selectedTile ? selectedTile.id : "None"}</p>
+      <p>
+        Selected Coordinate:{" "}
+        {selectedCoordinate
+          ? `${selectedCoordinate.x}, ${selectedCoordinate.y}`
+          : "None"}
+      </p>
       <Map tiles={tiles} />
       <div className="flex w-full flex-col items-stretch justify-center gap-4 py-8 sm:flex-row">
         <Button
@@ -40,7 +53,14 @@ export const Home = () => {
           Inventory
         </Button>
         <Button
-          onClick={() => null}
+          onClick={() =>
+            selectedTile && selectedCoordinate
+              ? placeTile({
+                  id: selectedTile.id,
+                  coordinate: selectedCoordinate,
+                })
+              : null
+          }
           className="bg-red-400 text-white after:text-red-600 hover:text-white"
         >
           Play

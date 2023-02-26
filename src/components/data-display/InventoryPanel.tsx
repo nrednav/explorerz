@@ -6,8 +6,11 @@ import LoginButton from "../input-and-actions/LoginButton";
 import Error from "./Error";
 import Loading from "./Loading";
 import Tile from "./Tile";
+import useModal from "@/hooks/useModal";
 import useTileCollection from "@/hooks/useTileCollection";
 import useUser from "@/hooks/useUser";
+import { selectedTileAtom } from "@/store";
+import { useAtom } from "jotai";
 import { z } from "zod";
 
 type InventoryPanelProps = {
@@ -52,6 +55,8 @@ const TileCollection = () => {
 };
 
 const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
+  const [, setSelectedTile] = useAtom(selectedTileAtom);
+  const inventoryPanel = useModal();
   return (
     <div className="flex snap-x snap-mandatory flex-nowrap space-x-6 overflow-x-scroll">
       {tiles.length > 0 ? (
@@ -63,6 +68,10 @@ const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
             <Tile
               tile={tile}
               className="notched-module my-2 h-16 w-16 cursor-pointer snap-start border-2 border-black"
+              onClick={() => {
+                setSelectedTile(tile);
+                inventoryPanel.close();
+              }}
             />
             <p className="py-2 text-center text-sm sm:text-base">#{tile.id}</p>
           </div>
