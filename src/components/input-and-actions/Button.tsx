@@ -5,14 +5,14 @@ export type ButtonProps = {
   onClick: () => void;
   children?: ReactNode;
   className?: string;
-  isDisabled?: boolean;
+  disabled?: boolean;
 };
 
 const Button: FC<ButtonProps> = ({
   onClick,
   children,
   className,
-  isDisabled = false,
+  disabled = false,
 }) => {
   return (
     <button
@@ -20,11 +20,11 @@ const Button: FC<ButtonProps> = ({
       className={clsx(
         "pixelated p-2 text-xs text-white focus:outline-none sm:px-4 sm:py-2 sm:text-sm",
         className,
-        isDisabled &&
+        disabled &&
           "!cursor-not-allowed bg-slate-400 text-white opacity-60 after:text-slate-600 hover:text-white"
       )}
       onClick={onClick}
-      disabled={isDisabled}
+      disabled={disabled}
     >
       {children}
     </button>

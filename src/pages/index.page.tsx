@@ -55,11 +55,6 @@ export const Home = () => {
           Inventory
         </Button>
         <Button
-          isDisabled={
-            !selectedCoordinate ||
-            !selectedTile ||
-            tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
-          }
           onClick={() =>
             selectedTile && selectedCoordinate
               ? placeTile({
@@ -69,6 +64,11 @@ export const Home = () => {
               : null
           }
           className="bg-red-400 text-white after:text-red-600 hover:text-white"
+          disabled={
+            !selectedCoordinate ||
+            !selectedTile ||
+            tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
+          }
         >
           Play
         </Button>
