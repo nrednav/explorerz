@@ -31,8 +31,8 @@ export const trackTransactionStatus = ({
     }),
     {
       loading: "Loading",
-      success: (message) => <p className="text-xs">{`Success! ${message}`}</p>,
-      error: (message) => <p className="text-xs">{`Error! ${message}`}</p>,
+      success: (message) => `${message}`,
+      error: (message) => `${message}`,
     },
     {
       style: { minWidth: "240px" },

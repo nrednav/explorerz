@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { AppProps } from "next/app";
 import "@/shared/styles/global.css";
+import Toaster from "@/components/data-display/Toaster";
 import Page from "@/components/layout/Page";
 import "@/flow/config";
 import {
@@ -10,7 +11,6 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider as JotaiProvider } from "jotai";
-import { Toaster } from "react-hot-toast";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
