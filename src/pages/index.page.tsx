@@ -3,6 +3,7 @@ import Error from "@/components/data-display/Error";
 import InventoryPanel from "@/components/data-display/InventoryPanel";
 import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
+import MintingPhases from "@/components/data-display/MintingPhases";
 import PlaySummary from "@/components/data-display/PlaySummary";
 import Button from "@/components/input-and-actions/Button";
 import DPad from "@/components/input-and-actions/DPad";
@@ -61,6 +62,7 @@ export const Home = () => {
           }
         />
       </div>
+      <MintingPhases />
       <InventoryPanel
         isOpen={inventoryPanel.isOpen}
         onClose={inventoryPanel.close}
