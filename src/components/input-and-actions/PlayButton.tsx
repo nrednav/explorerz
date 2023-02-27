@@ -17,7 +17,7 @@ const PlayButton: FC<Partial<ButtonProps>> = ({ disabled = false }) => {
       onSuccess: refetchMap,
     });
     setSelectedTile(null);
-  }, [selectedTile, selectedCoordinate]);
+  }, [selectedTile, selectedCoordinate, refetchMap, setSelectedTile]);
 
   return (
     <Button
@@ -25,7 +25,7 @@ const PlayButton: FC<Partial<ButtonProps>> = ({ disabled = false }) => {
       className="bg-red-400 text-white after:text-red-600 hover:text-white"
       disabled={disabled}
     >
-      Play
+      Place
     </Button>
   );
 };
