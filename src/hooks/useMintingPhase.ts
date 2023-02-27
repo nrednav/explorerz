@@ -5,7 +5,7 @@ const useMintingPhase = () => {
   return useQuery({
     queryKey: ["mintingPhase"],
     queryFn: getMintingPhase,
-    refetchInterval: 60 * 1 * 1000,
+    refetchInterval: 60 * 0.5 * 1000,
     refetchOnWindowFocus: false,
   });
 };

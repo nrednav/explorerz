@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { CountDown } from "./CountDown";
 import Loading from "./Loading";
 import Error from "@/components/data-display/Error";
 import useMintingPhase from "@/hooks/useMintingPhase";
@@ -16,7 +17,7 @@ type StepProps = {
     id: string;
     description: string;
   };
-  mintingPhase: number;
+  currentPhase: number;
 };
 
 const steps = [
@@ -44,8 +45,20 @@ const getStepStatus = (stepIdx: number, currentPhase: number) => {
   return StepStatus.next;
 };
 
-const Step: FC<StepProps> = ({ stepIdx, step, mintingPhase }) => {
-  const stepStatus = getStepStatus(stepIdx, mintingPhase);
+const getPhasesElapsed = (
+  blockHeight: number,
+  lastUpdatedAt: number,
+  duration: number
+) => {
+  return Math.floor((blockHeight - lastUpdatedAt) / duration);
+};
+
+const getCurrentPhase = (currentPhase: number, phasesElapsed: number) => {
+  return (currentPhase + phasesElapsed) % 4;
+};
+
+const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
+  const stepStatus = getStepStatus(stepIdx, currentPhase);
   return (
     <div
       className={clsx(
@@ -70,18 +83,28 @@ const Step: FC<StepProps> = ({ stepIdx, step, mintingPhase }) => {
 };
 
 const MintingPhases = () => {
-  const { data: mintingPhase, isLoading, isError } = useMintingPhase();
+  const { data: phaseDetails, isLoading, isError } = useMintingPhase();
 
   if (isError) return <Error message="Could not load minting phase..." />;
   if (isLoading) return <Loading />;
-  if (!mintingPhase) return <Error message="Could not load minting phase..." />;
+  if (!phaseDetails) return <Error message="Could not load minting phase..." />;
+
+  const { phase, blockHeight } = phaseDetails;
+
+  const phasesElapsed = getPhasesElapsed(
+    blockHeight,
+    phase.lastUpdatedAt,
+    phase.duration
+  );
+
+  const currentPhase = getCurrentPhase(phase.current, phasesElapsed);
 
   return (
     <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
       <div className="py-4">
+        <CountDown subTitle="Time until next phase. When the map is full, the game ends." />
         <h2 className="text-center text-2xl font-bold text-gray-900">
-          Minting phase:
-          {/* {steps.filter((step) => step.status === StepStatus.current)[0].id} */}
+          Minting phase: {steps[currentPhase].id}
         </h2>
       </div>
       <div className="pixelated w-full bg-slate-600 text-white after:text-slate-800 hover:text-white focus:outline-none">
@@ -99,7 +122,7 @@ const MintingPhases = () => {
                   <Step
                     stepIdx={stepIdx}
                     step={step}
-                    mintingPhase={mintingPhase.current}
+                    currentPhase={currentPhase}
                   />
                   {stepIdx !== 0 ? (
                     <>

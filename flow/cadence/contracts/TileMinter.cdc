@@ -82,7 +82,7 @@ pub contract TileMinter: NonFungibleToken {
 
         init() {
             // TODO: Change back to 120 for testnet
-            self.duration = 10 // 120 blocks ~= 240 seconds = 4 minutes
+            self.duration = 1 // 120 blocks ~= 240 seconds = 4 minutes
             self.current = 0
             self.lastUpdatedAt = getCurrentBlock().height
             emit PhaseInitialized(lastUpdatedAt: self.lastUpdatedAt)
