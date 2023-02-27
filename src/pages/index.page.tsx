@@ -3,10 +3,11 @@ import Error from "@/components/data-display/Error";
 import InventoryPanel from "@/components/data-display/InventoryPanel";
 import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
+import PlaySummary from "@/components/data-display/PlaySummary";
 import Button from "@/components/input-and-actions/Button";
 import DPad from "@/components/input-and-actions/DPad";
+import PlayButton from "@/components/input-and-actions/PlayButton";
 import { mintTiles } from "@/flow/cadence/transactions/mintTiles";
-import { placeTile } from "@/flow/cadence/transactions/placeTile";
 import useMap from "@/hooks/useMap";
 import useModal from "@/hooks/useModal";
 import { selectedCoordinateAtom, selectedTileAtom } from "@/store";
@@ -23,7 +24,7 @@ export const Home = () => {
   if (isLoading) return <Loading />;
   if (!mapDetails) return <Error message="Could not load map..." />;
 
-  const { tiles, tilesOccupied } = mapDetails;
+  const { tiles } = mapDetails;
 
   return (
     <>
@@ -31,15 +32,8 @@ export const Home = () => {
         <title>Explorerz</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <p>Tiles Occupied: {tilesOccupied}</p>
-      <p>Selected Tile: {selectedTile ? selectedTile.id : "None"}</p>
-      <p>
-        Selected Coordinate:{" "}
-        {selectedCoordinate
-          ? `${selectedCoordinate.x}, ${selectedCoordinate.y}`
-          : "None"}
-      </p>
       <Map tiles={tiles} />
+      <PlaySummary />
       <DPad />
       <div className="my-4 flex w-full flex-col items-stretch justify-center gap-4 sm:flex-row">
         <Button
@@ -54,24 +48,13 @@ export const Home = () => {
         >
           Inventory
         </Button>
-        <Button
-          onClick={() =>
-            selectedTile && selectedCoordinate
-              ? placeTile({
-                  id: selectedTile.id,
-                  coordinate: selectedCoordinate,
-                })
-              : null
-          }
-          className="bg-red-400 text-white after:text-red-600 hover:text-white"
+        <PlayButton
           disabled={
             !selectedCoordinate ||
             !selectedTile ||
             tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
           }
-        >
-          Play
-        </Button>
+        />
       </div>
       <InventoryPanel
         isOpen={inventoryPanel.isOpen}
