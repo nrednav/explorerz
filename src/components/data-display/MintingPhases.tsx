@@ -99,30 +99,26 @@ const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
 
 const MintingPhases = () => {
   const { data: phaseDetails, isLoading, isError } = useMintingPhase();
-  const [currentPhase, setCurrentPhase] = useState<number | null>(null);
-  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 
   useEffect(() => {
     if (!phaseDetails) return;
-    const { phase, blockHeight } = phaseDetails;
-
-    const phasesElapsed = getPhasesElapsed(
-      blockHeight,
-      phase.lastUpdatedAt,
-      phase.duration
-    );
-
-    const currentPhase = getCurrentPhase(phase.current, phasesElapsed);
-    setCurrentPhase(currentPhase);
-    const timeElapsed = getTimeElapsed(blockHeight, phase.lastUpdatedAt, 1);
-    const timeRemaining = getTimeRemaining(phase.duration, timeElapsed);
-    setTimeRemaining(timeRemaining);
   }, [phaseDetails]);
 
   if (isError) return <Error message="Could not load minting phase..." />;
   if (isLoading) return <Loading />;
-  if (!phaseDetails || currentPhase === null)
-    return <Error message="Could not load minting phase..." />;
+  if (!phaseDetails) return <Error message="Could not load minting phase..." />;
+
+  const { phase, blockHeight } = phaseDetails;
+
+  const phasesElapsed = getPhasesElapsed(
+    blockHeight,
+    phase.lastUpdatedAt,
+    phase.duration
+  );
+
+  const currentPhase = getCurrentPhase(phase.current, phasesElapsed);
+  const timeElapsed = getTimeElapsed(blockHeight, phase.lastUpdatedAt, 1);
+  const timeRemaining = getTimeRemaining(phase.duration, timeElapsed);
 
   return (
     <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
