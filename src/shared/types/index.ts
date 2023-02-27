@@ -34,3 +34,20 @@ export type MapCoordinate = {
   x: number;
   y: number;
 };
+
+export type TransactionState = {
+  blockId: number;
+  errorMessage: string;
+  events: TransactionEvent[];
+  status: number;
+  statusCode: number;
+  statusString: string;
+};
+
+export type TransactionEvent = {
+  data: { [key: string]: any };
+  eventIndex: number;
+  transactionId: string;
+  transactionIndex: number;
+  type: string;
+};

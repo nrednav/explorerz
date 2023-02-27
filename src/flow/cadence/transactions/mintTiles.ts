@@ -1,3 +1,4 @@
+import { trackTransactionStatus } from "@/utils/transaction";
 import * as fcl from "@onflow/fcl";
 
 const code = `
@@ -41,7 +42,17 @@ transaction {
 
 export const mintTiles = async () => {
   try {
-    return await fcl.mutate({ cadence: code, limit: 1000 });
+    const txId = await fcl.mutate({ cadence: code, limit: 1000 });
+    trackTransactionStatus({
+      txId,
+      onError: (_) => "Could not mint tiles",
+      onSuccess: (txState) => {
+        const numberOfTilesMinted = txState.events.filter((event) =>
+          event.type.includes("TileMinted")
+        ).length;
+        return `Minted ${numberOfTilesMinted} tile(s)`;
+      },
+    });
   } catch (error) {
     console.error(error);
   }

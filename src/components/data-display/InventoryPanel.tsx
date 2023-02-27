@@ -83,7 +83,7 @@ const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
           </div>
         ))
       ) : (
-        <p className="py-4 text-xs text-slate-600">None owned yet</p>
+        <p className="py-4 text-xs text-slate-600">None owned</p>
       )}
     </div>
   );

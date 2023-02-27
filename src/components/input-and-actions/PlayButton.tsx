@@ -1,20 +1,23 @@
 import { FC, useCallback } from "react";
 import Button, { ButtonProps } from "./Button";
 import { placeTile } from "@/flow/cadence/transactions/placeTile";
+import useMap from "@/hooks/useMap";
 import { selectedCoordinateAtom, selectedTileAtom } from "@/store";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 
 const PlayButton: FC<Partial<ButtonProps>> = ({ disabled = false }) => {
-  const selectedTile = useAtomValue(selectedTileAtom);
+  const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom);
+  const { refetch: refetchMap } = useMap();
   const selectedCoordinate = useAtomValue(selectedCoordinateAtom);
 
-  const play = useCallback(
-    () =>
-      selectedTile && selectedCoordinate
-        ? placeTile({ id: selectedTile.id, coordinate: selectedCoordinate })
-        : null,
-    [selectedTile, selectedCoordinate]
-  );
+  const play = useCallback(() => {
+    if (!selectedTile || !selectedCoordinate) return null;
+    placeTile({
+      data: { id: selectedTile.id, coordinate: selectedCoordinate },
+      onSuccess: refetchMap,
+    });
+    setSelectedTile(null);
+  }, [selectedTile, selectedCoordinate]);
 
   return (
     <Button

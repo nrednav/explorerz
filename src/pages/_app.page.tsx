@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider as JotaiProvider } from "jotai";
+import { Toaster } from "react-hot-toast";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
@@ -24,6 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </Page>
       </Hydrate>
       <ReactQueryDevtools />
+      <Toaster />
     </QueryClientProvider>
   );
 }

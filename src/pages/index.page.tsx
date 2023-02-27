@@ -17,7 +17,12 @@ export const Home = () => {
   const selectedTile = useAtomValue(selectedTileAtom);
   const selectedCoordinate = useAtomValue(selectedCoordinateAtom);
 
-  const { data: mapDetails, isLoading, isError } = useMap();
+  const {
+    data: mapDetails,
+    isLoading,
+    isError,
+    refetch: refetchMap,
+  } = useMap();
   const inventoryPanel = useModal();
 
   if (isError) return <Error message="Could not load map..." />;

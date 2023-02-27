@@ -21,7 +21,7 @@ const Button: FC<ButtonProps> = ({
         "pixelated p-2 text-xs text-white focus:outline-none sm:px-4 sm:py-2 sm:text-sm",
         className,
         disabled &&
-          "!cursor-not-allowed bg-slate-400 text-white opacity-60 after:text-slate-600 hover:text-white"
+          "!cursor-not-allowed !bg-slate-400 text-white opacity-60 after:!text-slate-600 hover:text-white"
       )}
       onClick={onClick}
       disabled={disabled}
