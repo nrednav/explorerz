@@ -1,39 +1,32 @@
 import { CheckIcon } from "@heroicons/react/24/solid";
+import clsx from "clsx";
 
 const steps = [
   {
     id: "01",
     name: "Job Details",
     description: "Vitae sed mi luctus laoreet.",
-    href: "#",
     status: "complete",
   },
   {
     id: "02",
     name: "Application form",
     description: "Cursus semper viverra.",
-    href: "#",
     status: "current",
   },
   {
     id: "03",
     name: "Preview",
     description: "Penatibus eu quis ante.",
-    href: "#",
     status: "upcoming",
   },
   {
     id: "04",
     name: "Preview",
     description: "Penatibus eu quis ante.",
-    href: "#",
     status: "upcoming",
   },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 const MintingPhases = () => {
   return (
@@ -49,20 +42,20 @@ const MintingPhases = () => {
           {steps.map((step, stepIdx) => (
             <li key={step.id} className="relative overflow-hidden lg:flex-1">
               <div
-                className={classNames(
+                className={clsx(
                   stepIdx === 0 ? "rounded-t-md border-b-0" : "",
                   stepIdx === steps.length - 1 ? "rounded-b-md border-t-0" : "",
                   "overflow-hidden border border-gray-200 lg:border-0"
                 )}
               >
                 {step.status === "complete" ? (
-                  <a href={step.href} className="group">
+                  <div>
                     <span
                       className="absolute top-0 left-0 h-full w-1 bg-transparent group-hover:bg-gray-200 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
                       aria-hidden="true"
                     />
                     <span
-                      className={classNames(
+                      className={clsx(
                         stepIdx !== 0 ? "lg:pl-9" : "",
                         "flex items-start px-6 py-5 text-sm font-medium"
                       )}
@@ -82,15 +75,15 @@ const MintingPhases = () => {
                         </span>
                       </span>
                     </span>
-                  </a>
+                  </div>
                 ) : step.status === "current" ? (
-                  <a href={step.href} aria-current="step">
+                  <div>
                     <span
                       className="absolute top-0 left-0 h-full w-1 bg-indigo-600 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
                       aria-hidden="true"
                     />
                     <span
-                      className={classNames(
+                      className={clsx(
                         stepIdx !== 0 ? "lg:pl-9" : "",
                         "flex items-start px-6 py-5 text-sm font-medium"
                       )}
@@ -109,15 +102,15 @@ const MintingPhases = () => {
                         </span>
                       </span>
                     </span>
-                  </a>
+                  </div>
                 ) : (
-                  <a href={step.href} className="group">
+                  <div>
                     <span
                       className="absolute top-0 left-0 h-full w-1 bg-transparent group-hover:bg-gray-200 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
                       aria-hidden="true"
                     />
                     <span
-                      className={classNames(
+                      className={clsx(
                         stepIdx !== 0 ? "lg:pl-9" : "",
                         "flex items-start px-6 py-5 text-sm font-medium"
                       )}
@@ -136,7 +129,7 @@ const MintingPhases = () => {
                         </span>
                       </span>
                     </span>
-                  </a>
+                  </div>
                 )}
 
                 {stepIdx !== 0 ? (
