@@ -91,7 +91,7 @@ pub contract TileMinter: NonFungibleToken {
         pub fun transition() {
             self.current = (self.current + 1) % 4
             self.lastUpdatedAt = getCurrentBlock().height
-            emit PhaseTransitioned(phase: self.current, lastUpdatedAt: self.lastUpdatedAt)
+            emit PhaseTransitioned(phase: UInt64(self.current + 1), lastUpdatedAt: self.lastUpdatedAt)
         }
 
         pub fun reset() {

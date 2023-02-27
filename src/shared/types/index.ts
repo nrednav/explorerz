@@ -29,3 +29,8 @@ export const MapSchema = z.object({
   completed: z.boolean(),
 });
 export type Map = z.infer<typeof MapSchema>;
+
+export type MapCoordinate = {
+  x: number;
+  y: number;
+};

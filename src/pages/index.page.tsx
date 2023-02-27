@@ -3,12 +3,20 @@ import Error from "@/components/data-display/Error";
 import InventoryPanel from "@/components/data-display/InventoryPanel";
 import Loading from "@/components/data-display/Loading";
 import { Map } from "@/components/data-display/Map";
+import PlaySummary from "@/components/data-display/PlaySummary";
 import Button from "@/components/input-and-actions/Button";
+import DPad from "@/components/input-and-actions/DPad";
+import PlayButton from "@/components/input-and-actions/PlayButton";
 import { mintTiles } from "@/flow/cadence/transactions/mintTiles";
 import useMap from "@/hooks/useMap";
 import useModal from "@/hooks/useModal";
+import { selectedCoordinateAtom, selectedTileAtom } from "@/store";
+import { useAtomValue } from "jotai";
 
 export const Home = () => {
+  const selectedTile = useAtomValue(selectedTileAtom);
+  const selectedCoordinate = useAtomValue(selectedCoordinateAtom);
+
   const { data: mapDetails, isLoading, isError } = useMap();
   const inventoryPanel = useModal();
 
@@ -16,7 +24,7 @@ export const Home = () => {
   if (isLoading) return <Loading />;
   if (!mapDetails) return <Error message="Could not load map..." />;
 
-  const { tiles, tilesOccupied } = mapDetails;
+  const { tiles } = mapDetails;
 
   return (
     <>
@@ -24,9 +32,10 @@ export const Home = () => {
         <title>Explorerz</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {tilesOccupied}
       <Map tiles={tiles} />
-      <div className="flex w-full flex-col items-stretch justify-center gap-4 py-8 sm:flex-row">
+      <PlaySummary />
+      <DPad />
+      <div className="my-4 flex w-full flex-col items-stretch justify-center gap-4 sm:flex-row">
         <Button
           onClick={mintTiles}
           className="bg-blue-400 text-white after:text-blue-600 hover:text-white"
@@ -39,12 +48,13 @@ export const Home = () => {
         >
           Inventory
         </Button>
-        <Button
-          onClick={() => null}
-          className="bg-red-400 text-white after:text-red-600 hover:text-white"
-        >
-          Play
-        </Button>
+        <PlayButton
+          disabled={
+            !selectedCoordinate ||
+            !selectedTile ||
+            tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
+          }
+        />
       </div>
       <InventoryPanel
         isOpen={inventoryPanel.isOpen}
