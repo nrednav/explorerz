@@ -1,32 +1,138 @@
+import { FC } from "react";
 import { CheckIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
+
+enum StepStatus {
+  "complete",
+  "current",
+  "upcoming",
+}
+
+type StepProps = {
+  stepIdx: number;
+  step: {
+    id: string;
+    name: string;
+    description: string;
+    status: StepStatus;
+  };
+};
 
 const steps = [
   {
     id: "01",
     name: "Job Details",
     description: "Vitae sed mi luctus laoreet.",
-    status: "complete",
+    status: StepStatus.complete,
   },
   {
     id: "02",
     name: "Application form",
     description: "Cursus semper viverra.",
-    status: "current",
+    status: StepStatus.current,
   },
   {
     id: "03",
     name: "Preview",
     description: "Penatibus eu quis ante.",
-    status: "upcoming",
+    status: StepStatus.upcoming,
   },
   {
     id: "04",
     name: "Preview",
     description: "Penatibus eu quis ante.",
-    status: "upcoming",
+    status: StepStatus.upcoming,
   },
 ];
+
+const CompleteStep: FC<StepProps> = ({ stepIdx, step }) => {
+  return (
+    <div>
+      <span
+        className="absolute top-0 left-0 h-full w-1 bg-transparent group-hover:bg-gray-200 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
+        aria-hidden="true"
+      />
+      <span
+        className={clsx(
+          stepIdx !== 0 ? "lg:pl-9" : "",
+          "flex items-start px-6 py-5 text-sm font-medium"
+        )}
+      >
+        <span className="flex-shrink-0">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600">
+            <CheckIcon className="h-6 w-6 text-white" aria-hidden="true" />
+          </span>
+        </span>
+        <span className="mt-0.5 ml-4 flex min-w-0 flex-col">
+          <span className="text-sm font-medium">{step.name}</span>
+          <span className="text-sm font-medium text-gray-500">
+            {step.description}
+          </span>
+        </span>
+      </span>
+    </div>
+  );
+};
+
+const CurrentStep: FC<StepProps> = ({ stepIdx, step }) => {
+  return (
+    <div>
+      <span
+        className="absolute top-0 left-0 h-full w-1 bg-indigo-600 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
+        aria-hidden="true"
+      />
+      <span
+        className={clsx(
+          stepIdx !== 0 ? "lg:pl-9" : "",
+          "flex items-start px-6 py-5 text-sm font-medium"
+        )}
+      >
+        <span className="flex-shrink-0">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-600">
+            <span className="text-indigo-600">{step.id}</span>
+          </span>
+        </span>
+        <span className="mt-0.5 ml-4 flex min-w-0 flex-col">
+          <span className="text-sm font-medium text-indigo-600">
+            {step.name}
+          </span>
+          <span className="text-sm font-medium text-gray-500">
+            {step.description}
+          </span>
+        </span>
+      </span>
+    </div>
+  );
+};
+
+const UpcomingStep: FC<StepProps> = ({ stepIdx, step }) => {
+  return (
+    <div>
+      <span
+        className="absolute top-0 left-0 h-full w-1 bg-transparent group-hover:bg-gray-200 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
+        aria-hidden="true"
+      />
+      <span
+        className={clsx(
+          stepIdx !== 0 ? "lg:pl-9" : "",
+          "flex items-start px-6 py-5 text-sm font-medium"
+        )}
+      >
+        <span className="flex-shrink-0">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-300">
+            <span className="text-gray-500">{step.id}</span>
+          </span>
+        </span>
+        <span className="mt-0.5 ml-4 flex min-w-0 flex-col">
+          <span className="text-sm font-medium text-gray-500">{step.name}</span>
+          <span className="text-sm font-medium text-gray-500">
+            {step.description}
+          </span>
+        </span>
+      </span>
+    </div>
+  );
+};
 
 const MintingPhases = () => {
   return (
@@ -48,90 +154,13 @@ const MintingPhases = () => {
                   "overflow-hidden border border-gray-200 lg:border-0"
                 )}
               >
-                {step.status === "complete" ? (
-                  <div>
-                    <span
-                      className="absolute top-0 left-0 h-full w-1 bg-transparent group-hover:bg-gray-200 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
-                      aria-hidden="true"
-                    />
-                    <span
-                      className={clsx(
-                        stepIdx !== 0 ? "lg:pl-9" : "",
-                        "flex items-start px-6 py-5 text-sm font-medium"
-                      )}
-                    >
-                      <span className="flex-shrink-0">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600">
-                          <CheckIcon
-                            className="h-6 w-6 text-white"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </span>
-                      <span className="mt-0.5 ml-4 flex min-w-0 flex-col">
-                        <span className="text-sm font-medium">{step.name}</span>
-                        <span className="text-sm font-medium text-gray-500">
-                          {step.description}
-                        </span>
-                      </span>
-                    </span>
-                  </div>
-                ) : step.status === "current" ? (
-                  <div>
-                    <span
-                      className="absolute top-0 left-0 h-full w-1 bg-indigo-600 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
-                      aria-hidden="true"
-                    />
-                    <span
-                      className={clsx(
-                        stepIdx !== 0 ? "lg:pl-9" : "",
-                        "flex items-start px-6 py-5 text-sm font-medium"
-                      )}
-                    >
-                      <span className="flex-shrink-0">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-indigo-600">
-                          <span className="text-indigo-600">{step.id}</span>
-                        </span>
-                      </span>
-                      <span className="mt-0.5 ml-4 flex min-w-0 flex-col">
-                        <span className="text-sm font-medium text-indigo-600">
-                          {step.name}
-                        </span>
-                        <span className="text-sm font-medium text-gray-500">
-                          {step.description}
-                        </span>
-                      </span>
-                    </span>
-                  </div>
+                {step.status === StepStatus.complete ? (
+                  <CompleteStep stepIdx={stepIdx} step={step} />
+                ) : step.status === StepStatus.current ? (
+                  <CurrentStep stepIdx={stepIdx} step={step} />
                 ) : (
-                  <div>
-                    <span
-                      className="absolute top-0 left-0 h-full w-1 bg-transparent group-hover:bg-gray-200 lg:bottom-0 lg:top-auto lg:h-1 lg:w-full"
-                      aria-hidden="true"
-                    />
-                    <span
-                      className={clsx(
-                        stepIdx !== 0 ? "lg:pl-9" : "",
-                        "flex items-start px-6 py-5 text-sm font-medium"
-                      )}
-                    >
-                      <span className="flex-shrink-0">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-300">
-                          <span className="text-gray-500">{step.id}</span>
-                        </span>
-                      </span>
-                      <span className="mt-0.5 ml-4 flex min-w-0 flex-col">
-                        <span className="text-sm font-medium text-gray-500">
-                          {step.name}
-                        </span>
-                        <span className="text-sm font-medium text-gray-500">
-                          {step.description}
-                        </span>
-                      </span>
-                    </span>
-                  </div>
+                  <UpcomingStep stepIdx={stepIdx} step={step} />
                 )}
-
                 {stepIdx !== 0 ? (
                   <>
                     {/* Separator */}
