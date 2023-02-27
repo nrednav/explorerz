@@ -7,23 +7,35 @@ import { z } from "zod";
 type TileProps = {
   className?: string;
   tile?: z.infer<typeof TileSchema>;
+  onClick?: () => void;
 };
 
-const Tile: FC<TileProps> = ({ className, tile }) => {
+const Tile: FC<TileProps> = ({ className, tile, onClick }) => {
   return (
     <div
+      onClick={onClick}
       className={clsx(
-        "relative flex aspect-square w-full items-center justify-center hover:brightness-90",
+        "group relative flex aspect-square w-full items-center justify-center border border-black",
         className
       )}
     >
-      {tile && <Image src={tile.image.src} alt={tile.image.alt} fill={true} />}
+      {tile && (
+        <Image
+          src={tile.image}
+          alt={`Image of ${tile.kind}-${tile.variant} tile`}
+          fill={true}
+          className="group-hover:brightness-75"
+        />
+      )}
     </div>
   );
 };
 
-export const EmptyTile = () => (
-  <Tile className="border border-black bg-slate-400" />
+export const EmptyTile: FC<TileProps> = ({ className, ...props }) => (
+  <Tile
+    className={clsx("bg-slate-500 hover:brightness-90", className)}
+    {...props}
+  />
 );
 
 export default Tile;

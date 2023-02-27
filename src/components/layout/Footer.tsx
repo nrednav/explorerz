@@ -1,7 +1,7 @@
 import { FC, SVGProps } from "react";
 
 const navigation = {
-  main: [{ name: "About", href: "/about" }],
+  main: [],
   social: [
     {
       name: "Twitter",
@@ -32,21 +32,6 @@ export const Footer: FC = () => {
   return (
     <footer>
       <div className="font-crimson mx-auto max-w-7xl overflow-hidden px-4 py-12 sm:px-6 lg:px-8">
-        <nav
-          className="-mx-5 -my-2 flex flex-wrap justify-center"
-          aria-label="Footer"
-        >
-          {navigation.main.map((item) => (
-            <div key={item.name} className="px-5 py-2">
-              <a
-                href={item.href}
-                className="text-primary border-b-2 border-transparent text-sm uppercase opacity-80 hover:opacity-100"
-              >
-                {item.name}
-              </a>
-            </div>
-          ))}
-        </nav>
         <div className="mt-8 flex justify-center space-x-6">
           {navigation.social.map((item) => (
             <a

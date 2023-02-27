@@ -31,3 +31,9 @@ Start development server:
 ```bash
 npm run dev
 ```
+
+## Credits
+
+- Game Texture Assets
+  - Artist: [Jestan](https://ko-fi.com/jestan)
+  - [Texture Pack](https://opengameart.org/content/pixel-texture-pack)
