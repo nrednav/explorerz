@@ -51,3 +51,11 @@ export type TransactionEvent = {
   transactionIndex: number;
   type: string;
 };
+
+export const MintingPhaseSchema = z.object({
+  current: z.coerce.number(),
+  lastUpdatedAt: z.coerce.number(),
+  duration: z.coerce.number(),
+});
+
+export type MintingPhase = z.infer<typeof MintingPhaseSchema>;

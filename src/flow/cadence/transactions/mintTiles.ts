@@ -40,13 +40,14 @@ transaction {
  
 `;
 
-export const mintTiles = async () => {
+export const mintTiles = async ({ onSuccess }: { onSuccess: () => void }) => {
   try {
     const txId = await fcl.mutate({ cadence: code, limit: 1000 });
     trackTransactionStatus({
       txId,
       onError: (_) => "Could not mint tiles",
       onSuccess: (txState) => {
+        onSuccess();
         const numberOfTilesMinted = txState.events.filter((event) =>
           event.type.includes("TileMinted")
         ).length;

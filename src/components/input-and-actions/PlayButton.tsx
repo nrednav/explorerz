@@ -17,7 +17,7 @@ const PlayButton: FC<Partial<ButtonProps>> = ({ disabled = false }) => {
       onSuccess: refetchMap,
     });
     setSelectedTile(null);
-  }, [selectedTile, selectedCoordinate]);
+  }, [selectedTile, selectedCoordinate, refetchMap, setSelectedTile]);
 
   return (
     <Button

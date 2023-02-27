@@ -7,8 +7,8 @@ import MintingPhases from "@/components/data-display/MintingPhases";
 import PlaySummary from "@/components/data-display/PlaySummary";
 import Button from "@/components/input-and-actions/Button";
 import DPad from "@/components/input-and-actions/DPad";
+import MintButton from "@/components/input-and-actions/MintButton";
 import PlayButton from "@/components/input-and-actions/PlayButton";
-import { mintTiles } from "@/flow/cadence/transactions/mintTiles";
 import useMap from "@/hooks/useMap";
 import useModal from "@/hooks/useModal";
 import { selectedCoordinateAtom, selectedTileAtom } from "@/store";
@@ -18,12 +18,7 @@ export const Home = () => {
   const selectedTile = useAtomValue(selectedTileAtom);
   const selectedCoordinate = useAtomValue(selectedCoordinateAtom);
 
-  const {
-    data: mapDetails,
-    isLoading,
-    isError,
-    refetch: refetchMap,
-  } = useMap();
+  const { data: mapDetails, isLoading, isError } = useMap();
   const inventoryPanel = useModal();
 
   if (isError) return <Error message="Could not load map..." />;
@@ -42,12 +37,7 @@ export const Home = () => {
       <PlaySummary />
       <DPad />
       <div className="my-4 flex w-full flex-col items-stretch justify-center gap-4 sm:flex-row">
-        <Button
-          onClick={mintTiles}
-          className="bg-blue-400 text-white after:text-blue-600 hover:text-white"
-        >
-          Mint
-        </Button>
+        <MintButton />
         <Button
           onClick={inventoryPanel.open}
           className="bg-indigo-400 text-white after:text-indigo-600 hover:text-white"

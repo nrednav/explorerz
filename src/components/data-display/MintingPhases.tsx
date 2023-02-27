@@ -1,10 +1,13 @@
 import { FC } from "react";
+import Loading from "./Loading";
+import Error from "@/components/data-display/Error";
+import useMintingPhase from "@/hooks/useMintingPhase";
 import clsx from "clsx";
 
 enum StepStatus {
-  "complete",
+  "previous",
   "current",
-  "upcoming",
+  "next",
 }
 
 type StepProps = {
@@ -12,72 +15,51 @@ type StepProps = {
   step: {
     id: string;
     description: string;
-    status: StepStatus;
   };
+  mintingPhase: number;
 };
 
 const steps = [
   {
     id: "I",
     description: "1x Tile",
-    status: StepStatus.complete,
   },
   {
     id: "II",
     description: "2x Tiles",
-    status: StepStatus.current,
   },
   {
     id: "III",
     description: "3x Tiles",
-    status: StepStatus.upcoming,
   },
   {
     id: "IV",
     description: "4x Tiles",
-    status: StepStatus.upcoming,
   },
 ];
 
-const CompleteStep: FC<StepProps> = ({ stepIdx, step }) => {
+const getStepStatus = (stepIdx: number, currentPhase: number) => {
+  if (stepIdx < currentPhase) return StepStatus.previous;
+  if (stepIdx === currentPhase) return StepStatus.current;
+  return StepStatus.next;
+};
+
+const Step: FC<StepProps> = ({ stepIdx, step, mintingPhase }) => {
+  const stepStatus = getStepStatus(stepIdx, mintingPhase);
   return (
-    <div className="bg-slate-500">
+    <div
+      className={clsx(
+        stepStatus === StepStatus.current
+          ? "bg-blue-400"
+          : stepStatus === StepStatus.previous
+          ? "bg-slate-500"
+          : "bg-slate-400"
+      )}
+    >
       <span
         className={clsx(
           stepIdx !== 0 ? "lg:pl-9" : "",
           "flex justify-around px-6 py-5 text-sm font-medium text-white lg:flex-col lg:gap-y-2"
-        )}
-      >
-        <span>{step.id}</span>
-        <span>{step.description}</span>
-      </span>
-    </div>
-  );
-};
-
-const CurrentStep: FC<StepProps> = ({ stepIdx, step }) => {
-  return (
-    <div className="bg-blue-400">
-      <span
-        className={clsx(
-          stepIdx !== 0 ? "lg:pl-9" : "",
-          "flex justify-around px-6 py-5 text-sm font-medium text-white lg:flex-col lg:gap-y-2"
-        )}
-      >
-        <span>{step.id}</span>
-        <span>{step.description}</span>
-      </span>
-    </div>
-  );
-};
-
-const UpcomingStep: FC<StepProps> = ({ stepIdx, step }) => {
-  return (
-    <div>
-      <span
-        className={clsx(
-          stepIdx !== 0 ? "lg:pl-9" : "",
-          "flex justify-around bg-slate-400 px-6 py-5 text-sm font-medium text-white lg:flex-col lg:gap-y-2"
         )}
       >
         <span>{step.id}</span>
@@ -88,12 +70,18 @@ const UpcomingStep: FC<StepProps> = ({ stepIdx, step }) => {
 };
 
 const MintingPhases = () => {
+  const { data: mintingPhase, isLoading, isError } = useMintingPhase();
+
+  if (isError) return <Error message="Could not load minting phase..." />;
+  if (isLoading) return <Loading />;
+  if (!mintingPhase) return <Error message="Could not load minting phase..." />;
+
   return (
     <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
       <div className="py-4">
         <h2 className="text-center text-2xl font-bold text-gray-900">
           Minting phase:
-          {steps.filter((step) => step.status === StepStatus.current)[0].id}
+          {/* {steps.filter((step) => step.status === StepStatus.current)[0].id} */}
         </h2>
       </div>
       <div className="pixelated w-full bg-slate-600 text-white after:text-slate-800 hover:text-white focus:outline-none">
@@ -108,13 +96,11 @@ const MintingPhases = () => {
                     "overflow-hidden border border-slate-600 lg:border-0"
                   )}
                 >
-                  {step.status === StepStatus.complete ? (
-                    <CompleteStep stepIdx={stepIdx} step={step} />
-                  ) : step.status === StepStatus.current ? (
-                    <CurrentStep stepIdx={stepIdx} step={step} />
-                  ) : (
-                    <UpcomingStep stepIdx={stepIdx} step={step} />
-                  )}
+                  <Step
+                    stepIdx={stepIdx}
+                    step={step}
+                    mintingPhase={mintingPhase.current}
+                  />
                   {stepIdx !== 0 ? (
                     <>
                       {/* Separator */}
