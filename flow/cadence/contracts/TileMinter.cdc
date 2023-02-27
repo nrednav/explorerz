@@ -82,7 +82,7 @@ pub contract TileMinter: NonFungibleToken {
 
         init() {
             // TODO: Change back to 120 for testnet
-            self.duration = 1 // 120 blocks ~= 240 seconds = 4 minutes
+            self.duration = 10 // 120 blocks ~= 240 seconds = 4 minutes
             self.current = 0
             self.lastUpdatedAt = getCurrentBlock().height
             emit PhaseInitialized(lastUpdatedAt: self.lastUpdatedAt)
@@ -122,7 +122,6 @@ pub contract TileMinter: NonFungibleToken {
         }
 
         let currentBlock = getCurrentBlock()
-        let currentPhase = Int(self.phase.current + 1)
 
         // If the current phase has lasted longer than 4 minutes, transition to the next phase
         // 4 minutes ~= 120 blocks
@@ -135,10 +134,10 @@ pub contract TileMinter: NonFungibleToken {
         metadata["blockHeight"] = currentBlock.height.toString()
         metadata["timestamp"] = currentBlock.timestamp.toString()
         metadata["minter"] = recipient.owner!.address.toString()
-        metadata["phase"] = currentPhase.toString()
-
-
+        
         // Batch mint the tiles, where quantity minted = current phase
+        let currentPhase = Int(self.phase.current + 1)
+        metadata["phase"] = currentPhase.toString()
         var i = 0
         while i < currentPhase {
             // Determine kind & variant of tiles to mint, via RNG

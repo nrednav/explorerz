@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { CountDown } from "./CountDown";
 import Loading from "./Loading";
 import Error from "@/components/data-display/Error";
@@ -57,6 +57,21 @@ const getCurrentPhase = (currentPhase: number, phasesElapsed: number) => {
   return (currentPhase + phasesElapsed) % 4;
 };
 
+const getTimeElapsed = (
+  blockHeight: number,
+  lastUpdatedAt: number,
+  blockTime: number
+) => {
+  const timeElapsedBlocks = blockHeight - lastUpdatedAt;
+  const timeElapsedSeconds = timeElapsedBlocks * blockTime;
+
+  return timeElapsedSeconds;
+};
+
+const getTimeRemaining = (duration: number, timeElapsed: number) => {
+  return duration - timeElapsed;
+};
+
 const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
   const stepStatus = getStepStatus(stepIdx, currentPhase);
   return (
@@ -84,25 +99,40 @@ const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
 
 const MintingPhases = () => {
   const { data: phaseDetails, isLoading, isError } = useMintingPhase();
+  const [currentPhase, setCurrentPhase] = useState<number | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!phaseDetails) return;
+    const { phase, blockHeight } = phaseDetails;
+
+    const phasesElapsed = getPhasesElapsed(
+      blockHeight,
+      phase.lastUpdatedAt,
+      phase.duration
+    );
+
+    const currentPhase = getCurrentPhase(phase.current, phasesElapsed);
+    setCurrentPhase(currentPhase);
+    const timeElapsed = getTimeElapsed(blockHeight, phase.lastUpdatedAt, 1);
+    const timeRemaining = getTimeRemaining(phase.duration, timeElapsed);
+    setTimeRemaining(timeRemaining);
+  }, [phaseDetails]);
 
   if (isError) return <Error message="Could not load minting phase..." />;
   if (isLoading) return <Loading />;
-  if (!phaseDetails) return <Error message="Could not load minting phase..." />;
-
-  const { phase, blockHeight } = phaseDetails;
-
-  const phasesElapsed = getPhasesElapsed(
-    blockHeight,
-    phase.lastUpdatedAt,
-    phase.duration
-  );
-
-  const currentPhase = getCurrentPhase(phase.current, phasesElapsed);
+  if (!phaseDetails || currentPhase === null)
+    return <Error message="Could not load minting phase..." />;
 
   return (
     <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
       <div className="py-4">
-        <CountDown subTitle="Time until next phase. When the map is full, the game ends." />
+        {timeRemaining && (
+          <CountDown
+            subTitle="Time until next phase. When the map is full, the game ends."
+            timeRemaining={timeRemaining}
+          />
+        )}
         <h2 className="text-center text-2xl font-bold text-gray-900">
           Minting phase: {steps[currentPhase].id}
         </h2>
