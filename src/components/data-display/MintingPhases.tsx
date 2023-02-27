@@ -105,7 +105,7 @@ const MintingPhases = () => {
                   className={clsx(
                     stepIdx === 0 ? "border-b-0" : "",
                     stepIdx === steps.length - 1 ? "border-t-0" : "",
-                    "overflow-hidden border border-gray-200 lg:border-0"
+                    "overflow-hidden border border-slate-600 lg:border-0"
                   )}
                 >
                   {step.status === StepStatus.complete ? (
