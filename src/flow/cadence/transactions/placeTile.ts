@@ -1,4 +1,5 @@
 import { MapCoordinate } from "@/shared/types";
+import { trackTransactionStatus } from "@/utils/transaction";
 import * as fcl from "@onflow/fcl";
 
 const code = `
@@ -30,19 +31,33 @@ transaction(tileId: UInt64, coordinate: [Int64; 2]) {
 `;
 
 export const placeTile = async ({
-  id,
-  coordinate,
+  data,
+  onSuccess,
 }: {
-  id: number;
-  coordinate: MapCoordinate;
+  data: { id: number; coordinate: MapCoordinate };
+  onSuccess: () => void;
 }) => {
+  const { id, coordinate } = data;
+
   try {
-    return await fcl.mutate({
+    const txId = await fcl.mutate({
       cadence: code,
       args: (arg: any, t: any) => [
         arg(id, t.UInt64),
         arg([coordinate.x, coordinate.y], t.Array(t.Int64)),
       ],
+    });
+
+    trackTransactionStatus({
+      txId,
+      onError: (errorMessage) => {
+        if (errorMessage.toLowerCase().includes("adjacent"))
+          return "Tile not adjacent to an occupied tile";
+      },
+      onSuccess: (_) => {
+        onSuccess();
+        return "Tile placed";
+      },
     });
   } catch (error) {
     console.error(error);

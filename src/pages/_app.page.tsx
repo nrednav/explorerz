@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { AppProps } from "next/app";
 import "@/shared/styles/global.css";
+import Toaster from "@/components/data-display/Toaster";
 import Page from "@/components/layout/Page";
 import "@/flow/config";
 import {
@@ -24,6 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </Page>
       </Hydrate>
       <ReactQueryDevtools />
+      <Toaster />
     </QueryClientProvider>
   );
 }
