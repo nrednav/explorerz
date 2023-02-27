@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { CheckIcon } from "@heroicons/react/24/solid";
 import clsx from "clsx";
 
 enum StepStatus {
@@ -12,7 +11,6 @@ type StepProps = {
   stepIdx: number;
   step: {
     id: string;
-    name: string;
     description: string;
     status: StepStatus;
   };
@@ -21,26 +19,22 @@ type StepProps = {
 const steps = [
   {
     id: "I",
-    name: "Job Details",
-    description: "Vitae sed mi luctus laoreet.",
+    description: "1x Tile",
     status: StepStatus.complete,
   },
   {
     id: "II",
-    name: "Application form",
-    description: "Cursus semper viverra.",
+    description: "2x Tiles",
     status: StepStatus.current,
   },
   {
     id: "III",
-    name: "Preview",
-    description: "Penatibus eu quis ante.",
+    description: "3x Tiles",
     status: StepStatus.upcoming,
   },
   {
     id: "IV",
-    name: "Preview",
-    description: "Penatibus eu quis ante.",
+    description: "4x Tiles",
     status: StepStatus.upcoming,
   },
 ];
@@ -119,7 +113,12 @@ const UpcomingStep: FC<StepProps> = ({ stepIdx, step }) => {
 
 const MintingPhases = () => {
   return (
-    <div className="py-4 lg:py-8">
+    <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
+      <div className="py-4">
+        <h2 className="text-center text-2xl font-bold text-gray-900">
+          Minting phases
+        </h2>
+      </div>
       <div className="lg:border-t lg:border-b lg:border-gray-200">
         <nav className="mx-auto max-w-7xl" aria-label="Progress">
           <ol
