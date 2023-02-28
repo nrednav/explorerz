@@ -5,3 +5,5 @@ testnet-blue.pkey
 .env
 *.env
 .env.*
+
+testnet-red.pkey

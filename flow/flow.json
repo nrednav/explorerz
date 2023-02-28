@@ -4,7 +4,7 @@
       "source": "cadence/contracts/Cartographer.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7",
-        "testnet": "7e384d013d79153e"
+        "testnet": "b5662ee0e214b675"
       }
     },
     "FungibleToken": {
@@ -32,7 +32,7 @@
       "source": "cadence/contracts/TileMinter.cdc",
       "aliases": {
         "emulator": "f8d6e0586b0a20c7",
-        "testnet": "7e384d013d79153e"
+        "testnet": "b5662ee0e214b675"
       }
     }
   },
@@ -52,6 +52,13 @@
         "type": "file",
         "location": "testnet-blue.pkey"
       }
+    },
+    "testnet-red": {
+      "address": "b5662ee0e214b675",
+      "key": {
+        "type": "file",
+        "location": "testnet-red.pkey"
+      }
     }
   },
   "deployments": {
@@ -65,7 +72,7 @@
       ]
     },
     "testnet": {
-      "testnet-blue": ["Cartographer", "TileMinter"]
+      "testnet-red": ["Cartographer", "TileMinter"]
     }
   }
 }
