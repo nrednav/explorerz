@@ -90,7 +90,7 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                         What will my NFT look like?
                       </h4>
                       <p>
-                        There are four types of land out there, each with four
+                        There are four types of land out there, each with two
                         mysterious variations waiting to be discovered by the
                         explorerz. The amount of land you can claim is not set
                         in stone. It all depends on the phase of your minting

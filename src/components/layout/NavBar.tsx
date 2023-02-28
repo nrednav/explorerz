@@ -1,4 +1,5 @@
 import { FC, Fragment, useState } from "react";
+import Image from "next/image";
 import { FAQ } from "../data-display/FAQ";
 import LoginButton from "../input-and-actions/LoginButton";
 import { Disclosure } from "@headlessui/react";
@@ -33,8 +34,22 @@ export const NavBar: FC = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="hidden sm:block">
-                    <LoginButton />
+                  <div className="hidden gap-x-6 sm:flex sm:items-center">
+                    <a
+                      href="/scores"
+                      className="text-primary inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm uppercase hover:opacity-100"
+                    >
+                      <div className="relative mx-auto h-16 w-16 max-w-2xl object-cover sm:mx-0 sm:h-16 sm:w-16 sm:max-w-none">
+                        <Image
+                          src="/images/Reward.png"
+                          alt="A mysterious reward"
+                          fill
+                        />
+                      </div>
+                    </a>
+                    <div>
+                      <LoginButton />
+                    </div>
                   </div>
                 </div>
                 <div className="-mr-2 flex items-center sm:hidden">
@@ -67,6 +82,17 @@ export const NavBar: FC = () => {
                 >
                   About
                 </Disclosure.Button>
+              </div>
+              <div className="border-minimal-black bg-minimal-white flex w-full justify-start border-l-4 pl-3">
+                <a href="/scores">
+                  <div className="relative h-16 w-16 max-w-2xl object-cover">
+                    <Image
+                      src="/images/Reward.png"
+                      alt="A mysterious reward"
+                      fill
+                    />
+                  </div>
+                </a>
               </div>
               <div className="flex w-full flex-col items-stretch justify-center p-4">
                 <LoginButton />
