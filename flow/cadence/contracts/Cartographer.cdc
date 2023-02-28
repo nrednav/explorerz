@@ -2,10 +2,10 @@ import "TileMinter"
 import "NonFungibleToken"
 import "MetadataViews"
 
-// A simple cartographer contract 
 pub contract Cartographer {
     // Data
     pub let map: Map
+    pub let explorerz: {Address: Explorer}
 
     pub let TileCollectionStoragePath: StoragePath
     pub let TileCollectionPublicPath: PublicPath
@@ -17,10 +17,12 @@ pub contract Cartographer {
     pub event TileDeposited(id: UInt64, to: Address?)
     pub event TilePlaced(id: UInt64, coordinate: String)
     pub event MapCompleted()
+    pub event RewardClaimed(recipient: Address)
 
     // Initialization, runs on deployment
     init() {
         self.map = Map()
+        self.explorerz = {}
 
         self.TileCollectionStoragePath = /storage/CartographerTileCollection
         self.TileCollectionPublicPath = /public/CartographerTileCollection
@@ -44,23 +46,26 @@ pub contract Cartographer {
         pub var tilesOccupied: UInt64
 
         init() {
+            let mapWidth = 16 
+            let mapHeight = 16 
+
             let tiles: [[MapTile?]] = []
             let rowOfEmptyTiles: [MapTile?] = []
 
             var col = 0
-            while col < 16 {
+            while col < mapWidth {
                 rowOfEmptyTiles.append(nil)
                 col = col + 1
             }
 
             var row = 0 
-            while row < 16 {
+            while row < mapHeight {
                 tiles.append(rowOfEmptyTiles)
                 row = row + 1
             }
 
             self.tiles = tiles
-            self.size = UInt64(16 * 16)
+            self.size = UInt64(mapWidth * mapHeight)
             self.tilesOccupied = 0
             self.completed = false
         }
@@ -78,11 +83,7 @@ pub contract Cartographer {
 
         pub fun complete() {
             self.completed = true
-
             TileMinter.closeMintingPeriod()
-
-            // TODO: Implement reward minting + distribution
-
             emit MapCompleted()
         }
 
@@ -160,8 +161,36 @@ pub contract Cartographer {
         }
     }
 
+    pub struct Explorer {
+        pub let address: Address
+        pub var tilesPlaced: UInt64
+        pub var claimedReward: Bool
+
+        init(address: Address, tilesPlaced: UInt64, claimedReward: Bool) {
+            self.address = address
+            self.tilesPlaced = tilesPlaced
+            self.claimedReward = claimedReward
+        }
+
+        pub fun claimReward() {
+            pre {
+                self.claimedReward == false: "The reward was already claimed"
+            }
+            self.claimedReward = true
+            emit RewardClaimed(recipient: self.address)
+        }
+
+        pub fun placeTile() {
+            self.tilesPlaced = self.tilesPlaced + 1
+        }
+    }
+
     // Functions
     pub fun placeTile(tile: MapTile, source: &TileMinter.Collection) {
+        pre {
+            self.map.completed == false: "The map has been completed"
+        }
+
         // Withdraw
         let tileNft <- source.withdraw(withdrawID: tile.id)
         let tileNftId = tileNft.id
@@ -176,9 +205,28 @@ pub contract Cartographer {
 
         tileCollection.deposit(token: <- tileNft)
 
+        // Record participation
+        let explorer = self.explorerz[tile.owner]
+        if explorer != nil {
+            explorer!.placeTile()
+            self.explorerz[tile.owner] = explorer
+        } else {
+            self.explorerz[tile.owner] = Explorer(address: tile.owner, tilesPlaced: 1, claimedReward: false)
+        }
+
         if self.map.tilesOccupied == self.map.size {
             self.map.complete()
         }
+    }
+    
+    pub fun claimReward(recipient: Address, collection: AnyStruct) {
+        pre {
+            self.map.completed == true: "The map is not yet complete"
+            self.explorerz[recipient] != nil: "Explorer not found"
+            self.explorerz[recipient]!.claimedReward == false: "The reward has already been claimed"
+        }
+
+        self.explorerz[recipient]!.claimReward()
     }
 
     pub fun getTileDetails(id: UInt64): TileDetails? {
