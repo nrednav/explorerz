@@ -1,9 +1,8 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import Loading from "./Loading";
 import Error from "@/components/data-display/Error";
 import useMintingPhase from "@/hooks/useMintingPhase";
 import clsx from "clsx";
-import { useAtom } from "jotai";
 
 enum StepStatus {
   "previous",

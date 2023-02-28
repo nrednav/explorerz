@@ -63,7 +63,7 @@ const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
       setSelectedTile(tile);
       inventoryPanel.close();
     },
-    []
+    [inventoryPanel, setSelectedTile]
   );
 
   return (
