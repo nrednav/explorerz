@@ -1,35 +1,75 @@
 {
-	"contracts": {
-		"Cartographer": "cadence/contracts/Cartographer.cdc",
-		"FungibleToken": "cadence/contracts/FungibleToken.cdc",
-		"MetadataViews": "cadence/contracts/MetadataViews.cdc",
-		"NonFungibleToken": "cadence/contracts/NonFungibleToken.cdc",
-		"TileMinter": "cadence/contracts/TileMinter.cdc"
-	},
-	"networks": {
-		"emulator": "127.0.0.1:3569",
-		"mainnet": "access.mainnet.nodes.onflow.org:9000",
-		"testnet": "access.devnet.nodes.onflow.org:9000"
-	},
-	"accounts": {
-		"default": {
-			"address": "f3fcd2c1a78f5eee",
-			"key": "51e8c652f914aba5ec4eb954d1cbe38e380713e43cea55e44fdf3eb786f21eb3"
-		},
-		"emulator-account": {
-			"address": "f8d6e0586b0a20c7",
-			"key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
-		}
-	},
-	"deployments": {
-		"emulator": {
-			"default": [
-				"Cartographer",
-				"FungibleToken",
-				"MetadataViews",
-				"NonFungibleToken",
-				"TileMinter"
-			]
-		}
-	}
+  "contracts": {
+    "Cartographer": {
+      "source": "cadence/contracts/Cartographer.cdc",
+      "aliases": {
+        "emulator": "f3fcd2c1a78f5eee",
+        "testnet": "7e384d013d79153e"
+      }
+    },
+    "FungibleToken": {
+      "source": "cadence/contracts/FungibleToken.cdc",
+      "aliases": {
+        "emulator": "f3fcd2c1a78f5eee",
+        "testnet": "9a0766d93b6608b7"
+      }
+    },
+    "MetadataViews": {
+      "source": "cadence/contracts/MetadataViews.cdc",
+      "aliases": {
+        "emulator": "f3fcd2c1a78f5eee",
+        "testnet": "631e88ae7f1d7c20"
+      }
+    },
+    "NonFungibleToken": {
+      "source": "cadence/contracts/NonFungibleToken.cdc",
+      "aliases": {
+        "emulator": "f3fcd2c1a78f5eee",
+        "testnet": "631e88ae7f1d7c20"
+      }
+    },
+    "TileMinter": {
+      "source": "cadence/contracts/TileMinter.cdc",
+      "aliases": {
+        "emulator": "f3fcd2c1a78f5eee",
+        "testnet": "7e384d013d79153e"
+      }
+    }
+  },
+  "networks": {
+    "emulator": "127.0.0.1:3569",
+    "mainnet": "access.mainnet.nodes.onflow.org:9000",
+    "testnet": "access.devnet.nodes.onflow.org:9000"
+  },
+  "accounts": {
+    "default": {
+      "address": "f3fcd2c1a78f5eee",
+      "key": "fde83eeeeeaadad1c10a5b8309628b5266b1b76bbfb1ea4fba526846780c213b"
+    },
+    "emulator-account": {
+      "address": "f8d6e0586b0a20c7",
+      "key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
+    },
+    "testnet-blue": {
+      "address": "7e384d013d79153e",
+      "key": {
+        "type": "file",
+        "location": "testnet-blue.pkey"
+      }
+    }
+  },
+  "deployments": {
+    "emulator": {
+      "default": [
+        "Cartographer",
+        "FungibleToken",
+        "MetadataViews",
+        "NonFungibleToken",
+        "TileMinter"
+      ]
+    },
+    "testnet": {
+      "testnet-blue": ["Cartographer", "TileMinter"]
+    }
+  }
 }

@@ -6,12 +6,14 @@ type TrackTransactionStatusArgs = {
   txId: string;
   onError?: (errorMessage: string) => string | undefined;
   onSuccess?: (txState: TransactionState) => string | undefined;
+  loadingMessage?: string;
 };
 
 export const trackTransactionStatus = ({
   txId,
   onError,
   onSuccess,
+  loadingMessage = "Loading",
 }: TrackTransactionStatusArgs) => {
   toast.promise(
     new Promise((resolve, reject) => {
@@ -30,7 +32,7 @@ export const trackTransactionStatus = ({
       });
     }),
     {
-      loading: "Loading",
+      loading: loadingMessage,
       success: (message) => `${message}`,
       error: (message) => `${message}`,
     },

@@ -16,7 +16,16 @@ const getConfig = (network: Network) => {
         "0xMetadataViews": "0xf3fcd2c1a78f5eee",
       };
     case "testnet":
-      return {};
+      return {
+        "app.detail.title": "Explorerz",
+        "accessNode.api": "https://rest-testnet.onflow.org",
+        "flow.network": "testnet",
+        "discovery.wallet": "https://flow-wallet-testnet.blocto.app/authn",
+        "0xCartographer": "0x7e384d013d79153e",
+        "0xTileMinter": "0x7e384d013d79153e",
+        "0xNonFungibleToken": "0x631e88ae7f1d7c20",
+        "0xMetadataViews": "0x631e88ae7f1d7c20",
+      };
   }
 };
 

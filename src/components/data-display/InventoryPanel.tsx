@@ -79,7 +79,6 @@ const TileList = ({ tiles }: { tiles: z.infer<typeof TileSchema>[] }) => {
               className="notched-module my-2 h-16 w-16 cursor-pointer snap-start border-2 border-black"
               onClick={selectTile(tile)}
             />
-            <p className="py-2 text-center text-sm sm:text-base">#{tile.id}</p>
           </div>
         ))
       ) : (
