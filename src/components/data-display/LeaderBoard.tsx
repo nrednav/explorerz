@@ -1,39 +1,20 @@
 import React from "react";
+import Error from "@/components/data-display/Error";
+import Loading from "@/components/data-display/Loading";
+import useExplorerz from "@/hooks/useExplorerz";
 import useUser from "@/hooks/useUser";
-import * as fcl from "@onflow/fcl";
 import clsx from "clsx";
-
-type Explorerz = {
-  address: string;
-  tilesPlaced: number;
-};
-
-const explorerz: Explorerz[] = [
-  {
-    address: "0x45706f384bb19073",
-    tilesPlaced: 5,
-  },
-  {
-    address: "0xat179c27144f783d",
-    tilesPlaced: 3,
-  },
-  {
-    address: "0xet179c27144f783e",
-    tilesPlaced: 2,
-  },
-  {
-    address: "0xee179c27144f783f",
-    tilesPlaced: 1,
-  },
-  {
-    address: "0xeq179c27144f783g",
-    tilesPlaced: 1,
-  },
-];
 
 const LeaderBoard = () => {
   const { user } = useUser();
-  console.log("🚀 ~ LeaderBoard ~ user:");
+  const { data, isLoading, isError } = useExplorerz();
+
+  if (isError) return <Error message="Could not load data..." />;
+  if (isLoading) return <Loading />;
+  if (!data) return <Error message="Could not load data..." />;
+
+  const explorerz = Object.values(data);
+  console.log("🚀 ~ LeaderBoard ~ explorerz:", explorerz);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
