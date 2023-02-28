@@ -3,48 +3,48 @@
 		"Cartographer": {
 			"source": "cadence/contracts/Cartographer.cdc",
 			"aliases": {
-				"emulator": "f3fcd2c1a78f5eee",
-				"testnet": "7e384d013d79153e"
+			"emulator": "f3fcd2c1a78f5eee",
+			"testnet": "7e384d013d79153e"
 			}
 		},
 		"FungibleToken": {
 			"source": "cadence/contracts/FungibleToken.cdc",
 			"aliases": {
-				"emulator": "f3fcd2c1a78f5eee",
-				"testnet": "9a0766d93b6608b7"
+			"emulator": "f3fcd2c1a78f5eee",
+			"testnet": "9a0766d93b6608b7"
 			}
 		},
 		"MetadataViews": {
 			"source": "cadence/contracts/MetadataViews.cdc",
 			"aliases": {
-				"emulator": "f3fcd2c1a78f5eee",
-				"testnet": "631e88ae7f1d7c20"
+			"emulator": "f3fcd2c1a78f5eee",
+			"testnet": "631e88ae7f1d7c20"
 			}
 		},
 		"NonFungibleToken": {
 			"source": "cadence/contracts/NonFungibleToken.cdc",
 			"aliases": {
-				"emulator": "f3fcd2c1a78f5eee",
-				"testnet": "631e88ae7f1d7c20"
+			"emulator": "f3fcd2c1a78f5eee",
+			"testnet": "631e88ae7f1d7c20"
 			}
 		},
 		"TileMinter": {
 			"source": "cadence/contracts/TileMinter.cdc",
 			"aliases": {
-				"emulator": "f3fcd2c1a78f5eee",
-				"testnet": "7e384d013d79153e"
+			"emulator": "f3fcd2c1a78f5eee",
+			"testnet": "7e384d013d79153e"
 			}
 		}
-	},
-	"networks": {
+		},
+		"networks": {
 		"emulator": "127.0.0.1:3569",
 		"mainnet": "access.mainnet.nodes.onflow.org:9000",
 		"testnet": "access.devnet.nodes.onflow.org:9000"
-	},
-	"accounts": {
+		},
+		"accounts": {
 		"default": {
-			"address": "f669cb8d41ce0c74",
-			"key": "d71733f6e34b9fc7ac7ff4d67d814528fb33630b4750edace4e33fce413313c3"
+			"address": "f3fcd2c1a78f5eee",
+			"key": "fde83eeeeeaadad1c10a5b8309628b5266b1b76bbfb1ea4fba526846780c213b"
 		},
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
@@ -53,20 +53,23 @@
 		"testnet-blue": {
 			"address": "7e384d013d79153e",
 			"key": {
-				"type": "file",
-				"location": "testnet-blue.pkey"
+			"type": "file",
+			"location": "testnet-blue.pkey"
 			}
 		}
-	},
-	"deployments": {
+		},
+		"deployments": {
 		"emulator": {
-			"default": []
+			"default": [
+			"Cartographer",
+			"FungibleToken",
+			"MetadataViews",
+			"NonFungibleToken",
+			"TileMinter"
+			]
 		},
 		"testnet": {
-			"testnet-blue": [
-				"Cartographer",
-				"TileMinter"
-			]
+			"testnet-blue": ["Cartographer", "TileMinter"]
 		}
 	}
 }
