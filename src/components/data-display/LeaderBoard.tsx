@@ -33,13 +33,20 @@ const LeaderBoard = () => {
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">
+          <h1 className="text-base font-semibold leading-6 text-indigo-600">
             Leaderboard
           </h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <p className="mt-6 text-sm text-gray-700">
             A list of all the explorerz in the world that went on amazing
-            expeditions.
+            expeditions. Once the map is complete, explorerz rewards will be
+            distributed as follows:
           </p>
+          <div className="mt-2 grid grid-cols-2 gap-4 text-sm text-gray-700">
+            <p className="mt-2 text-indigo-600">Top 5%: Legendary explorer</p>
+            <p className="mt-2 text-blue-400">5%-10%: Epic explorer</p>
+            <p className="mt-2 text-red-400">10%-45%: Rare explorer</p>
+            <p className="mt-2">45%-100%: Common explorer</p>
+          </div>
         </div>
       </div>
       <div className="pixelated mt-8 flow-root w-full">
