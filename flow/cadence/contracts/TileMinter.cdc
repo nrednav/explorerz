@@ -293,18 +293,6 @@ pub contract TileMinter: NonFungibleToken {
             TileMinter.tileRegistry[kind]?.remove(key: variant)
             emit TileVariantErased(kind: kind, variant: variant)
         }
-
-        // TODO: Remove once we move to testnet
-        pub fun openMintingPeriod() {
-            pre {
-                TileMinter.isMintingPeriodOpen == false: "The tile minting period is already open"
-            }
-
-            TileMinter.isMintingPeriodOpen = true 
-
-            let currentBlock = getCurrentBlock()
-            emit MintingPeriodOpened(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
-        }
     }
 }
  
