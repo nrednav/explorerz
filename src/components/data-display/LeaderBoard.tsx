@@ -45,7 +45,7 @@ const LeaderBoard = () => {
           <p className="mt-6 text-sm text-gray-700">
             A list of all the explorerz in the world that went on amazing
             expeditions. Once the map is complete, explorerz rewards will be
-            distributed as follows:
+            distributed like so:
           </p>
           <div className="flex w-full justify-center">
             <div className="mt-2 grid grid-cols-2 gap-8 text-sm text-gray-700">
@@ -60,20 +60,20 @@ const LeaderBoard = () => {
         </div>
       </div>
       <div className="pixelated mt-8 flow-root w-full bg-white text-black after:text-gray-100 hover:text-black focus:outline-none">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table className="min-w-full divide-y divide-black">
+        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+          <div className="inline-block w-full py-2 align-middle sm:px-6 lg:px-8">
+            <table className="w-full divide-y divide-black">
               <thead>
                 <tr>
                   <th
                     scope="col"
-                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                    className="py-3.5 pl-4 pr-3 text-left text-xs font-semibold text-gray-900 sm:pl-0 sm:text-sm"
                   >
                     Address
                   </th>
                   <th
                     scope="col"
-                    className="py-3.5 px-3 text-left text-sm font-semibold text-gray-900"
+                    className="py-3.5 px-3 text-left text-xs font-semibold text-gray-900 sm:text-sm"
                   >
                     Tiles
                   </th>
@@ -84,7 +84,7 @@ const LeaderBoard = () => {
                   <tr key={explorer.address}>
                     <td
                       className={clsx(
-                        "whitespace-nowrap py-4 pl-4 pr-3 text-left text-sm font-medium sm:pl-0",
+                        "whitespace-nowrap py-4 pl-4 pr-3 text-left text-xs font-medium sm:pl-0 sm:text-sm",
                         explorer.address === user.addr
                           ? "bg-yellow-400 text-indigo-600"
                           : "text-gray-600"
@@ -94,7 +94,7 @@ const LeaderBoard = () => {
                     </td>
                     <td
                       className={clsx(
-                        "whitespace-nowrap px-3 py-4 text-left text-sm text-gray-500",
+                        "whitespace-nowrap px-3 py-4 text-left text-xs text-gray-500 sm:text-sm",
                         explorer.address === user.addr
                           ? "bg-yellow-400 text-indigo-600"
                           : "text-gray-600"
