@@ -9,7 +9,17 @@ pub contract Cartographer {
 
     pub let TileCollectionStoragePath: StoragePath
     pub let TileCollectionPublicPath: PublicPath
+    pub let RewardCollectionStoragePath: StoragePath
+    pub let RewardCollectionPublicPath: PublicPath
     pub let StoragePath: StoragePath
+    
+    // Enums
+    pub enum RewardTier: UInt8 {
+        pub case common 
+        pub case rare 
+        pub case epic 
+        pub case legendary 
+    }
 
     // Events
     pub event ContractInitialized()
@@ -18,6 +28,7 @@ pub contract Cartographer {
     pub event TilePlaced(id: UInt64, coordinate: String)
     pub event MapCompleted()
     pub event RewardClaimed(recipient: Address)
+    pub event RewardDeposited(id: UInt64, to: Address?)
 
     // Initialization, runs on deployment
     init() {
@@ -26,6 +37,8 @@ pub contract Cartographer {
 
         self.TileCollectionStoragePath = /storage/CartographerTileCollection
         self.TileCollectionPublicPath = /public/CartographerTileCollection
+        self.RewardCollectionStoragePath = /storage/CartographerRewardCollection
+        self.RewardCollectionPublicPath = /public/CartographerRewardCollection
         self.StoragePath = /storage/Cartographer
 
         // Create a Tile collection resource and save it to storage
@@ -33,6 +46,13 @@ pub contract Cartographer {
         self.account.link<&Collection{NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection}>(
             self.TileCollectionPublicPath,
             target: self.TileCollectionStoragePath
+        )
+
+        // Create a Reward collection resource and save it to storage
+        self.account.save(<- create RewardCollection(), to: self.RewardCollectionStoragePath)
+        self.account.link<&RewardCollection{RewardCollectionPublic}>(
+            self.RewardCollectionPublicPath,
+            target: self.RewardCollectionStoragePath
         )
 
         emit ContractInitialized()
@@ -46,8 +66,8 @@ pub contract Cartographer {
         pub var tilesOccupied: UInt64
 
         init() {
-            let mapWidth = 16 
-            let mapHeight = 16 
+            let mapWidth = 16
+            let mapHeight = 16
 
             let tiles: [[MapTile?]] = []
             let rowOfEmptyTiles: [MapTile?] = []
@@ -172,11 +192,26 @@ pub contract Cartographer {
             self.claimedReward = claimedReward
         }
 
-        pub fun claimReward() {
+        pub fun claimReward(collection: &{Cartographer.RewardCollectionPublic}) {
             pre {
                 self.claimedReward == false: "The reward was already claimed"
             }
+
+            var rewardTier  = RewardTier.common
+
+            if self.tilesPlaced >= 64 {
+                rewardTier = RewardTier.legendary
+            } else if self.tilesPlaced >= 16 {
+                rewardTier = RewardTier.epic
+            } else if self.tilesPlaced >= 8 {
+                rewardTier = RewardTier.rare
+            } 
+
+            var newReward <- create Reward(tier: rewardTier)
+            collection.deposit(token: <- newReward)
+
             self.claimedReward = true
+
             emit RewardClaimed(recipient: self.address)
         }
 
@@ -219,14 +254,14 @@ pub contract Cartographer {
         }
     }
     
-    pub fun claimReward(recipient: Address, collection: AnyStruct) {
+    pub fun claimReward(recipient: Address, collection: &{Cartographer.RewardCollectionPublic}) {
         pre {
             self.map.completed == true: "The map is not yet complete"
             self.explorerz[recipient] != nil: "Explorer not found"
             self.explorerz[recipient]!.claimedReward == false: "The reward has already been claimed"
         }
 
-        self.explorerz[recipient]!.claimReward()
+        self.explorerz[recipient]!.claimReward(collection: collection)
     }
 
     pub fun getTileDetails(id: UInt64): TileDetails? {
@@ -241,7 +276,11 @@ pub contract Cartographer {
         return nil
     }
 
-   // Interfaces
+    pub fun createEmptyRewardCollection(): @Cartographer.RewardCollection {
+        return <- create RewardCollection()
+    }
+
+    // Resource
     pub resource interface TileCollectionPublic {
         pub fun borrowTile(id: UInt64): &TileMinter.NFT? {
             post {
@@ -250,7 +289,6 @@ pub contract Cartographer {
         }
     }
 
-    // Resource
     pub resource Collection: TileCollectionPublic, NonFungibleToken.Provider, NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection {
         pub var ownedNFTs: @{UInt64: NonFungibleToken.NFT}
 
@@ -301,4 +339,67 @@ pub contract Cartographer {
             destroy self.ownedNFTs
         }
     }
+
+    pub resource Reward {
+        pub let id: UInt64
+        pub let tier: RewardTier 
+        pub let image: String
+        
+        init(tier: RewardTier) {
+            self.id = self.uuid
+            self.tier = tier
+
+            if tier == RewardTier.legendary {
+                self.image = "https://explorerz.vercel.app/images/reward-legendary.png"
+            } else if tier == RewardTier.epic {
+                self.image = "https://explorerz.vercel.app/images/reward-epic.png"
+            } else if tier == RewardTier.rare {
+                self.image = "https://explorerz.vercel.app/images/reward-rare.png"
+            } else {
+                self.image = "https://explorerz.vercel.app/images/reward-common.png"
+            }
+
+        }
+    }
+
+    pub resource interface RewardCollectionPublic {
+        pub fun deposit(token: @Cartographer.Reward)
+        pub fun borrowReward(id: UInt64): &Cartographer.Reward? {
+            post {
+                (result == nil) || (result?.id == id): "Cannot borrow reference to Reward: The ID of the returned Reward is incorrect"
+            }
+        }
+    }
+
+    pub resource RewardCollection: RewardCollectionPublic {
+        pub var rewards: @{UInt64: Cartographer.Reward}
+
+        init () {
+            self.rewards <- {}
+        }
+
+        pub fun deposit(token: @Cartographer.Reward) {
+            let reward <- token as! @Cartographer.Reward
+            let rewardId: UInt64 = reward.id
+            let oldReward <- self.rewards[rewardId] <- reward
+
+            emit RewardDeposited(id: rewardId, to: self.owner?.address)
+            destroy oldReward
+        }
+
+        pub fun borrowReward(id: UInt64): &Cartographer.Reward? {
+            if self.rewards[id] != nil {
+                // Create an authorized reference to allow downcasting
+                let rewardRef = (&self.rewards[id] as auth &Cartographer.Reward?)!
+                return rewardRef as! &Cartographer.Reward
+            } else {
+                return nil
+            }    
+        }
+
+        destroy() {
+            destroy self.rewards
+        }
+    }
 }
+
