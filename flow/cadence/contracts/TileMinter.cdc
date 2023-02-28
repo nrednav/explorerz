@@ -24,7 +24,6 @@ pub contract TileMinter: NonFungibleToken {
     pub event MintingPeriodOpened(block: String, timestamp: String)
     pub event MintingPeriodClosed(block: String, timestamp: String)
     pub event PhaseInitialized(lastUpdatedAt: UInt64)
-    pub event PhaseTransitioned(phase: UInt64, lastUpdatedAt: UInt64)
     pub event PhaseReset(lastUpdatedAt: UInt64)
 
     // Initialization
@@ -76,26 +75,17 @@ pub contract TileMinter: NonFungibleToken {
 
     // Structs
     pub struct Phase {
-        pub var current: UInt64
         pub var lastUpdatedAt: UInt64
         pub let duration: UInt64 // time expressed in block height, 1 block = 2 seconds
 
         init() {
             // TODO: Change back to 120 for testnet
-            self.duration = 1 // 120 blocks ~= 240 seconds = 4 minutes
-            self.current = 0
+            self.duration = 10 // 120 blocks ~= 240 seconds = 4 minutes
             self.lastUpdatedAt = getCurrentBlock().height
             emit PhaseInitialized(lastUpdatedAt: self.lastUpdatedAt)
         }
 
-        pub fun transition() {
-            self.current = (self.current + 1) % 4
-            self.lastUpdatedAt = getCurrentBlock().height
-            emit PhaseTransitioned(phase: UInt64(self.current + 1), lastUpdatedAt: self.lastUpdatedAt)
-        }
-
         pub fun reset() {
-            self.current = 0
             self.lastUpdatedAt = getCurrentBlock().height
             emit PhaseReset(lastUpdatedAt: self.lastUpdatedAt)
         }
@@ -122,13 +112,7 @@ pub contract TileMinter: NonFungibleToken {
         }
 
         let currentBlock = getCurrentBlock()
-        let currentPhase = Int(self.phase.current + 1)
-
-        // If the current phase has lasted longer than 4 minutes, transition to the next phase
-        // 4 minutes ~= 120 blocks
-        if currentBlock.height >= self.phase.lastUpdatedAt + self.phase.duration {
-            self.phase.transition()
-        }
+        let currentPhase = (currentBlock.height - self.phase.lastUpdatedAt) % 4
 
         // Record additional data for TileMinted event
         let metadata: {String: String} = {}
@@ -138,8 +122,10 @@ pub contract TileMinter: NonFungibleToken {
         metadata["phase"] = currentPhase.toString()
         
         // Batch mint the tiles, where quantity minted = current phase
+        let mintQuantity = Int(currentPhase + 1)
+
         var i = 0
-        while i < currentPhase {
+        while i < mintQuantity {
             // Determine kind & variant of tiles to mint, via RNG
             let kinds = self.tileRegistry.keys
             let chosenKind = kinds[Int(unsafeRandom()) % kinds.length]
@@ -318,11 +304,6 @@ pub contract TileMinter: NonFungibleToken {
 
             let currentBlock = getCurrentBlock()
             emit MintingPeriodOpened(block: currentBlock.height.toString(), timestamp: currentBlock.timestamp.toString())
-        }
-
-        // TODO: Remove once we move to testnet
-        pub fun transitionPhase() {
-            TileMinter.phase.transition()
         }
     }
 }

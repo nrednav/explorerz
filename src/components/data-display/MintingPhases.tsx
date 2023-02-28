@@ -1,9 +1,9 @@
-import { FC, useEffect, useState } from "react";
-import { CountDown } from "./CountDown";
+import { FC, useEffect } from "react";
 import Loading from "./Loading";
 import Error from "@/components/data-display/Error";
 import useMintingPhase from "@/hooks/useMintingPhase";
 import clsx from "clsx";
+import { useAtom } from "jotai";
 
 enum StepStatus {
   "previous",
@@ -45,32 +45,24 @@ const getStepStatus = (stepIdx: number, currentPhase: number) => {
   return StepStatus.next;
 };
 
-const getPhasesElapsed = (
-  blockHeight: number,
-  lastUpdatedAt: number,
-  duration: number
-) => {
-  return Math.floor((blockHeight - lastUpdatedAt) / duration);
+const getCurrentPhase = (blockHeight: number, lastUpdatedAt: number) => {
+  return (blockHeight - lastUpdatedAt) % 4;
 };
 
-const getCurrentPhase = (currentPhase: number, phasesElapsed: number) => {
-  return (currentPhase + phasesElapsed) % 4;
-};
+// const getTimeElapsed = (
+//   blockHeight: number,
+//   lastUpdatedAt: number,
+//   blockTime: number
+// ) => {
+//   const timeElapsedBlocks = blockHeight - lastUpdatedAt;
+//   const timeElapsedSeconds = timeElapsedBlocks * blockTime;
 
-const getTimeElapsed = (
-  blockHeight: number,
-  lastUpdatedAt: number,
-  blockTime: number
-) => {
-  const timeElapsedBlocks = blockHeight - lastUpdatedAt;
-  const timeElapsedSeconds = timeElapsedBlocks * blockTime;
+//   return timeElapsedSeconds;
+// };
 
-  return timeElapsedSeconds;
-};
-
-const getTimeRemaining = (duration: number, timeElapsed: number) => {
-  return duration - timeElapsed;
-};
+// const getTimeRemaining = (duration: number, timeElapsed: number) => {
+//   return duration - timeElapsed;
+// };
 
 const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
   const stepStatus = getStepStatus(stepIdx, currentPhase);
@@ -100,39 +92,29 @@ const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
 const MintingPhases = () => {
   const { data: phaseDetails, isLoading, isError } = useMintingPhase();
 
-  useEffect(() => {
-    if (!phaseDetails) return;
-  }, [phaseDetails]);
-
   if (isError) return <Error message="Could not load minting phase..." />;
   if (isLoading) return <Loading />;
   if (!phaseDetails) return <Error message="Could not load minting phase..." />;
 
-  const { phase, blockHeight } = phaseDetails;
+  const { blockHeight, phase } = phaseDetails;
 
-  const phasesElapsed = getPhasesElapsed(
-    blockHeight,
-    phase.lastUpdatedAt,
-    phase.duration
-  );
-
-  const currentPhase = getCurrentPhase(phase.current, phasesElapsed);
-  const timeElapsed = getTimeElapsed(blockHeight, phase.lastUpdatedAt, 1);
-  const timeRemaining = getTimeRemaining(phase.duration, timeElapsed);
+  const currentPhase = getCurrentPhase(blockHeight, phase.lastUpdatedAt);
+  // const timeElapsed = getTimeElapsed(blockHeight, phase.lastUpdatedAt, 1);
+  // const timeRemaining = getTimeRemaining(phase.duration, timeElapsed);
 
   return (
     <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
-      <div className="py-4">
-        {timeRemaining && (
-          <CountDown
-            subTitle="Time until next phase. When the map is full, the game ends."
-            timeRemaining={timeRemaining}
-          />
-        )}
-        <h2 className="text-center text-2xl font-bold text-gray-900">
-          Minting phase: {steps[currentPhase].id}
-        </h2>
-      </div>
+      {/* <div className="py-4"> */}
+      {/*   {timeRemaining && ( */}
+      {/*     <CountDown */}
+      {/*       subTitle="Time until next phase. When the map is full, the game ends." */}
+      {/*       timeRemaining={timeRemaining} */}
+      {/*     /> */}
+      {/*   )} */}
+      {/* </div> */}
+      <h2 className="py-4 text-center text-2xl font-bold text-gray-900">
+        Minting phase: {steps[currentPhase].id}
+      </h2>
       <div className="pixelated w-full bg-slate-600 text-white after:text-slate-800 hover:text-white focus:outline-none">
         <nav aria-label="Minting phase">
           <ol role="list" className="overflow-hidden lg:flex">

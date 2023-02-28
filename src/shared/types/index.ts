@@ -52,14 +52,11 @@ export type TransactionEvent = {
   type: string;
 };
 
-export const PhaseSchema = z.object({
-  current: z.coerce.number(),
-  lastUpdatedAt: z.coerce.number(),
-  duration: z.coerce.number(),
-});
-
 export const PhaseDetailsSchema = z.object({
-  phase: PhaseSchema,
+  phase: z.object({
+    lastUpdatedAt: z.coerce.number(),
+    duration: z.coerce.number(),
+  }),
   blockHeight: z.coerce.number(),
 });
 
