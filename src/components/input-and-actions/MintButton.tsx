@@ -3,7 +3,7 @@ import Button, { ButtonProps } from "./Button";
 import { mintTiles } from "@/flow/cadence/transactions/mintTiles";
 import useMintingPhase from "@/hooks/useMintingPhase";
 
-const MintButton: FC<Partial<ButtonProps>> = ({ disabled = false }) => {
+const MintButton: FC<Partial<ButtonProps>> = () => {
   const { refetch: refetchMintingPhase } = useMintingPhase();
 
   const mint = useCallback(() => {

@@ -52,10 +52,12 @@ export type TransactionEvent = {
   type: string;
 };
 
-export const MintingPhaseSchema = z.object({
-  current: z.coerce.number(),
-  lastUpdatedAt: z.coerce.number(),
-  duration: z.coerce.number(),
+export const PhaseDetailsSchema = z.object({
+  phase: z.object({
+    lastUpdatedAt: z.coerce.number(),
+    duration: z.coerce.number(),
+  }),
+  blockHeight: z.coerce.number(),
 });
 
-export type MintingPhase = z.infer<typeof MintingPhaseSchema>;
+export type PhaseDetails = z.infer<typeof PhaseDetailsSchema>;

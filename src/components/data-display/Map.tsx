@@ -24,7 +24,7 @@ const GridOfTiles = ({ tiles }: { tiles: TileGrid }) => {
 
   const selectTile = useCallback(
     (x: number, y: number) => () => setSelectedCoordinate({ x, y }),
-    [tiles, setSelectedCoordinate]
+    [setSelectedCoordinate]
   );
 
   const selectedTileStyles = "border-yellow-400 sm:!border-4";

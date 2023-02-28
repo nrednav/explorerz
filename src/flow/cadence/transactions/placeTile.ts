@@ -54,7 +54,7 @@ export const placeTile = async ({
         if (errorMessage.toLowerCase().includes("adjacent"))
           return "Tile not adjacent to an occupied tile";
       },
-      onSuccess: (_) => {
+      onSuccess: () => {
         onSuccess();
         return "Tile placed";
       },

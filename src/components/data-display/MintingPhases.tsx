@@ -16,7 +16,7 @@ type StepProps = {
     id: string;
     description: string;
   };
-  mintingPhase: number;
+  currentPhase: number;
 };
 
 const steps = [
@@ -44,8 +44,27 @@ const getStepStatus = (stepIdx: number, currentPhase: number) => {
   return StepStatus.next;
 };
 
-const Step: FC<StepProps> = ({ stepIdx, step, mintingPhase }) => {
-  const stepStatus = getStepStatus(stepIdx, mintingPhase);
+const getCurrentPhase = (blockHeight: number, lastUpdatedAt: number) => {
+  return (blockHeight - lastUpdatedAt) % 4;
+};
+
+// const getTimeElapsed = (
+//   blockHeight: number,
+//   lastUpdatedAt: number,
+//   blockTime: number
+// ) => {
+//   const timeElapsedBlocks = blockHeight - lastUpdatedAt;
+//   const timeElapsedSeconds = timeElapsedBlocks * blockTime;
+
+//   return timeElapsedSeconds;
+// };
+
+// const getTimeRemaining = (duration: number, timeElapsed: number) => {
+//   return duration - timeElapsed;
+// };
+
+const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
+  const stepStatus = getStepStatus(stepIdx, currentPhase);
   return (
     <div
       className={clsx(
@@ -70,20 +89,31 @@ const Step: FC<StepProps> = ({ stepIdx, step, mintingPhase }) => {
 };
 
 const MintingPhases = () => {
-  const { data: mintingPhase, isLoading, isError } = useMintingPhase();
+  const { data: phaseDetails, isLoading, isError } = useMintingPhase();
 
   if (isError) return <Error message="Could not load minting phase..." />;
   if (isLoading) return <Loading />;
-  if (!mintingPhase) return <Error message="Could not load minting phase..." />;
+  if (!phaseDetails) return <Error message="Could not load minting phase..." />;
+
+  const { blockHeight, phase } = phaseDetails;
+
+  const currentPhase = getCurrentPhase(blockHeight, phase.lastUpdatedAt);
+  // const timeElapsed = getTimeElapsed(blockHeight, phase.lastUpdatedAt, 1);
+  // const timeRemaining = getTimeRemaining(phase.duration, timeElapsed);
 
   return (
     <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
-      <div className="py-4">
-        <h2 className="text-center text-2xl font-bold text-gray-900">
-          Minting phase:
-          {/* {steps.filter((step) => step.status === StepStatus.current)[0].id} */}
-        </h2>
-      </div>
+      {/* <div className="py-4"> */}
+      {/*   {timeRemaining && ( */}
+      {/*     <CountDown */}
+      {/*       subTitle="Time until next phase. When the map is full, the game ends." */}
+      {/*       timeRemaining={timeRemaining} */}
+      {/*     /> */}
+      {/*   )} */}
+      {/* </div> */}
+      <h2 className="py-4 text-center text-2xl font-bold text-gray-900">
+        Minting phase: {steps[currentPhase].id}
+      </h2>
       <div className="pixelated w-full bg-slate-600 text-white after:text-slate-800 hover:text-white focus:outline-none">
         <nav aria-label="Minting phase">
           <ol role="list" className="overflow-hidden lg:flex">
@@ -99,7 +129,7 @@ const MintingPhases = () => {
                   <Step
                     stepIdx={stepIdx}
                     step={step}
-                    mintingPhase={mintingPhase.current}
+                    currentPhase={currentPhase}
                   />
                   {stepIdx !== 0 ? (
                     <>
