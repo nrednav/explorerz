@@ -108,22 +108,15 @@ const MintingPhases = () => {
     phase.duration
   );
 
-  // const timeElapsed = getTimeElapsed(blockHeight, phase.lastUpdatedAt, 1);
-  // const timeRemaining = getTimeRemaining(phase.duration, timeElapsed);
-
   return (
     <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
-      {/* <div className="py-4"> */}
-      {/*   {timeRemaining && ( */}
-      {/*     <CountDown */}
-      {/*       subTitle="Time until next phase. When the map is full, the game ends." */}
-      {/*       timeRemaining={timeRemaining} */}
-      {/*     /> */}
-      {/*   )} */}
-      {/* </div> */}
-      <h2 className="py-4 text-center text-2xl font-bold text-gray-900">
+      <h2 className="py-4 text-center text-sm font-bold text-gray-900 sm:text-2xl">
         Minting phase: {steps[currentPhase].id}
       </h2>
+      <h3 className="py-4 text-center text-[10px] font-bold text-gray-600 sm:text-base">
+        Each phase lasts approx ~4min. <br />
+        When the map is full, the game ends.
+      </h3>
       <div className="pixelated w-full bg-slate-600 text-white after:text-slate-800 hover:text-white focus:outline-none">
         <nav aria-label="Minting phase">
           <ol role="list" className="overflow-hidden lg:flex">

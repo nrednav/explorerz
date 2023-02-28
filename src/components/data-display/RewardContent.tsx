@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const RewardContent = () => {
   return (
-    <div className="overflow-hidden bg-white pb-6 sm:py-24">
+    <div className="overflow-hidden bg-white pb-6 sm:py-8">
       <div className="mx-auto max-w-7xl md:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-y-16 gap-x-8 sm:gap-y-20 lg:grid-cols-2 lg:items-start">
           <div className="px-6 lg:px-0 lg:pr-4">
@@ -11,16 +11,18 @@ const RewardContent = () => {
               <h2 className="text-base font-semibold leading-7 text-indigo-600">
                 Greetings, brave explorerz!
               </h2>
-              <p className="mt-6 text-sm leading-8 text-gray-600">
+              <p className="mt-6 text-xs text-gray-600 sm:text-sm sm:!leading-8">
                 As you venture forth, mapping uncharted territories, you will be
                 able to collect an amazing explorerz reward. But beware! The
                 road ahead is treacherous, and not all expeditions are created
-                equal. The more tiles you lay, the more expeditions you
-                complete, the rarer your explorerz reward will be. Will you be
-                satisfied with a common reward, or will you brave the dangers of
-                the unknown and unlock the rarest? Only you can decide your
-                fate! So gather your courage, grab your compass, and let the
-                adventure begin!
+                equal.
+              </p>
+              <p className="mt-6 text-xs text-gray-600 sm:text-sm sm:!leading-8">
+                The more tiles you lay, the more expeditions you complete, the
+                rarer your explorerz reward will be. Will you be satisfied with
+                a common reward, or will you brave the dangers of the unknown
+                and unlock the rarest? Only you can decide your fate! So gather
+                your courage, grab your compass, and let the adventure begin!
               </p>
             </div>
           </div>

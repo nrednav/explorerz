@@ -5,6 +5,12 @@ import useExplorerz from "@/hooks/useExplorerz";
 import useUser from "@/hooks/useUser";
 import clsx from "clsx";
 
+const getShortAddress = (str: string) => {
+  return (
+    str.substring(0, 4) + "..." + str.substring(str.length - 6, str.length)
+  );
+};
+
 const LeaderBoard = () => {
   const { user } = useUser();
   const { data, isLoading, isError } = useExplorerz();
@@ -14,28 +20,27 @@ const LeaderBoard = () => {
   if (!data) return <Error message="Could not load data..." />;
 
   const explorerz = Object.values(data);
-  console.log("🚀 ~ LeaderBoard ~ explorerz:", explorerz);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
+        <div className="text-xs sm:flex-auto sm:text-sm sm:!leading-8">
           <h1 className="text-base font-semibold leading-6 text-indigo-600">
             Leaderboard
           </h1>
-          <p className="mt-6 text-sm text-gray-700">
+          <p className="mt-6 text-gray-700">
             A list of all the explorerz in the world that went on amazing
             expeditions. Once the map is complete, explorerz rewards will be
             distributed like so:
           </p>
           <div className="flex w-full justify-center">
-            <div className="mt-2 grid grid-cols-2 gap-8 text-sm text-gray-700">
+            <div className="mt-2 grid grid-cols-2 gap-8 text-gray-700">
               <p className="mt-2 text-indigo-600">
-                Top 5%: Legendary explorerz
+                {">="} 64 Tiles placed: Legendary
               </p>
-              <p className="mt-2 text-blue-400">5%-10%: Epic explorerz</p>
-              <p className="mt-2 text-red-400">10%-45%: Rare explorerz</p>
-              <p className="mt-2">45%-100%: Common explorerz</p>
+              <p className="mt-2 text-blue-400">{">="} 16 Tiles placed: Epic</p>
+              <p className="mt-2 text-red-400">{">="} 08 Tiles placed: Rare</p>
+              <p className="mt-2">{">="} 01 Tiles placed: Common</p>
             </div>
           </div>
         </div>
@@ -48,15 +53,15 @@ const LeaderBoard = () => {
                 <tr>
                   <th
                     scope="col"
-                    className="py-3.5 pl-4 pr-3 text-left text-xs font-semibold text-gray-900 sm:pl-0 sm:text-sm"
+                    className="py-3.5 px-4 text-left text-[10px] font-semibold text-gray-900 sm:text-sm"
                   >
                     Address
                   </th>
                   <th
                     scope="col"
-                    className="py-3.5 px-3 text-left text-xs font-semibold text-gray-900 sm:text-sm"
+                    className="py-3.5 px-3 text-left text-[10px] font-semibold text-gray-900 sm:text-sm"
                   >
-                    Tiles
+                    Tiles placed
                   </th>
                 </tr>
               </thead>
@@ -65,17 +70,19 @@ const LeaderBoard = () => {
                   <tr key={explorer.address}>
                     <td
                       className={clsx(
-                        "whitespace-nowrap py-4 pl-4 pr-3 text-left text-xs font-medium sm:pl-0 sm:text-sm",
+                        "whitespace-nowrap px-4 text-left text-[10px] font-medium sm:text-sm",
                         explorer.address === user.addr
                           ? "bg-yellow-400 text-indigo-600"
                           : "text-gray-600"
                       )}
                     >
-                      {explorer.address}
+                      {window.innerWidth < 640
+                        ? getShortAddress(explorer.address)
+                        : explorer.address}
                     </td>
                     <td
                       className={clsx(
-                        "whitespace-nowrap px-3 py-4 text-left text-xs text-gray-500 sm:text-sm",
+                        "whitespace-nowrap px-4 py-4 text-left text-[10px] text-gray-500 sm:text-sm",
                         explorer.address === user.addr
                           ? "bg-yellow-400 text-indigo-600"
                           : "text-gray-600"
