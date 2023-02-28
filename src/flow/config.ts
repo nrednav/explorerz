@@ -10,10 +10,10 @@ const getConfig = (network: Network) => {
         "accessNode.api": "http://localhost:8888",
         "flow.network": "emulator",
         "discovery.wallet": "http://localhost:8701/fcl/authn", // Point FCL at dev-wallet (default port)
-        "0xCartographer": "0xf3fcd2c1a78f5eee",
-        "0xTileMinter": "0xf3fcd2c1a78f5eee",
-        "0xNonFungibleToken": "0xf3fcd2c1a78f5eee",
-        "0xMetadataViews": "0xf3fcd2c1a78f5eee",
+        "0xCartographer": "0xf8d6e0586b0a20c7",
+        "0xTileMinter": "0xf8d6e0586b0a20c7",
+        "0xNonFungibleToken": "0xf8d6e0586b0a20c7",
+        "0xMetadataViews": "0xf8d6e0586b0a20c7",
       };
     case "testnet":
       return {
