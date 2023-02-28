@@ -114,8 +114,9 @@ const MintingPhases = () => {
         Minting phase: {steps[currentPhase].id}
       </h2>
       <h3 className="py-4 text-center text-[10px] font-bold text-gray-600 sm:text-base">
-        Each phase lasts approx ~4min. <br />
-        When the map is full, the game ends.
+        Each phase lasts approx ~4min <br />
+        Each mint resets to phase I <br />
+        When the map is full, the game ends
       </h3>
       <div className="pixelated w-full bg-slate-600 text-white after:text-slate-800 hover:text-white focus:outline-none">
         <nav aria-label="Minting phase">
