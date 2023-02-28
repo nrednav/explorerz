@@ -111,7 +111,8 @@ pub contract TileMinter: NonFungibleToken {
         }
 
         let currentBlock = getCurrentBlock()
-        let currentPhase = (currentBlock.height - self.phase.lastUpdatedAt) % 4
+        let phasesElapsed = Int((currentBlock.height - self.phase.lastUpdatedAt) / self.phase.duration)
+        let currentPhase = phasesElapsed % 4
 
         // Record additional data for TileMinted event
         let metadata: {String: String} = {}
