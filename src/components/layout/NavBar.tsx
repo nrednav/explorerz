@@ -84,13 +84,15 @@ export const NavBar: FC = () => {
                 </Disclosure.Button>
               </div>
               <div className="border-minimal-black bg-minimal-white flex w-full justify-start border-l-4 pl-3">
-                <div className="relative h-16 w-16 max-w-2xl object-cover">
-                  <Image
-                    src="/images/Reward.png"
-                    alt="A mysterious reward"
-                    fill
-                  />
-                </div>
+                <a href="/scores">
+                  <div className="relative h-16 w-16 max-w-2xl object-cover">
+                    <Image
+                      src="/images/Reward.png"
+                      alt="A mysterious reward"
+                      fill
+                    />
+                  </div>
+                </a>
               </div>
               <div className="flex w-full flex-col items-stretch justify-center p-4">
                 <LoginButton />
