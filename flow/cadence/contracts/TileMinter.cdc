@@ -76,11 +76,10 @@ pub contract TileMinter: NonFungibleToken {
     // Structs
     pub struct Phase {
         pub var lastUpdatedAt: UInt64
-        pub let duration: UInt64 // time expressed in block height, 1 block = 2 seconds
+        pub let duration: UInt64 // time expressed in block height, e.g. 1 block ~= 1 seconds
 
         init() {
-            // TODO: Change back to 120 for testnet
-            self.duration = 10 // 120 blocks ~= 240 seconds = 4 minutes
+            self.duration = 240 // 240 blocks ~= 240 seconds = 4 minutes
             self.lastUpdatedAt = getCurrentBlock().height
             emit PhaseInitialized(lastUpdatedAt: self.lastUpdatedAt)
         }
@@ -112,7 +111,8 @@ pub contract TileMinter: NonFungibleToken {
         }
 
         let currentBlock = getCurrentBlock()
-        let currentPhase = (currentBlock.height - self.phase.lastUpdatedAt) % 4
+        let phasesElapsed = Int((currentBlock.height - self.phase.lastUpdatedAt) / self.phase.duration)
+        let currentPhase = phasesElapsed % 4
 
         // Record additional data for TileMinted event
         let metadata: {String: String} = {}

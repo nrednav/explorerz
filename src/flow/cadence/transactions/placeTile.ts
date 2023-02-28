@@ -1,6 +1,7 @@
 import { MapCoordinate } from "@/shared/types";
 import { trackTransactionStatus } from "@/utils/transaction";
 import * as fcl from "@onflow/fcl";
+import { toast } from "react-hot-toast";
 
 const code = `
 import TileMinter from 0xTileMinter
@@ -40,6 +41,8 @@ export const placeTile = async ({
   const { id, coordinate } = data;
 
   try {
+    toast.loading("Loading wallet...", { id: "loading-wallet-toast" });
+
     const txId = await fcl.mutate({
       cadence: code,
       args: (arg: any, t: any) => [
@@ -48,8 +51,11 @@ export const placeTile = async ({
       ],
     });
 
+    toast.dismiss("loading-wallet-toast");
+
     trackTransactionStatus({
       txId,
+      loadingMessage: "Placing tile...",
       onError: (errorMessage) => {
         if (errorMessage.toLowerCase().includes("adjacent"))
           return "Tile not adjacent to an occupied tile";
@@ -60,6 +66,7 @@ export const placeTile = async ({
       },
     });
   } catch (error) {
+    toast.dismiss("loading-wallet-toast");
     console.error(error);
   }
 };

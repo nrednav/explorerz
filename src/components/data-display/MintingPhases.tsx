@@ -44,8 +44,13 @@ const getStepStatus = (stepIdx: number, currentPhase: number) => {
   return StepStatus.next;
 };
 
-const getCurrentPhase = (blockHeight: number, lastUpdatedAt: number) => {
-  return (blockHeight - lastUpdatedAt) % 4;
+const getCurrentPhase = (
+  blockHeight: number,
+  lastUpdatedAt: number,
+  duration: number
+) => {
+  const phasesElapsed = (blockHeight - lastUpdatedAt) / duration;
+  return Math.floor(phasesElapsed % 4);
 };
 
 // const getTimeElapsed = (
@@ -97,7 +102,12 @@ const MintingPhases = () => {
 
   const { blockHeight, phase } = phaseDetails;
 
-  const currentPhase = getCurrentPhase(blockHeight, phase.lastUpdatedAt);
+  const currentPhase = getCurrentPhase(
+    blockHeight,
+    phase.lastUpdatedAt,
+    phase.duration
+  );
+
   // const timeElapsed = getTimeElapsed(blockHeight, phase.lastUpdatedAt, 1);
   // const timeRemaining = getTimeRemaining(phase.duration, timeElapsed);
 

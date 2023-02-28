@@ -1,10 +1,11 @@
 import { trackTransactionStatus } from "@/utils/transaction";
 import * as fcl from "@onflow/fcl";
+import { toast } from "react-hot-toast";
 
 const code = `
-import TileMinter from 0xf3fcd2c1a78f5eee
-import NonFungibleToken from 0xf3fcd2c1a78f5eee
-import MetadataViews from 0xf3fcd2c1a78f5eee
+import TileMinter from 0xTileMinter
+import NonFungibleToken from 0xNonFungibleToken
+import MetadataViews from 0xMetadataViews
 
 transaction {
     let tileCollectionRef: &{NonFungibleToken.CollectionPublic}
@@ -42,9 +43,15 @@ transaction {
 
 export const mintTiles = async ({ onSuccess }: { onSuccess: () => void }) => {
   try {
+    toast.loading("Loading wallet...", { id: "loading-wallet" });
+
     const txId = await fcl.mutate({ cadence: code, limit: 1000 });
+
+    toast.dismiss("loading-wallet");
+
     trackTransactionStatus({
       txId,
+      loadingMessage: "Minting...",
       onError: () => "Could not mint tiles",
       onSuccess: (txState) => {
         onSuccess();
@@ -55,6 +62,7 @@ export const mintTiles = async ({ onSuccess }: { onSuccess: () => void }) => {
       },
     });
   } catch (error) {
+    toast.dismiss("loading-wallet");
     console.error(error);
   }
 };

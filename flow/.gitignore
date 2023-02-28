@@ -1,2 +1,7 @@
-
 testnet.private.json
+testnet-account.key
+testnet-blue.pkey
+
+.env
+*.env
+.env.*
