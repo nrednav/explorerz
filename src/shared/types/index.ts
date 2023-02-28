@@ -61,3 +61,10 @@ export const PhaseDetailsSchema = z.object({
 });
 
 export type PhaseDetails = z.infer<typeof PhaseDetailsSchema>;
+
+export enum RewardTier {
+  "common",
+  "rare",
+  "epic",
+  "legendary",
+}

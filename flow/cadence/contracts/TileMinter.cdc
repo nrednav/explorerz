@@ -295,5 +295,4 @@ pub contract TileMinter: NonFungibleToken {
         }
     }
 }
- 
- 
+
