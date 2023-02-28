@@ -1,4 +1,7 @@
 import React from "react";
+import useUser from "@/hooks/useUser";
+import * as fcl from "@onflow/fcl";
+import clsx from "clsx";
 
 type Explorerz = {
   address: string;
@@ -7,28 +10,31 @@ type Explorerz = {
 
 const explorerz: Explorerz[] = [
   {
-    address: "0xeb179c27144f783c",
+    address: "0x45706f384bb19073",
     tilesPlaced: 5,
   },
   {
-    address: "0xeb179c27144f783c",
+    address: "0xat179c27144f783d",
     tilesPlaced: 3,
   },
   {
-    address: "0xeb179c27144f783c",
+    address: "0xet179c27144f783e",
     tilesPlaced: 2,
   },
   {
-    address: "0xeb179c27144f783c",
+    address: "0xee179c27144f783f",
     tilesPlaced: 1,
   },
   {
-    address: "0xeb179c27144f783c",
+    address: "0xeq179c27144f783g",
     tilesPlaced: 1,
   },
 ];
 
 const LeaderBoard = () => {
+  const { user } = useUser();
+  console.log("🚀 ~ LeaderBoard ~ user:");
+
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -41,18 +47,22 @@ const LeaderBoard = () => {
             expeditions. Once the map is complete, explorerz rewards will be
             distributed as follows:
           </p>
-          <div className="mt-2 grid grid-cols-2 gap-4 text-sm text-gray-700">
-            <p className="mt-2 text-indigo-600">Top 5%: Legendary explorer</p>
-            <p className="mt-2 text-blue-400">5%-10%: Epic explorer</p>
-            <p className="mt-2 text-red-400">10%-45%: Rare explorer</p>
-            <p className="mt-2">45%-100%: Common explorer</p>
+          <div className="flex w-full justify-center">
+            <div className="mt-2 grid grid-cols-2 gap-8 text-sm text-gray-700">
+              <p className="mt-2 text-indigo-600">
+                Top 5%: Legendary explorerz
+              </p>
+              <p className="mt-2 text-blue-400">5%-10%: Epic explorerz</p>
+              <p className="mt-2 text-red-400">10%-45%: Rare explorerz</p>
+              <p className="mt-2">45%-100%: Common explorerz</p>
+            </div>
           </div>
         </div>
       </div>
-      <div className="pixelated mt-8 flow-root w-full">
+      <div className="pixelated mt-8 flow-root w-full bg-white text-black after:text-gray-100 hover:text-black focus:outline-none">
         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table className="min-w-full divide-y divide-gray-300">
+            <table className="min-w-full divide-y divide-black">
               <thead>
                 <tr>
                   <th
@@ -69,13 +79,27 @@ const LeaderBoard = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-black">
                 {explorerz.map((explorer) => (
                   <tr key={explorer.address}>
-                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-left text-sm font-medium text-gray-900 sm:pl-0">
+                    <td
+                      className={clsx(
+                        "whitespace-nowrap py-4 pl-4 pr-3 text-left text-sm font-medium sm:pl-0",
+                        explorer.address === user.addr
+                          ? "bg-yellow-400 text-indigo-600"
+                          : "text-gray-600"
+                      )}
+                    >
                       {explorer.address}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-4 text-left text-sm text-gray-500">
+                    <td
+                      className={clsx(
+                        "whitespace-nowrap px-3 py-4 text-left text-sm text-gray-500",
+                        explorer.address === user.addr
+                          ? "bg-yellow-400 text-indigo-600"
+                          : "text-gray-600"
+                      )}
+                    >
                       {explorer.tilesPlaced}
                     </td>
                   </tr>

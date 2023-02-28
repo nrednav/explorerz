@@ -9,7 +9,7 @@ const RewardContent = () => {
           <div className="px-6 lg:px-0 lg:pr-4">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-lg">
               <h2 className="text-base font-semibold leading-7 text-indigo-600">
-                Greetings, brave explorers!
+                Greetings, brave explorerz!
               </h2>
               <p className="mt-6 text-sm leading-8 text-gray-600">
                 As you venture forth, mapping uncharted territories, you will be
