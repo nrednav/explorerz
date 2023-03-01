@@ -1,4 +1,6 @@
+import { FC } from "react";
 import Head from "next/head";
+import { MapSchema } from "@/shared/types";
 import Error from "@/components/data-display/Error";
 import InventoryPanel from "@/components/data-display/InventoryPanel";
 import Loading from "@/components/data-display/Loading";
@@ -15,25 +17,18 @@ import { initialiseAccount } from "@/flow/cadence/transactions/initialiseAccount
 import useHasInitialisedAccount from "@/hooks/useHasInitialisedAccount";
 import useMap from "@/hooks/useMap";
 import useModal from "@/hooks/useModal";
-import useUser from "@/hooks/useUser";
+import useUser, { CurrentUserObject } from "@/hooks/useUser";
 import { selectedCoordinateAtom, selectedTileAtom } from "@/store";
 import { useAtomValue } from "jotai";
+import { z } from "zod";
 
 export const Home = () => {
-  const selectedTile = useAtomValue(selectedTileAtom);
-  const selectedCoordinate = useAtomValue(selectedCoordinateAtom);
-  const inventoryPanel = useModal();
-
+  const { user } = useUser();
   const {
     data: map,
     isLoading: isLoadingMap,
     isError: errorLoadingMap,
   } = useMap();
-
-  const { user } = useUser();
-  const { data: hasInitialisedAccount } = useHasInitialisedAccount({
-    address: user.addr ?? "",
-  });
 
   if (errorLoadingMap) return <Error message="Could not load map..." />;
   if (isLoadingMap) return <Loading />;
@@ -46,6 +41,36 @@ export const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Map tiles={map.tiles} />
+      {!user.loggedIn && <UnauthenticatedState />}
+      {user.loggedIn === true && <AuthenticatedState user={user} map={map} />}
+    </>
+  );
+};
+
+const UnauthenticatedState = () => {
+  return (
+    <div className="flex flex-row items-center justify-center py-8 opacity-90">
+      <LoginButton />
+    </div>
+  );
+};
+
+type AuthenticatedStateProps = {
+  map: z.infer<typeof MapSchema>;
+  user: CurrentUserObject;
+};
+
+const AuthenticatedState: FC<AuthenticatedStateProps> = ({ map, user }) => {
+  const selectedTile = useAtomValue(selectedTileAtom);
+  const selectedCoordinate = useAtomValue(selectedCoordinateAtom);
+  const inventoryPanel = useModal();
+
+  const { data: hasInitialisedAccount } = useHasInitialisedAccount({
+    address: user.addr ?? "",
+  });
+
+  return (
+    <>
       {map.completed && <GameOver />}
       {!map.completed && hasInitialisedAccount === false && (
         <div className="flex flex-row items-center justify-center py-8">
@@ -57,40 +82,33 @@ export const Home = () => {
           </Button>
         </div>
       )}
-      {!user.loggedIn && (
-        <div className="flex flex-row items-center justify-center py-8 opacity-90">
-          <LoginButton />
-        </div>
-      )}
-      {!map.completed &&
-        user.loggedIn === true &&
-        hasInitialisedAccount === true && (
-          <>
-            <PlaySummary />
-            <DPad />
-            <div className="my-4 flex w-full flex-col items-stretch justify-center gap-4 sm:flex-row">
-              <MintButton />
-              <Button
-                onClick={inventoryPanel.open}
-                className="bg-indigo-400 text-white after:text-indigo-600 hover:text-white"
-              >
-                Inventory
-              </Button>
-              <PlayButton
-                disabled={
-                  !selectedCoordinate ||
-                  !selectedTile ||
-                  map.tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
-                }
-              />
-            </div>
-            <MintingPhases />
-            <InventoryPanel
-              isOpen={inventoryPanel.isOpen}
-              onClose={inventoryPanel.close}
+      {!map.completed && hasInitialisedAccount === true && (
+        <>
+          <PlaySummary />
+          <DPad />
+          <div className="my-4 flex w-full flex-col items-stretch justify-center gap-4 sm:flex-row">
+            <MintButton />
+            <Button
+              onClick={inventoryPanel.open}
+              className="bg-indigo-400 text-white after:text-indigo-600 hover:text-white"
+            >
+              Inventory
+            </Button>
+            <PlayButton
+              disabled={
+                !selectedCoordinate ||
+                !selectedTile ||
+                map.tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
+              }
             />
-          </>
-        )}
+          </div>
+          <MintingPhases />
+          <InventoryPanel
+            isOpen={inventoryPanel.isOpen}
+            onClose={inventoryPanel.close}
+          />
+        </>
+      )}
     </>
   );
 };

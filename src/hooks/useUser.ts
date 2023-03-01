@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as fcl from "@onflow/fcl";
 
-type CurrentUserObject = {
+export type CurrentUserObject = {
   addr: string | null;
   cid: string | null;
   expiresAt: number | null;
