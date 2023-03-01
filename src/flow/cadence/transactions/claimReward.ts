@@ -50,6 +50,7 @@ export const claimReward = async ({ onSuccess }: { onSuccess: () => void }) => {
         if (error.includes("found"))
           return "You need to have participated in the game to claim a reward";
         if (error.includes("claimed")) return "Reward has already been claimed";
+        return "Could not claim reward";
       },
       onSuccess: () => {
         onSuccess();
