@@ -20,6 +20,7 @@ const LeaderBoard = () => {
   if (!data) return <Error message="Could not load data..." />;
 
   const explorerz = Object.values(data);
+  explorerz.sort((a, b) => b.tilesPlaced - a.tilesPlaced);
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
