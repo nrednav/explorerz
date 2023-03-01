@@ -33,7 +33,11 @@ transaction {
 }
 `;
 
-export const initialiseAccount = async () => {
+export const initialiseAccount = async ({
+  onSuccess,
+}: {
+  onSuccess?: () => void;
+}) => {
   try {
     toast.loading("Loading wallet...", { id: "loading-wallet" });
 
@@ -45,7 +49,10 @@ export const initialiseAccount = async () => {
       txId,
       loadingMessage: "Initialising...",
       onError: () => "Could not initialise account",
-      onSuccess: () => "Initialised account",
+      onSuccess: () => {
+        onSuccess && onSuccess();
+        return "Initialised account";
+      },
     });
   } catch (error) {
     toast.dismiss("loading-wallet");

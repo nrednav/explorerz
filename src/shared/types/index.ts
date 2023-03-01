@@ -59,15 +59,17 @@ export const PhaseDetailsSchema = z.object({
   }),
   blockHeight: z.coerce.number(),
 });
-
 export type PhaseDetails = z.infer<typeof PhaseDetailsSchema>;
 
-export enum RewardTier {
-  "common",
-  "rare",
-  "epic",
-  "legendary",
-}
+export const RewardTier = z.enum(["common", "rare", "epic", "legendary"]);
+export const RewardSchema = z.object({
+  id: z.coerce.number(),
+  tier: z.object({
+    rawValue: z.coerce.number(),
+  }),
+  image: z.string(),
+});
+export type Reward = z.infer<typeof RewardSchema>;
 
 export const ExplorerSchema = z.object({
   address: z.string(),

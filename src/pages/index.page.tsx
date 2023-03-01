@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import Head from "next/head";
 import { MapSchema } from "@/shared/types";
 import Error from "@/components/data-display/Error";
@@ -65,17 +65,34 @@ const AuthenticatedState: FC<AuthenticatedStateProps> = ({ map, user }) => {
   const selectedCoordinate = useAtomValue(selectedCoordinateAtom);
   const inventoryPanel = useModal();
 
-  const { data: hasInitialisedAccount } = useHasInitialisedAccount({
-    address: user.addr ?? "",
-  });
+  const { data: hasInitialisedAccount, refetch: refetchInitialisationStatus } =
+    useHasInitialisedAccount({
+      address: user.addr ?? "",
+    });
+
+  const initialise = useCallback(() => {
+    initialiseAccount({ onSuccess: refetchInitialisationStatus });
+  }, [refetchInitialisationStatus]);
 
   return (
     <>
-      {map.completed && <GameOver />}
+      {map.completed && (
+        <>
+          <GameOver />
+          <div className="my-4 flex w-full flex-row items-center justify-center">
+            <Button
+              onClick={inventoryPanel.open}
+              className="bg-indigo-400 text-white after:text-indigo-600 hover:text-white"
+            >
+              Inventory
+            </Button>
+          </div>
+        </>
+      )}
       {!map.completed && hasInitialisedAccount === false && (
         <div className="flex flex-row items-center justify-center py-8">
           <Button
-            onClick={initialiseAccount}
+            onClick={initialise}
             className="bg-emerald-500 text-white after:text-emerald-700 hover:text-white"
           >
             Initialise
@@ -103,12 +120,12 @@ const AuthenticatedState: FC<AuthenticatedStateProps> = ({ map, user }) => {
             />
           </div>
           <MintingPhases />
-          <InventoryPanel
-            isOpen={inventoryPanel.isOpen}
-            onClose={inventoryPanel.close}
-          />
         </>
       )}
+      <InventoryPanel
+        isOpen={inventoryPanel.isOpen}
+        onClose={inventoryPanel.close}
+      />
     </>
   );
 };
