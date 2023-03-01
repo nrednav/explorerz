@@ -57,8 +57,10 @@ export const placeTile = async ({
       txId,
       loadingMessage: "Placing tile...",
       onError: (errorMessage) => {
-        if (errorMessage.toLowerCase().includes("adjacent"))
-          return "Tile not adjacent to an occupied tile";
+        const error = errorMessage.toLowerCase();
+        if (error.includes("adjacent"))
+          return "Tile is not adjacent to an occupied tile";
+        if (error.includes("occupied")) return "Tile is already occupied";
       },
       onSuccess: () => {
         onSuccess();
