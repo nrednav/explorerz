@@ -15,6 +15,8 @@
 Explorerz is a fun, creative and collaborative map building game built to run on
 the Flow blockchain.
 
+It was developed over a week, as part of the inaugural [Flow Hackathon](https://flowhackathon.notion.site/Overview-1dba52995ff94301b1efadf8145349bb) in 2023.
+
 ## Built With
 
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
