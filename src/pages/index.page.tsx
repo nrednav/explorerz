@@ -35,9 +35,9 @@ export const Home = () => {
     address: user.addr ?? "",
   });
 
-  if (errorLoadingMap) return <Error message="Could not load game..." />;
+  if (errorLoadingMap) return <Error message="Could not load map..." />;
   if (isLoadingMap) return <Loading />;
-  if (!map) return <Error message="Could not load game..." />;
+  if (!map) return <Error message="Could not load map..." />;
 
   return (
     <>
