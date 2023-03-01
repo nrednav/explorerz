@@ -7,9 +7,7 @@ const MintButton: FC<Partial<ButtonProps>> = () => {
   const { refetch: refetchMintingPhase } = useMintingPhase();
 
   const mint = useCallback(() => {
-    mintTiles({
-      onSuccess: refetchMintingPhase,
-    });
+    mintTiles({ onSuccess: refetchMintingPhase });
   }, [refetchMintingPhase]);
 
   return (

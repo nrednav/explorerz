@@ -76,5 +76,5 @@ export const ExplorerSchema = z.object({
 });
 export type Explorer = z.infer<typeof ExplorerSchema>;
 
-export const explorerzSchema = z.record(z.string(), ExplorerSchema);
-export type Explorerz = z.infer<typeof explorerzSchema>;
+export const ExplorerzSchema = z.record(z.string(), ExplorerSchema);
+export type Explorerz = z.infer<typeof ExplorerzSchema>;
