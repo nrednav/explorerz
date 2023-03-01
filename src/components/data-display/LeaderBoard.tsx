@@ -23,7 +23,7 @@ const LeaderBoard = () => {
   explorerz.sort((a, b) => b.tilesPlaced - a.tilesPlaced);
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="px-2 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="text-xs sm:flex-auto sm:text-sm sm:!leading-8">
           <h1 className="text-base font-semibold leading-6 text-indigo-600">

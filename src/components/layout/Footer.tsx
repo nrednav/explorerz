@@ -44,7 +44,7 @@ export const Footer: FC = () => {
             </a>
           ))}
         </div>
-        <p className="text-primary mt-8 text-center text-base opacity-80">
+        <p className="text-primary mt-8 text-center text-xs opacity-80 sm:text-sm">
           &copy; 2023. All rights reserved.
         </p>
       </div>

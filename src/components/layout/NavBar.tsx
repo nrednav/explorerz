@@ -77,7 +77,7 @@ export const NavBar: FC = () => {
                 <Disclosure.Button
                   key="FAQMobile"
                   as="button"
-                  className="border-minimal-black text-primary bg-minimal-white block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
+                  className="border-minimal-black text-primary bg-minimal-white block border-l-4 py-2 px-4 text-sm font-medium sm:text-base"
                   onClick={() => setOpenFAQ(!openFAQ)}
                 >
                   About
