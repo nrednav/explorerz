@@ -1,5 +1,6 @@
 import { FC, useCallback } from "react";
-import { TileKindSchema, TileSchema } from "@/shared/types";
+import Image from "next/image";
+import { RewardTier, TileKindSchema, TileSchema } from "@/shared/types";
 import Drawer from "../containers/Drawer/Drawer";
 import DrawerSection from "../containers/Drawer/DrawerSection";
 import LoginButton from "../input-and-actions/LoginButton";
@@ -7,6 +8,7 @@ import Error from "./Error";
 import Loading from "./Loading";
 import Tile from "./Tile";
 import useModal from "@/hooks/useModal";
+import useRewardCollection from "@/hooks/useRewardCollection";
 import useTileCollection from "@/hooks/useTileCollection";
 import useUser from "@/hooks/useUser";
 import { selectedTileAtom } from "@/store";
@@ -22,6 +24,7 @@ const InventoryPanel: FC<InventoryPanelProps> = ({ isOpen, onClose }) => {
   return (
     <Drawer isOpen={isOpen} onClose={onClose}>
       <TileCollection />
+      <RewardCollection />
     </Drawer>
   );
 };
@@ -50,6 +53,44 @@ const TileCollection = () => {
           </DrawerSection>
         );
       })}
+    </div>
+  );
+};
+
+const RewardCollection = () => {
+  const { user } = useUser();
+  const {
+    data: rewardCollection,
+    isLoading,
+    isError,
+  } = useRewardCollection({ address: user.addr ?? "" });
+
+  if (!user.loggedIn) return <LoginButton />;
+  if (isError) return <Error message="Could not load rewards..." />;
+  if (isLoading) return <Loading />;
+  if (!rewardCollection) return <Error message="Could not load rewards..." />;
+
+  return (
+    <div className="flex flex-col space-y-8 py-8">
+      <DrawerSection title="Rewards">
+        {rewardCollection.length > 0 ? (
+          rewardCollection.map((reward) => {
+            const tierLabel = RewardTier.options[reward.tier.rawValue];
+            return (
+              <Image
+                src={reward.image}
+                width="128"
+                height="128"
+                className="py-4"
+                alt={`Image of a ${tierLabel} reward`}
+                key={`${tierLabel}-${reward.id}`}
+              />
+            );
+          })
+        ) : (
+          <p className="py-4 text-xs text-slate-600">None claimed</p>
+        )}
+      </DrawerSection>
     </div>
   );
 };

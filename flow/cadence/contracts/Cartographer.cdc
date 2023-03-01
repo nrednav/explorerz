@@ -363,6 +363,7 @@ pub contract Cartographer {
     }
 
     pub resource interface RewardCollectionPublic {
+        pub fun getIDs(): [UInt64]
         pub fun deposit(token: @Cartographer.Reward)
         pub fun borrowReward(id: UInt64): &Cartographer.Reward? {
             post {
@@ -385,6 +386,10 @@ pub contract Cartographer {
 
             emit RewardDeposited(id: rewardId, to: self.owner?.address)
             destroy oldReward
+        }
+
+        pub fun getIDs(): [UInt64] {
+            return self.rewards.keys
         }
 
         pub fun borrowReward(id: UInt64): &Cartographer.Reward? {
