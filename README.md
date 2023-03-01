@@ -1,11 +1,13 @@
 ![banner](./public/images/banner.png)
 
 <div align="center">
+
 [![Contributors](https://img.shields.io/github/contributors/nrednav/explorerz.svg?style=for-the-badge)](https://github.com/nrednav/explorerz/graphs/contributors)
 [![Forks](https://img.shields.io/github/forks/nrednav/explorerz.svg?style=for-the-badge)](https://github.com/nrednav/explorerz/network/members)
 [![Stars](https://img.shields.io/github/stars/nrednav/explorerz.svg?style=for-the-badge)](https://github.com/nrednav/explorerz/stargazers)
 [![Issues](https://img.shields.io/github/issues/nrednav/explorerz.svg?style=for-the-badge)](https://github.com/nrednav/explorerz/issues)
 [![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)](https://explorerz.vercel.app)
+
 </div>
 
 # Explorerz
