@@ -49,6 +49,7 @@ export const placeTile = async ({
         arg(id, t.UInt64),
         arg([coordinate.x, coordinate.y], t.Array(t.Int64)),
       ],
+      limit: 1000,
     });
 
     toast.dismiss("loading-wallet-toast");
