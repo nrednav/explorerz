@@ -8,6 +8,7 @@ import PlaySummary from "@/components/data-display/PlaySummary";
 import Button from "@/components/input-and-actions/Button";
 import ClaimRewardButton from "@/components/input-and-actions/ClaimRewardButton";
 import DPad from "@/components/input-and-actions/DPad";
+import LoginButton from "@/components/input-and-actions/LoginButton";
 import MintButton from "@/components/input-and-actions/MintButton";
 import PlayButton from "@/components/input-and-actions/PlayButton";
 import { initialiseAccount } from "@/flow/cadence/transactions/initialiseAccount";
@@ -56,33 +57,40 @@ export const Home = () => {
           </Button>
         </div>
       )}
-      {!map.completed && hasInitialisedAccount === true && (
-        <>
-          <PlaySummary />
-          <DPad />
-          <div className="my-4 flex w-full flex-col items-stretch justify-center gap-4 sm:flex-row">
-            <MintButton />
-            <Button
-              onClick={inventoryPanel.open}
-              className="bg-indigo-400 text-white after:text-indigo-600 hover:text-white"
-            >
-              Inventory
-            </Button>
-            <PlayButton
-              disabled={
-                !selectedCoordinate ||
-                !selectedTile ||
-                map.tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
-              }
-            />
-          </div>
-          <MintingPhases />
-          <InventoryPanel
-            isOpen={inventoryPanel.isOpen}
-            onClose={inventoryPanel.close}
-          />
-        </>
+      {!user.loggedIn && (
+        <div className="flex flex-row items-center justify-center py-8 opacity-90">
+          <LoginButton />
+        </div>
       )}
+      {!map.completed &&
+        user.loggedIn === true &&
+        hasInitialisedAccount === true && (
+          <>
+            <PlaySummary />
+            <DPad />
+            <div className="my-4 flex w-full flex-col items-stretch justify-center gap-4 sm:flex-row">
+              <MintButton />
+              <Button
+                onClick={inventoryPanel.open}
+                className="bg-indigo-400 text-white after:text-indigo-600 hover:text-white"
+              >
+                Inventory
+              </Button>
+              <PlayButton
+                disabled={
+                  !selectedCoordinate ||
+                  !selectedTile ||
+                  map.tiles[selectedCoordinate.y][selectedCoordinate.x] !== null
+                }
+              />
+            </div>
+            <MintingPhases />
+            <InventoryPanel
+              isOpen={inventoryPanel.isOpen}
+              onClose={inventoryPanel.close}
+            />
+          </>
+        )}
     </>
   );
 };
