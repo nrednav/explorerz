@@ -6,7 +6,7 @@ const RewardContent = () => {
     <div className="overflow-hidden bg-white pb-6 sm:py-8">
       <div className="mx-auto max-w-7xl md:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-y-16 gap-x-8 sm:gap-y-20 lg:grid-cols-2 lg:items-start">
-          <div className="px-6 lg:px-0 lg:pr-4">
+          <div className="px-2 lg:px-0 lg:pr-4">
             <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-lg">
               <h2 className="text-base font-semibold leading-7 text-indigo-600">
                 Greetings, brave explorerz!

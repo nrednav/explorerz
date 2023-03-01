@@ -20,22 +20,10 @@ type StepProps = {
 };
 
 const steps = [
-  {
-    id: "I",
-    description: "1x Tile",
-  },
-  {
-    id: "II",
-    description: "2x Tiles",
-  },
-  {
-    id: "III",
-    description: "3x Tiles",
-  },
-  {
-    id: "IV",
-    description: "4x Tiles",
-  },
+  { id: "I", description: "1x Tile" },
+  { id: "II", description: "2x Tiles" },
+  { id: "III", description: "3x Tiles" },
+  { id: "IV", description: "4x Tiles" },
 ];
 
 const getStepStatus = (stepIdx: number, currentPhase: number) => {
@@ -53,21 +41,6 @@ const getCurrentPhase = (
   return Math.floor(phasesElapsed % 4);
 };
 
-// const getTimeElapsed = (
-//   blockHeight: number,
-//   lastUpdatedAt: number,
-//   blockTime: number
-// ) => {
-//   const timeElapsedBlocks = blockHeight - lastUpdatedAt;
-//   const timeElapsedSeconds = timeElapsedBlocks * blockTime;
-
-//   return timeElapsedSeconds;
-// };
-
-// const getTimeRemaining = (duration: number, timeElapsed: number) => {
-//   return duration - timeElapsed;
-// };
-
 const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
   const stepStatus = getStepStatus(stepIdx, currentPhase);
   return (
@@ -83,7 +56,7 @@ const Step: FC<StepProps> = ({ stepIdx, step, currentPhase }) => {
       <span
         className={clsx(
           stepIdx !== 0 ? "lg:pl-9" : "",
-          "flex justify-around px-6 py-5 text-sm font-medium text-white lg:flex-col lg:gap-y-2"
+          "flex justify-around px-6 py-5 text-xs font-medium text-white sm:text-sm lg:flex-col lg:gap-y-2"
         )}
       >
         <span>{step.id}</span>
@@ -110,15 +83,22 @@ const MintingPhases = () => {
 
   return (
     <div className="mx-auto max-w-[1024px] py-4 lg:py-8">
-      <h2 className="py-4 text-center text-sm font-bold text-gray-900 sm:text-2xl">
+      <h2 className="border-t-2 border-t-slate-200 py-8 text-center text-sm font-bold text-gray-900 sm:text-2xl">
         Minting phase: {steps[currentPhase].id}
       </h2>
-      <h3 className="py-4 text-center text-[10px] font-bold text-gray-600 sm:text-base">
-        Each phase lasts approx ~4min <br />
-        Each mint resets to phase I <br />
-        When the map is full, the game ends
-      </h3>
-      <div className="pixelated w-full bg-slate-600 text-white after:text-slate-800 hover:text-white focus:outline-none">
+      {[
+        "Each phase lasts approx ~4min",
+        "Each mint resets to phase I",
+        "When the map is full, the game ends",
+      ].map((explanation, index) => (
+        <p
+          className="py-2 text-center text-xs font-bold text-gray-600 sm:text-sm"
+          key={index}
+        >
+          {explanation}
+        </p>
+      ))}
+      <div className="pixelated my-4 w-full bg-slate-600 text-white after:text-slate-800 hover:text-white focus:outline-none">
         <nav aria-label="Minting phase">
           <ol role="list" className="overflow-hidden lg:flex">
             {steps.map((step, stepIdx) => (

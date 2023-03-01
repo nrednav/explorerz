@@ -43,7 +43,7 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                     >
                       LORE
                     </Dialog.Title>
-                    <div className="mt-2 flex flex-col space-y-4 text-sm text-gray-500">
+                    <div className="mt-2 flex flex-col space-y-4 text-xs text-gray-500 sm:text-sm">
                       <p>
                         Are you ready to embark on a thrilling journey into the
                         unknown? Join the Explorerz, a mysterious and enigmatic
@@ -74,7 +74,7 @@ export const FAQ: FC<FAQProps> = ({ open, setOpen }) => {
                     >
                       FAQ
                     </Dialog.Title>
-                    <div className="mt-2 flex flex-col space-y-4 text-sm text-gray-500">
+                    <div className="mt-2 flex flex-col space-y-4 text-xs text-gray-500 sm:text-sm">
                       <h4 className="font-semibold">How does this work?</h4>
                       <p>
                         Explorerz, an enigmatic on-chain experiment with no
